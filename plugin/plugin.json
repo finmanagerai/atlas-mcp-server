@@ -25,9 +25,9 @@
       "interface": {
         "displayName": "MindVest Atlas",
         "shortDescription": "Automate finance and investing",
-        "longDescription": "Atlas gives your AI agent the tools to scan options flow, analyze real-time stock market data, and build investing and trading workflows, so you don't have to build this yourself. You focus on the strategy. Atlas handles the execution, in your own broker account, by the rules you set.\n\nWhat you can ask for:\n- Scan the options market: the largest trades of the day, the flow on one stock, which of several names the money is going into.\n- Analyze a stock: live quotes, price history and charts, options chains, where dealer exposure sits, earnings, financials and filings.\n- Build a workflow: write your plan once and Atlas runs it on a schedule or when an alert goes off, and can hold each run for you to approve first.\n- Set alerts on a price level, a large options trade, a volume spike or a technical cross.\n- Post and take plays: one trade idea, written down in full, shared with a group.\n- Preview an order, place it, and manage the trade: take profit in steps, move the stop, close it.\n\nAn order is placed or changed only when you say so, or by a workflow you switched on. Placing orders needs a broker account you have connected to Atlas; reading the market does not. Atlas does not give investment advice, and trading involves risk, including the loss of what you put in.",
+        "longDescription": "Atlas gives your AI agent the tools to scan options flow, analyze real-time stock market data, and build investing and trading workflows, so you don't have to build this yourself. You focus on the strategy. Atlas automates it and handles the execution, in your own broker account, by the rules you set.\n\nWhat you can ask for:\n- Scan the options market: the largest trades of the day, the flow on one stock, which of several names the money is going into.\n- Analyze a stock: live quotes, price history and charts, options chains, where dealer exposure sits, earnings, financials and filings.\n- Build a workflow: write your plan once and Atlas runs it on a schedule or when an alert goes off, and can hold each run for you to approve first.\n- Set alerts on a price level, a large options trade, a volume spike or a technical cross.\n- Post and take plays: one trade idea, written down in full, shared with a group.\n- Preview an order, place it, and manage the trade: take profit in steps, move the stop, close it.",
         "developerName": "FinManager AI",
-        "category": "finance",
+        "category": "Finance",
         "capabilities": [
           "Scan options flow",
           "Read real-time stock and options data",
@@ -38,7 +38,7 @@
           "Preview, place and manage orders in your own broker account"
         ],
         "websiteURL": "https://www.mind-vest.io/atlas",
-        "supportURL": "https://www.mind-vest.io/atlas/setup-guide",
+        "supportURL": "mailto:accesspoint@finmanagerai.com",
         "privacyPolicyURL": "https://www.mind-vest.io/privacy",
         "termsOfServiceURL": "https://www.mind-vest.io/terms",
         "defaultPrompt": [

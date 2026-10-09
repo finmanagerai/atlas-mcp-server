@@ -1,6 +1,6 @@
 ---
 name: atlas-agent-run-loop
-description: Set up the loop that wakes you, the assistant, by itself and has you run an Atlas workflow from start to finish with nobody prompting you. Covers the wake-up (your own scheduler, or a small script on the person's computer), the check that costs nothing when no run is waiting, and the stages of one run (read the workflow, gather the data side by side, decide once, hand it in). Use when the person says "just keep doing this for me", wants a workflow you run to go on a schedule or when an Atlas alert goes off, or asks how you will know when to run.
+description: When the person asks you to keep running an Atlas workflow for them, set up the schedule that wakes you and run each waiting run from start to finish. Covers what can wake you (your own scheduler, or a timer the person sets up), the check that costs nothing when no run is waiting, and the stages of one run (read the workflow, gather the data side by side, decide once, hand it in). Use when the person says "just keep doing this for me", wants a workflow you run to go on a schedule or when an Atlas alert goes off, or asks how you will know when to run.
 ---
 
 # The loop that wakes you and runs the workflow
@@ -21,6 +21,19 @@ anything. `references/tools.md` lists every field of the tools named here.
 When it is set up, prove it with the `atlas-agent-run-loop-test` skill before
 telling the person it works.
 
+## Before you set anything up
+
+This is the person's decision, not yours. Set a loop up only when they ask
+for one. Tell them first, in a few lines: what will wake you and how often,
+what you will do each time, what it uses of their plan, and how they stop it.
+They are the one who switches it on. Signing in to Atlas is theirs too: you
+never ask for, see or keep their sign-in details.
+
+Ask them how much they want to see before anything is placed. Every workflow
+has a review switch (`ui_schema.preview_before_place`): on, each run you hand
+in is held for them to approve; off, it goes in by the terms of their trade
+card. Say what each means and use what they choose.
+
 ## 1. The wake-up
 
 Use the first of these that you really have. Do not assume: test it.
@@ -28,9 +41,12 @@ Use the first of these that you really have. Do not assume: test it.
 | What wakes you | When it fits | What to check |
 |---|---|---|
 | **Your host's own scheduler** (scheduled tasks, automations, routines) | You have one, and a scheduled run can use the Atlas tools | That a scheduled run is signed in to Atlas and can call its tools. Many hosts run scheduled work with fewer tools than a chat has |
-| **The person's computer** (cron on macOS and Linux, Task Scheduler on Windows) starting you without a window | You can be started from a command, for example `claude -p "<prompt>"` or `codex exec "<prompt>"`, or from a short script on an agent SDK | The computer is on and awake at those times. The command is allowed to use the Atlas tools without asking |
-| **A server or a CI schedule** running the same script | The person wants it to run while their computer is off | Where the access key is kept. It belongs in that service's own protected settings, never in the script |
+| **A timer on the person's own computer** that starts you | You are an assistant that can be started from a command, and the person is comfortable setting that up | The computer is on at those times, and the person has allowed that run to use the Atlas tools |
+| **A timer on a service the person already uses** | They want it to keep going while their computer is off | That they have set up the sign-in there themselves |
 | **Nothing** | You cannot be started on a timer at all | Say so plainly. An ordinary Atlas workflow, which Atlas runs itself the moment its schedule or alert comes due, is the better choice |
+
+For a timer on a computer, the Atlas repository has a worked example the
+person can read and adapt: `docs/agent-run-loop.md`.
 
 **How often.** The delay between an alert going off and you acting is the time
 between two wake-ups.
@@ -49,48 +65,17 @@ request each time). Tell the person the delay and the cost you set up.
 
 Before any thinking, ask one thing: is a run waiting?
 
-- With the tools: `Workflow-Agent-Waiting-Runs`. `count` is 0 when there is
-  nothing to do. Stop there.
-- From a script, before you are even started: the Atlas command line
-  (`npm install -g mindvest-atlas`) asks the same thing, so the model is only
-  started when there is work.
+`Workflow-Agent-Waiting-Runs`. `count` is 0 when there is nothing to do. Stop
+there: a wake-up that finds nothing costs the person nothing on Atlas.
 
-```bash
-#!/usr/bin/env bash
-# Wakes the assistant only when Atlas has a run waiting for it.
-set -euo pipefail
-DIR="$HOME/.atlas-loop"                        # key, prompt.md, loop.log live here
-export ATLAS_TOKEN="$(cat "$DIR/key")"         # the person's Atlas access key
-mkdir "$DIR/lock" 2>/dev/null || exit 0        # one wake-up at a time
-trap 'rmdir "$DIR/lock"' EXIT
+Things that hold for any wake-up:
 
-count=$(atlas workflow-agent-waiting-runs \
-  | python3 -c 'import json,sys; print(json.load(sys.stdin).get("count", 0))')
-echo "$(date +%FT%T%z) waiting=$count" >> "$DIR/loop.log"
-[ "$count" -gt 0 ] || exit 0
-
-# Start yourself, with the Atlas tools allowed and the standing prompt below.
-claude -p "$(cat "$DIR/prompt.md")" >> "$DIR/loop.log" 2>&1
-```
-
-And the line that runs it every two minutes in market hours, on a computer
-whose clock is set to Eastern time (cron uses the computer's own time zone):
-
-```
-*/2 9-16 * * 1-5  $HOME/.atlas-loop/wake.sh
-```
-
-Things that hold for any version of this:
-
-- **The key is the person's.** They copy it from their Atlas dashboard into a
-  file only they can read, or into the scheduler's own protected settings. Never ask them to
-  paste it into the chat, and never write it into the script.
-- **One wake-up at a time.** A run can take longer than the gap between two
-  wake-ups. The lock above makes the second one leave quietly.
-- **Keep a log line per wake-up.** It is how you, and the test, know the
-  wake-up is firing.
-- With a host scheduler there is no script: the scheduled task's prompt is the
-  standing prompt below, and its first step is the gate.
+- **One at a time.** A run can take longer than the gap between two wake-ups.
+  If the last one is still working, the new one leaves quietly.
+- **A line per wake-up**, wherever your host keeps the history of scheduled
+  runs. It is how you, and the test, know the wake-up is firing.
+- The scheduled task's prompt is the standing prompt below, and its first
+  step is the gate.
 
 ## 3. One run, in stages
 
@@ -182,19 +167,20 @@ its open trades.
 What the wake-up hands you each time. Change the wording; keep the order.
 
 ```
-You are running Atlas workflows for me with nobody watching.
+I have asked you to run my Atlas workflows on a schedule.
 1. Call Workflow-Agent-Waiting-Runs. If count is 0, stop now.
-2. For each waiting run: skip it with a one-line hand-in if it has waited too
-   long to matter. Otherwise open the workflow (Workflow-Open), read its last
-   log line and what it already has open, and report progress.
+2. For each waiting run: if it has waited too long to matter, hand in
+   "nothing to do" with that reason. Otherwise open the workflow
+   (Workflow-Open), read its last log line and what it already has open, and
+   report progress.
 3. Read the data the workflow names, as many reads at once as you can.
-4. Decide once. Keep every value the trade card fixes. Fill only what it left
-   empty. Do nothing if the plan does not clearly call for a trade.
+4. Decide once. Keep every value my trade card fixes. Fill only what it left
+   empty. Do nothing if my plan does not clearly call for a trade.
 5. Hand the run in with Workflow-Agent-Hand-In-Run and its waiting_id, then
    check Workflow-Logs.
 6. Stop. Do not wait for another run.
-Never ask me a question during a run: nobody is here to answer. If something
-is unclear, hand in "nothing to do" and say what was unclear.
+If something is unclear, do not guess: hand in "nothing to do" and say what
+was unclear, so I can read it and decide.
 ```
 
 ## What to tell the person
@@ -206,5 +192,5 @@ is unclear, hand in "nothing to do" and say what was unclear.
 - That the trade card's terms and the workflow's review switch are theirs:
   you fill in the blanks, and with review on nothing is placed until they
   approve it.
-- How to stop it: switch the workflow off in Atlas, and remove the scheduled
-  task or the cron line.
+- How to stop it: switch the workflow off in Atlas, which stops it at once,
+  and remove the scheduled task.

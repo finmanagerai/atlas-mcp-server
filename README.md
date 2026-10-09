@@ -29,8 +29,8 @@
 
 # MindVest Atlas
 
-**You focus on the strategy. Atlas handles the execution, in your own broker
-account, by the rules you set.**
+**You focus on the strategy. Atlas automates it and handles the execution, in
+your own broker account, by the rules you set.**
 
 Most assistants can talk about the market. Few can look at it, and fewer can
 act on what they find. Atlas is a hosted MCP server that gives an assistant
@@ -129,6 +129,9 @@ with it:
 | `atlas-agent-run-workflows` | A workflow your own assistant runs: it registers it, picks up the runs that are waiting, and hands in what it decided |
 | `atlas-agent-run-loop` | The loop that wakes your assistant by itself: the wake-up, a check that costs nothing when no run is waiting, and the stages of one run |
 | `atlas-agent-run-loop-test` | Proving that loop works with a workflow that cannot trade: the tools, the assistant waking by itself, and a run started by a schedule or an alert |
+
+To have your own assistant wake itself on a timer, see
+[docs/agent-run-loop.md](docs/agent-run-loop.md).
 
 Each skill says what is possible, not what you must do. The lists of fields
 inside them are written from the live server, so they match it.

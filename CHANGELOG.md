@@ -12,6 +12,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 
 ### Changed
 - A waiting run's `waiting_since` is Eastern time.
+- The listing: category `Finance`, support by email, and a shorter description.
+- `docs/agent-run-loop.md`: a worked example of a timer on your own computer that wakes your assistant. It is for people to read; it is not in the plugin.
 
 ## Plugin 1.1.0 — 2026-10-09
 

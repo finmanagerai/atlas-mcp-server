@@ -80,7 +80,7 @@ their dashboard, within two intervals.
 
 | What you see | What it means | What to do |
 |---|---|---|
-| The run is still listed as waiting, and your wake-up left no trace (no log line, no scheduled run in its history) | The wake-up did not fire | Check the timer itself: the cron line, the task's schedule, whether the computer was on |
+| The run is still listed as waiting, and your wake-up left no trace (no log line, no scheduled run in its history) | The wake-up did not fire | Check the timer itself: the task's schedule, and whether the computer was on |
 | The wake-up fired, and the run is still waiting | It woke without the Atlas tools, or not signed in | Open that scheduled run's own output. A scheduled run often has fewer tools than a chat: if it cannot reach Atlas there, that wake-up cannot be used |
 | The wake-up fired and tried to hand in, and the log has no new line | The hand-in was refused | Read the answer it got. It names what is wrong |
 | The log shows "Waiting for ..." and nothing after it, an hour or more later | The run ran out before you came | Wake more often, or raise how long a run waits (`ui_schema.agent_max_age_s`) |

@@ -34,6 +34,13 @@ CLAUDE_CODE = {".claude-plugin", ".mcp.json", "skills"}
 # is that plugin's id; the name people see is `displayName`. Claude Code reads
 # its own file (.claude-plugin/plugin.json), which keeps the readable name.
 OPENAI_PLUGIN_NAME = "app-699926e1ef3c8191b1da3adb6ba431b7"
+# The categories OpenAI's own plugin list uses, spelled as it spells them. Its
+# upload page answers "Select a valid category" to anything else ("finance" in
+# lower case was refused, 2026-10-09).
+OPENAI_CATEGORIES = {
+    "Developer Tools", "Productivity", "Creativity", "Communication", "Education & Research",
+    "Data & Analytics", "Finance", "Business & Operations", "Scientific Research", "Security",
+}
 # Never shipped, whoever asks.
 NEVER = {".DS_Store", "__pycache__", ".git"}
 SECRET_WORDS = ("Bearer ", "api_key", "apikey", "secret", "password", "token=")
@@ -63,6 +70,8 @@ def check() -> list[str]:
     face = manifest["extensions"]["com.openai"]["interface"]
     if manifest.get("name") != OPENAI_PLUGIN_NAME:
         wrong.append(f"plugin.json name is {manifest.get('name')!r}; OpenAI only accepts {OPENAI_PLUGIN_NAME!r}")
+    if face.get("category") not in OPENAI_CATEGORIES:
+        wrong.append(f"plugin.json category is {face.get('category')!r}; OpenAI accepts one of {sorted(OPENAI_CATEGORIES)}")
     for key, most in (("displayName", 30), ("shortDescription", 30), ("longDescription", 4000)):
         if len(face.get(key) or "") > most:
             wrong.append(f"plugin.json {key} is {len(face[key])} characters; the most is {most}")
