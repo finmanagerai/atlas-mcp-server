@@ -1,14 +1,14 @@
 {
   "$schema": "https://static.modelcontextprotocol.io/schemas/2025-12-11/server.schema.json",
   "name": "io.github.finmanagerai/atlas-mcp-server",
-  "description": "Hosted MCP for stocks, options, Greeks, brokers, order previews, alerts, and workflows.",
+  "description": "Scan options flow, analyze real-time market data, and build investing and trading workflows.",
   "status": "active",
   "repository": {
     "url": "https://github.com/finmanagerai/atlas-mcp-server",
     "source": "github"
   },
   "websiteUrl": "https://www.mind-vest.io/atlas",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "remotes": [
     {
       "type": "streamable-http",
@@ -17,14 +17,14 @@
         {
           "name": "Authorization",
           "value": "Bearer {atlas_api_key}",
-          "description": "Atlas API key. Generate one at https://www.mind-vest.io/atlas/dashboard.",
+          "description": "Your Atlas access key. On your dashboard at https://www.mind-vest.io/atlas/dashboard under Profile, API / CLI / MCP Key. Not needed by a client that signs in through the browser.",
           "isRequired": true,
           "isSecret": true
         }
       ],
       "variables": {
         "atlas_api_key": {
-          "description": "Your Atlas API key. Sign in at https://www.mind-vest.io/atlas, open the dashboard, and copy the key from the API Keys section.",
+          "description": "Your Atlas access key. Sign in at https://www.mind-vest.io/atlas, open the dashboard, and copy it from Profile, API / CLI / MCP Key.",
           "isRequired": true,
           "isSecret": true
         }

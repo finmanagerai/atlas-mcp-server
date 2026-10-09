@@ -1,16 +1,17 @@
-# Atlas MCP — Docs
+# Atlas: docs
 
 | | |
 |---|---|
-| 🤖 [SKILL.md](../SKILL.md) | One-file install guide an AI agent can follow end-to-end |
-| 📜 [tools.md](tools.md) | Full tool catalog with read/write classification |
-| 🔒 [security.md](security.md) | Auth, permissions, rate limits, data scope |
-| 💡 [examples.md](examples.md) | Sample prompts → tool calls |
-| 🧪 [ci.md](ci.md) | CI smoke test + GitHub Actions snippet |
+| [SKILL.md](../SKILL.md) | A one-page guide an assistant can follow to connect Atlas |
+| [tools.md](tools.md) | Every tool, and what each can do. Written from the live server |
+| [security.md](security.md) | Signing in, what Atlas can and cannot do, your plan |
+| [examples.md](examples.md) | Things to ask, and the tools behind them |
+| [plugin/skills](../plugin/skills) | What is possible with workflows, alerts, plays and orders: every field, with templates |
+| [ci.md](ci.md) | A small test that Atlas is reachable |
 
-## Per-client install recipes
+## A page for each assistant
 
-| Client | Recipe |
+| Assistant | Page |
 |---|---|
 | Claude Desktop | [claude-desktop.md](claude-desktop.md) |
 | Claude Code | [claude-code.md](claude-code.md) |
@@ -20,8 +21,8 @@
 | OpenClaw | [openclaw.md](openclaw.md) |
 | Docker (stdio bridge) | [docker.md](docker.md) |
 
-Each recipe covers: API key step → install command / config JSON → required env → test prompt → troubleshooting → capabilities.
+## Where is my access key?
 
-## Need an API key?
-
-https://www.mind-vest.io/atlas/dashboard → **API Keys** → **Generate key**.
+Most assistants do not need one: they open Atlas's sign-in page in your
+browser. For the ones that do, it is on your dashboard,
+https://www.mind-vest.io/atlas/dashboard, under **Profile → API / CLI / MCP Key**.

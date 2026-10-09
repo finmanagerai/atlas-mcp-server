@@ -1,49 +1,70 @@
-# Atlas MCP — Security & Permissions
+# Atlas: security and what it can do
 
-## Auth model
+## Signing in
 
-- **Transport:** TLS 1.2+ over HTTPS, streamable-HTTP MCP (`Mcp-Session-Id` honored).
-- **Auth header:** `Authorization: Bearer <ATLAS_API_KEY>`.
-- **Where the key comes from:** the user's Atlas dashboard at https://www.mind-vest.io/atlas/dashboard → **API Keys**. The key is bound to the dashboard account; revocation is immediate.
-- **Rotation:** generate a new key in the dashboard; the old one stops working immediately. There's no `kid`/JWT layering — the bearer is opaque and verified server-side.
-- **OAuth:** Atlas also accepts standard OAuth 2.0 access tokens issued by `https://atlasmcp.finmanagerai.com` (RFC 8414 metadata published). For end-user agent flows, prefer the dashboard API key — it's simpler and scoped to the user.
+- **Over HTTPS only**, at `https://atlasmcp.finmanagerai.com/mcp`.
+- **Sign-in in your browser (OAuth 2.0).** An assistant that supports it is
+  given only the address. The first time, it opens Atlas's sign-in page; you
+  sign in there and approve the connection. The assistant receives a token for
+  your account and never sees your password.
+- **Or your access key.** For an assistant that cannot open a sign-in page:
+  `Authorization: Bearer <key>`. The key is on your dashboard under
+  **Profile → API / CLI / MCP Key**. Replacing it there stops the old one at
+  once.
+- An assistant can also start a sign-in for you and hand you a link to open,
+  where no browser can be opened for it. It never sees a password that way
+  either.
 
-## What the server can / cannot do
+## What Atlas can and cannot do
 
-- **Reads:** market data (quotes, options chains, Greeks, fundamentals, calendars), the user's broker balances/positions/transactions, and the user's saved Atlas objects (strategies, workflows, triggers, preview orders).
-- **Writes:** only via tools tagged 🟡 / 🔴 in [tools.md](tools.md). The 🔴 tools have side effects an agent must not invoke without explicit user approval — they place trades, fire alerts (Discord/SMS/Telegram), or run workflows.
-- **No local file access.** The MCP server runs server-side; it cannot read or write files on the user's machine.
-- **No shell or code execution.** Atlas does not expose a shell, REPL, or arbitrary code-execution tool.
-- **No data exfiltration.** The server only returns data the authenticated user already owns or has subscribed to. There is no global "read someone else's account" tool.
+- **Read**: market data, and your own things: your plan and usage, your
+  connected broker accounts with their balances, holdings and history, your
+  workflows, alerts, plays, strategies and saved memory.
+- **Change**: only through tools that say so. [tools.md](tools.md) marks every
+  tool as reads, adds, changes or acts, and your assistant uses that to ask
+  you first.
+- **Send orders**: only to a broker account you connected on the Atlas
+  dashboard, and only when you ask, or when a workflow you switched on calls
+  for it.
+- **Not on your computer.** Atlas runs on its own servers. It does not read
+  your files and does not run commands on your machine.
+- **Only your own account.** A tool answers for the person who is signed in.
+  Other people's public workflows and plays come without their personal
+  details or anything about their broker.
 
-## Order safety
+## Orders
 
-- **Always preview first.** `Preview-Order` / `Preview-Multiple-Orders` stage an order in Atlas without sending it to the broker. The user (or the agent, with explicit user approval) then calls `Place-Order` to submit.
-- **Robinhood and Fidelity are NOT supported for trading.** Read-only data may be available, but `Place-Order` will fail for those brokers.
-- **Multi-leg / multi-order batches** are submitted as a single broker request to keep them atomic.
+- **Preview first.** `Preview-Order` stages an order and shows it to you;
+  nothing is sent until you accept it or `Place-Order` is called with it.
+- **A workflow can wait for you.** With "review before it places" on, each run
+  is held until you approve it.
+- **Which account is always your choice.** With more than one connected, an
+  assistant is told to ask, not to pick.
+- `Broker-Connections` shows, for each of your accounts, whether trading is
+  switched on.
 
-## Rate limits
+## Your plan
 
-| Tier | Per-minute burst | Monthly tool calls |
-|---|---|---|
-| Free | ~60 req/min | ~10 calls / month |
-| Paid | ~60 req/min (subject to plan) | per-subscription `monthly_limit` (see `Subscription-Status`) |
+Looking something up (market data, a broker read, a web search) and placing an
+order use one request of your plan. Working on your own setups (workflows,
+alerts, plays, previews) does not. `Subscription-Status` shows how many
+requests you have used and how many are left.
 
-When you hit a limit the server returns HTTP `429` with body:
+When the month's requests are used up, the tool says so. An assistant should
+tell you, and not keep trying.
 
-```json
-{ "error": "rate_limit", "message": "..." }
-```
+## What is kept
 
-**Don't retry in a tight loop.** Surface the error to the user and stop.
+- What an answer contains is what was asked for. Answers do not carry
+  passwords, access tokens, email addresses or internal details.
+- Your broker sign-in is held by the brokerage connection service you used on
+  the dashboard. Atlas and your assistant never see it.
+- The full account of what Atlas collects and why:
+  https://www.mind-vest.io/privacy
 
-## PII & data handling
+## Reporting a problem
 
-- The bearer token is the only secret transmitted by the client.
-- Tool arguments are logged at the application level for billing and abuse detection. Do not paste secrets, passwords, or PII into tool arguments.
-- Broker connections live in Atlas's own backend — agents never see broker credentials.
-
-## Reporting issues
-
-- Security vulnerabilities: open a private security advisory on the GitHub repo or email the contact listed at https://www.mind-vest.io/.
-- Functional bugs: open an issue on this repo with reproduction steps. Do **not** include your API key.
+- A security problem: open a private security advisory on this repository, or
+  write to accesspoint@finmanagerai.com.
+- Something not working: open an issue here with the steps. Never include your
+  access key.

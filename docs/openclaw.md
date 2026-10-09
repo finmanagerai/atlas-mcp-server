@@ -4,9 +4,9 @@ Connect Atlas to OpenClaw.
 
 > OpenClaw configuration paths and command names vary by build. The instructions below use the conventional MCP layout — adjust the file path to match your install if needed.
 
-## 1. Get an API key
+## 1. Get your access key
 
-Sign in at https://www.mind-vest.io/atlas → **Dashboard** → **API Keys** → **Generate key**.
+Sign in at https://www.mind-vest.io/atlas, open the **Dashboard**, and copy the key under **Profile → API / CLI / MCP Key**.
 
 ## 2. Edit your OpenClaw MCP config
 
@@ -19,7 +19,7 @@ Add `atlas` under `mcpServers`:
       "type": "streamable-http",
       "url": "https://atlasmcp.finmanagerai.com/mcp",
       "headers": {
-        "Authorization": "Bearer YOUR_ATLAS_API_KEY"
+        "Authorization": "Bearer YOUR_ATLAS_ACCESS_KEY"
       }
     }
   }
@@ -51,7 +51,7 @@ Expect a `Top-Volume-and-OI-Contracts` call followed by a `Preview-Order` (no `P
 
 - **No tools listed.** OpenClaw build may only support stdio servers — switch to the [Docker stdio bridge](docker.md).
 - **Auth header stripped.** A few proxies eat custom headers; verify with `curl -H "Authorization: Bearer YOUR_KEY" https://atlasmcp.finmanagerai.com/mcp` and confirm you don't get `401`.
-- **`401`/`403`/`429`.** Standard fixes — regenerate key or wait out the rate limit.
+- **`401`.** The key is wrong or was replaced. Copy it again from the dashboard.
 
 ## Capabilities & permissions
 

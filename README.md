@@ -1,82 +1,88 @@
 <p align="center">
-  <img src="https://readme-typing-svg.demolab.com?font=Inter&weight=700&size=28&duration=3000&pause=700&center=true&vCenter=true&width=900&lines=Atlas+MCP+Server;Give+AI+agents+market+superpowers;Analyze+markets.+Automate+workflows.+Place+orders.;Stop+jumping+between+charts%2C+brokers%2C+alerts%2C+and+spreadsheets." alt="Atlas MCP Server animated headline" />
+  <img src="https://readme-typing-svg.demolab.com?font=Inter&weight=700&size=28&duration=3000&pause=700&center=true&vCenter=true&width=900&lines=MindVest+Atlas;Scan+options+flow+and+real-time+market+data;Build+investing+and+trading+workflows;You+set+the+strategy.+Atlas+carries+it+out." alt="MindVest Atlas" />
 </p>
 
 <p align="center">
-  <strong>Connect AI agents to Atlas so they can read markets, build workflows, send alerts, and place broker orders with your approval.</strong>
+  <strong>Atlas gives your AI agent the tools to scan options flow, analyze real-time stock market data, and build investing and trading workflows, so you don't have to build this yourself.</strong>
 </p>
 
 <p align="center">
   <a href="#install">Install</a>
   ·
-  <a href="#why-atlas-mcp">Why</a>
+  <a href="#the-plugin">Plugin</a>
   ·
-  <a href="#what-it-can-do">What it can do</a>
+  <a href="#what-you-can-ask-for">What you can ask for</a>
   ·
-  <a href="#example-prompts">Examples</a>
-  ·
-  <a href="#supported-tools">Tools</a>
-  ·
-  <a href="#faq">FAQ</a>
+  <a href="#tools">Tools</a>
   ·
   <a href="#safety">Safety</a>
 </p>
 
 <p align="center">
   <img alt="MCP" src="https://img.shields.io/badge/MCP-Compatible-blue" />
-  <img alt="AI Agents" src="https://img.shields.io/badge/AI%20Agents-Ready-purple" />
-  <img alt="Broker Orders" src="https://img.shields.io/badge/Broker%20Orders-Supported-green" />
-  <img alt="Options" src="https://img.shields.io/badge/Options-Greeks%20%7C%20OI%20%7C%20Volume-orange" />
-  <img alt="Alerts" src="https://img.shields.io/badge/Alerts-Discord%20%7C%20SMS%20%7C%20Telegram-black" />
+  <img alt="Works with" src="https://img.shields.io/badge/Works%20with-ChatGPT%20%7C%20Claude%20%7C%20Codex%20%7C%20Cursor-purple" />
+  <img alt="Market data" src="https://img.shields.io/badge/Data-Options%20flow%20%7C%20Quotes%20%7C%20Charts-orange" />
+  <img alt="Orders" src="https://img.shields.io/badge/Orders-In%20your%20own%20broker%20account-green" />
 </p>
 
 ---
 
-# Atlas MCP Server
+# MindVest Atlas
 
-**Stop jumping between charts, brokers, alerts, spreadsheets, and chat apps.**
+**You focus on the strategy. Atlas handles the execution, in your own broker
+account, by the rules you set.**
 
-Atlas MCP lets AI agents help with investing tasks in one place:
+Most assistants can talk about the market. Few can look at it, and fewer can
+act on what they find. Atlas is a hosted MCP server that gives an assistant
+both halves:
 
 ```text
-Ask Agent → Analyze Market → Review Plan → Stage Orders → Automate Workflow → Send Alerts
+Scan the market  →  Decide with your plan  →  Preview  →  You approve  →  Atlas carries it out
 ```
 
-<img width="1128" height="946" alt="Atlas MCP workflow" src="https://github.com/user-attachments/assets/9a98410e-1cfd-49d3-a2dd-95d5346af1fa" />
+<img width="1128" height="946" alt="Atlas workflow" src="https://github.com/user-attachments/assets/9a98410e-1cfd-49d3-a2dd-95d5346af1fa" />
 
-Atlas MCP gives agents a safe way to:
-
-- Read live market data
-- Analyze stocks and options
-- Check broker accounts
-- Stage single or multiple orders
-- Send alerts to Discord, SMS, Telegram, and chat apps
-- Create repeatable investing workflows
-
-It works with agent tools like:
-
-- OpenClaw
-- Claude Desktop
-- Cursor
-- Cline
-- ChatGPT-compatible MCP clients
-- Custom agents
+This repository holds what you need to connect: the install pages, the tool
+list, and the plugin. The server itself is hosted for you at
+`https://atlasmcp.finmanagerai.com/mcp`. There is nothing to run.
 
 ---
 
 ## Install
 
-Atlas MCP is a **hosted, remote MCP server**. There's nothing to compile or self-host — your agent connects to `https://atlasmcp.finmanagerai.com/mcp` over streamable HTTP, and authenticates with your personal Atlas API key.
+### 1. Have an Atlas account
 
-### 1. Get your Atlas API key
+Create one, or sign in, at **https://www.mind-vest.io/atlas**.
 
-1. Go to **https://www.mind-vest.io/atlas** and sign in (or create an account).
-2. Open the **Dashboard** → **API Keys** section.
-3. Click **Generate key** and copy the value. Treat it like a password.
+### 2. Add Atlas to your assistant
 
-### 2. Add Atlas to your MCP client
+**The address is all most assistants need.** Give them
+`https://atlasmcp.finmanagerai.com/mcp` and they open Atlas's sign-in page in
+your browser the first time. You sign in there; the assistant never sees your
+password.
 
-**Claude Desktop / Claude Code / Cursor / Cline / any MCP client that reads `mcp.json`:**
+- **ChatGPT and Codex**: install the plugin. See [The plugin](#the-plugin).
+- **Claude (web and desktop)**: Settings → Connectors → Add custom connector,
+  and paste the address.
+- **Claude Code**:
+
+  ```bash
+  claude mcp add --transport http atlas https://atlasmcp.finmanagerai.com/mcp
+  ```
+
+  then `/mcp` inside a session to sign in. Or install the plugin, which adds
+  the skills too:
+
+  ```bash
+  /plugin marketplace add finmanagerai/atlas-mcp-server
+  /plugin install mindvest-atlas@mindvest
+  ```
+
+- **Anything that reads the MCP registry**: `io.github.finmanagerai/atlas-mcp-server`
+
+**For an assistant that cannot open a sign-in page**, use your access key
+instead. It is on your dashboard under **Profile → API / CLI / MCP Key**.
+Treat it like a password.
 
 ```json
 {
@@ -84,223 +90,163 @@ Atlas MCP is a **hosted, remote MCP server**. There's nothing to compile or self
     "atlas": {
       "type": "streamable-http",
       "url": "https://atlasmcp.finmanagerai.com/mcp",
-      "headers": {
-        "Authorization": "Bearer YOUR_ATLAS_API_KEY"
-      }
+      "headers": { "Authorization": "Bearer YOUR_ATLAS_ACCESS_KEY" }
     }
   }
 }
 ```
 
-**Claude Code one-liner:**
+### 3. Try it
 
-```bash
-claude mcp add --transport http atlas https://atlasmcp.finmanagerai.com/mcp \
-  --header "Authorization: Bearer YOUR_ATLAS_API_KEY"
-```
+Ask: "Show me a quote for SPY." If a price comes back, you are connected.
 
-**Anything that follows the MCP registry:**
+### A page for each assistant
 
-```
-io.github.finmanagerai/atlas-mcp-server
-```
-
-Then restart your client. Ask the agent to "show me an SPY quote" — if a quote comes back, you're connected.
-
-### Per-client install recipes
-
-Each recipe covers config path, install command, env vars, test prompt, and troubleshooting:
-
-- [Claude Desktop](docs/claude-desktop.md)
-- [Claude Code](docs/claude-code.md)
-- [Cursor](docs/cursor.md)
-- [Windsurf](docs/windsurf.md)
-- [OpenAI Codex CLI](docs/codex.md)
-- [OpenClaw](docs/openclaw.md)
-- [Docker (stdio bridge)](docs/docker.md)
-
-### Letting an AI agent install it for you
-
-Drop [`SKILL.md`](SKILL.md) into your agent's skills/instructions and it will pick the right recipe, plug in the user's key, and run the smoke test on its own.
-
-### More
-
-- [Tool catalog](docs/tools.md) — every tool, with read/write classification
-- [Security & permissions](docs/security.md) — auth model, rate limits, what Atlas can and can't do
-- [Example prompts](docs/examples.md)
-- [CI smoke test](docs/ci.md) + [`examples/smoke-test.sh`](examples/smoke-test.sh)
-- [Changelog](CHANGELOG.md)
-
-> **Heads-up:** This repo intentionally contains only the public configuration needed to install and discover Atlas MCP. The server implementation, broker connectors, and proprietary data pipelines are not open-sourced.
+[Claude Desktop](docs/claude-desktop.md) ·
+[Claude Code](docs/claude-code.md) ·
+[Cursor](docs/cursor.md) ·
+[Windsurf](docs/windsurf.md) ·
+[OpenAI Codex CLI](docs/codex.md) ·
+[OpenClaw](docs/openclaw.md) ·
+[Docker (for assistants that only speak stdio)](docs/docker.md)
 
 ---
 
-## Why Atlas MCP?
+## The plugin
 
-Most agents can explain the market.
+A plugin is the server plus **skills**: short guides that tell an assistant
+what is possible with Atlas and show it templates to start from. Six come
+with it:
 
-But they usually cannot do the useful parts together:
+| Skill | What it covers |
+|---|---|
+| `atlas-get-started` | Check the connection, your plan and your broker accounts |
+| `atlas-market-data` | Scanning options flow and analyzing real-time stock market data |
+| `atlas-workflows` | Building a plan Atlas runs for you: every field, with templates |
+| `atlas-alerts` | Being told when something happens, and starting a workflow when it does |
+| `atlas-signals` | Posting, reading and taking plays |
+| `atlas-triggers-and-trades` | Direct triggers, linked trades (either/or and one-starts-the-other), orders, and managing an open trade |
 
-- Check live stock data
-- Read options chains
-- Find high-volume or high-open-interest contracts
-- Check account balances and positions
-- Prepare trades across brokers
-- Stage multiple orders at once
-- Automate alerts and workflows
-- Send updates to Discord, SMS, Telegram, or chat apps
-- Keep you in control before anything is submitted
+Each skill says what is possible, not what you must do. The lists of fields
+inside them are written from the live server, so they match it.
 
-**Atlas MCP closes that gap.**
+**Download** the archives from the
+[latest release](https://github.com/finmanagerai/atlas-mcp-server/releases/latest):
 
-It helps agents move from:
+| File | For |
+|---|---|
+| `mindvest-atlas-chatgpt.zip` | ChatGPT and Codex. Upload it on the OpenAI platform's Plugins page |
+| `mindvest-atlas-claude-code.zip` | Claude Code |
+| `mindvest-atlas-claude-skills.zip` | Claude's "upload a skill": unzip it, then upload the skills one at a time |
 
-```text
-"Here is what I think."
-```
+Or build them yourself: `python3 scripts/build-plugin.py` writes `dist/`.
 
-to:
-
-```text
-"Here is the market data, here is the plan, here are the orders, review before sending."
-```
-
----
-
-## What it can do
-
-### Market research
-
-- Get live stock quotes
-- Pull price history
-- Check earnings dates
-- Review analyst ratings
-- Read company financials
-- Compare related stocks
-
-### Options research
-
-- Read options chains
-- Find top-volume contracts
-- Find top-open-interest contracts
-- Review Greeks
-- Analyze Gamma, Delta, Vanna, and Theta exposure
-
-### Broker actions
-
-- Connect to supported brokers
-- Check balances and positions
-- Preview stock orders
-- Preview options orders
-- Stage multiple orders at once
-- Submit approved orders
-
-Supported brokers can include:
-
-- Alpaca
-- Webull
-- Tradier
-- Public
-- 20+ popular brokers depending on your connected broker setup
-
-> Robinhood and Fidelity are not supported for trading features.
-
-### Alerts and workflows
-
-- Send trade alerts to Discord
-- Send SMS alerts
-- Send Telegram alerts
-- Create watchlist scans
-- Create price-trigger workflows
-- Automate daily or weekly market checks
-- Deliver updates to chat apps
+No key is inside any of them. They carry the server's address, and you sign
+in when the plugin first connects.
 
 ---
 
-## Example prompts
+## What you can ask for
+
+**Scan the options market**
 
 ```text
-Show me the top-volume SPY options contracts today.
+What are the biggest options trades in the market today?
 ```
 
 ```text
-Check my buying power and preview buying 5 NVDA and 5 AMD.
+Which has more call buying right now: NVDA, AMD or AVGO?
+```
+
+**Analyze a stock**
+
+```text
+Give me the picture on AAPL: the trend, the options flow, and when it next reports.
 ```
 
 ```text
-If QQQ breaks above 430, send me a Discord alert and stage a trade for review.
+Where is the largest gamma level on SPY today, and is price above or below it?
+```
+
+**Build a workflow**
+
+```text
+Every weekday at 9:30, send me a brief on SPY and the five names on my list.
 ```
 
 ```text
-Scan my watchlist every morning and text me the best setups.
+When SPY breaks above 600, buy the nearest call with $500, take half off at
++30%, and show me the trade before it goes in.
+```
+
+**Set an alert**
+
+```text
+Tell me when a call sweep over $250k prints on NVDA.
+```
+
+**Post or take a play**
+
+```text
+Post it to my group: SPY 780 calls at 2.10, out at +50% and +100%, stop 30%.
+```
+
+**Place and manage a trade**
+
+```text
+Preview buying 10 NVDA at 900 with a stop at 880 and a target at 940.
 ```
 
 ```text
-Preview multiple orders across my connected broker account. Do not submit until I approve.
+Move the stop on my SPY trade to breakeven.
 ```
+
+More, with the tools each one uses: [docs/examples.md](docs/examples.md).
 
 ---
 
-## Supported tools
+## Tools
 
-Atlas MCP can expose tools for:
+Every tool the server has, with what each one can do at its worst (only
+reads, adds something, changes something, or can send an order):
+**[docs/tools.md](docs/tools.md)**. That page is written from the live server.
 
-- Stocks
-- Options
-- Greeks
-- Charts
-- Broker accounts
-- Order previews
-- Order placement
-- Trading triggers
-- Workflow automation
-- Strategy notes
-- Discord alerts
-- SMS alerts
-- Telegram alerts
+In short:
 
----
-
-## FAQ
-
-### Is Atlas MCP a trading bot?
-
-No. Atlas MCP is a tool layer for AI agents. It helps agents read data, create workflows, preview orders, and send alerts. You stay in control.
-
-### Can it place real orders?
-
-Yes, when broker connections and permissions are enabled. The safest flow is preview first, then submit only after approval.
-
-### Can it submit multiple orders at once?
-
-Yes. Atlas MCP can stage multiple orders together, so you do not have to enter each trade one by one.
-
-### Can it trade options?
-
-Yes, when your broker connection supports options trading. Atlas MCP can help with options chains, contract lookup, Greeks, and order previews.
-
-### Does it support Discord, SMS, and Telegram?
-
-Yes. Workflows can send alerts, summaries, and trade updates to Discord, SMS, Telegram, and chat apps.
-
-### Does it support Webull, Alpaca, Tradier, and Public?
-
-Yes. Atlas MCP can support broker workflows through Alpaca, Webull, Tradier, Public, and 20+ popular brokers depending on your enabled broker connection.
-
-### Does it support Robinhood or Fidelity trading?
-
-No. Trading features are not available for Robinhood and Fidelity.
-
-### Is this financial advice?
-
-No. Atlas MCP is software for market research and workflow automation. It does not give financial advice.
+- **Market data**: options flow, quotes, price history, charts, options
+  chains, dealer exposure, earnings, financials, filings, web search.
+- **Workflows**: a plan in plain words that Atlas runs on a schedule, when an
+  alert goes off, or when you press Run.
+- **Alerts**: a price level, a large options trade, a volume spike, a
+  technical cross, a move in dealer exposure, or your own trades.
+- **Plays**: one trade idea, written down in full, shared with a board or a
+  group.
+- **Orders and trades**: preview, place, cancel, and manage a trade that is
+  open, in your own connected broker account.
+- **Strategies and memory**: your written playbooks, and what Atlas remembers
+  about how you work.
 
 ---
 
 ## Safety
 
-This project is for education, research, and workflow automation only.
+- **An order is placed or changed only when you say so**, or by a workflow
+  you switched on. Every tool states whether it only reads, changes something,
+  or can send an order, and your assistant asks you first.
+- **Preview first.** An order can be staged and shown to you before anything
+  reaches your broker, and a workflow can hold each run for your approval.
+- **Your broker sign-in stays with your broker.** You connect an account on
+  the Atlas dashboard; an assistant never sees those details.
+- **Atlas runs on its own servers.** It does not read files on your computer
+  or run commands there.
+- **Atlas does not give investment advice.** Trading involves risk, including
+  the loss of what you put in.
 
-Trading stocks, options, and other assets is risky. You are responsible for your own trades, broker connections, order approvals, automation settings, and results.
+More: [docs/security.md](docs/security.md) ·
+[Privacy](https://www.mind-vest.io/privacy) ·
+[Terms](https://www.mind-vest.io/terms)
 
-Always review orders before submitting them.
+---
+
+> This repository holds only what is needed to find and install Atlas. The
+> server, the broker connections and the data pipelines are not open source.

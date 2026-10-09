@@ -1,100 +1,62 @@
 ---
 name: atlas-mcp
-description: Install and use the Atlas MCP server, a hosted streamable-HTTP MCP server that exposes ~80 tools for live stock/options market data, Greek exposures, broker accounts, order previews and placement, alerts (Discord/SMS/Telegram), and trading workflows. Use when a user asks to install Atlas, connect Atlas to their MCP client, fetch a stock/options quote, analyze Greeks, preview broker orders, build a trading workflow, or wire Atlas into a project.
+description: Connect MindVest Atlas to the assistant the person is using, and check that it works. Atlas is a hosted MCP server with tools to scan options flow, analyze real-time stock market data, build investing and trading workflows, set alerts, and preview and place orders in the person's own broker account. Use when the person asks to install or connect Atlas.
 ---
 
-# Atlas MCP — Install & Use Skill
+# Connecting Atlas
 
-This skill teaches an AI agent how to install Atlas MCP into the user's MCP client and how to use the tools once connected.
+Atlas is hosted. There is nothing to run: an assistant needs the address, and
+the person signs in.
 
-## TL;DR
+- **Address:** `https://atlasmcp.finmanagerai.com/mcp` (streamable HTTP)
+- **Account:** https://www.mind-vest.io/atlas
 
-- **Endpoint:** `https://atlasmcp.finmanagerai.com/mcp` (streamable-HTTP)
-- **Auth:** `Authorization: Bearer <ATLAS_API_KEY>` — user generates the key at https://www.mind-vest.io/atlas/dashboard → API Keys
-- **No code, no self-host:** Atlas is fully hosted; the client only needs the URL + key.
+## How to connect
 
-## Installation flow
+1. **Find out which assistant this is** and open its page under `docs/`:
 
-1. **Confirm the user has an API key.** If they don't, point them to https://www.mind-vest.io/atlas/dashboard and pause until they have one. Never paste a placeholder key into a config file — leave the placeholder string `YOUR_ATLAS_API_KEY` and tell the user to substitute it.
-2. **Detect the client** from context (Claude Desktop, Claude Code, Cursor, Windsurf, OpenClaw, etc.) and apply the matching recipe in `docs/<client>.md`. If the client is unknown but supports remote MCP, use the generic JSON in `docs/cursor.md` as the template — it works for any MCP client that reads `mcpServers` from a JSON config.
-3. **Verify** by asking the agent to call `Stock-Quote` for `SPY`. A successful response confirms transport, auth, and routing.
+   | Assistant | Page |
+   |---|---|
+   | Claude Desktop | [docs/claude-desktop.md](docs/claude-desktop.md) |
+   | Claude Code | [docs/claude-code.md](docs/claude-code.md) |
+   | Cursor | [docs/cursor.md](docs/cursor.md) |
+   | Windsurf | [docs/windsurf.md](docs/windsurf.md) |
+   | OpenAI Codex CLI | [docs/codex.md](docs/codex.md) |
+   | OpenClaw | [docs/openclaw.md](docs/openclaw.md) |
+   | Anything that only speaks stdio | [docs/docker.md](docs/docker.md) |
 
-## Generic config (works for most clients)
+   ChatGPT and Codex can also install the plugin (the server plus its skills):
+   see the readme.
 
-```json
-{
-  "mcpServers": {
-    "atlas": {
-      "type": "streamable-http",
-      "url": "https://atlasmcp.finmanagerai.com/mcp",
-      "headers": {
-        "Authorization": "Bearer YOUR_ATLAS_API_KEY"
-      }
-    }
-  }
-}
-```
+2. **Prefer sign-in to a key.** An assistant that can open a sign-in page
+   needs only the address. The person signs in to Atlas in their own browser;
+   you never see or handle their password.
 
-For stdio-only clients, use the Docker bridge in `docs/docker.md` (runs `mcp-proxy` as a stdio↔streamable-http translator).
+3. **When the assistant cannot open a sign-in page**, it needs the person's
+   access key in a header: `Authorization: Bearer <key>`. The key is on their
+   dashboard under Profile → API / CLI / MCP Key. Never type a made-up key
+   into a config file: leave `YOUR_ATLAS_ACCESS_KEY` there and ask the person
+   to put theirs in. Never repeat a key back to them.
 
-## Per-client recipes
+4. **Check it works**: call `Stock-Quote` for `SPY`. A price means the
+   connection, the sign-in and the tools are all in place.
 
-| Client | File |
-|---|---|
-| Claude Desktop | [docs/claude-desktop.md](docs/claude-desktop.md) |
-| Claude Code | [docs/claude-code.md](docs/claude-code.md) |
-| Cursor | [docs/cursor.md](docs/cursor.md) |
-| Windsurf | [docs/windsurf.md](docs/windsurf.md) |
-| OpenAI Codex CLI | [docs/codex.md](docs/codex.md) |
-| OpenClaw | [docs/openclaw.md](docs/openclaw.md) |
-| Docker / stdio bridge | [docs/docker.md](docs/docker.md) |
+## When something is wrong
 
-## Tool catalog
-
-Full list with categories, parameters, and example payloads: [docs/tools.md](docs/tools.md).
-
-Quick orientation:
-- **Stocks & quotes:** `Stock-Quote`, `Price-Data-OHLCV`, `Price-Chart`, `Multi-Chart-View`, `Multi-Timeframe-Price-Overview`, `Ticker-Symbol-Lookup`, `Search`
-- **Options:** `Options-Chain`, `Option-Expiration-Dates`, `Strike-Price-Details`, `Historical-Options-Chain`, `Historical-Strike-Quotes`, `Top-Volume-and-OI-Contracts`, `Top-Volume-Contracts-Chart`, `Top-Open-Interest-Chart`, `Volume-and-Open-Interest-Charts`
-- **Greek exposures:** `Analyze-Greek-Exposures`, `Delta-Exposure-Heatmap`, `Gamma-Exposure-Heatmap`, `Theta-Exposure-Heatmap`, `Vanna-Exposure-Heatmap`, `All-Greek-Heatmaps`, `Net-Delta-Exposure-Chart`, `Net-Gamma-Exposure-Chart`, `Net-Theta-Exposure-Chart`, `Net-Vanna-Exposure-Chart`, `All-Net-Exposure-Charts`
-- **Fundamentals & research:** `Income-Statement`, `Balance-Sheet`, `Cashflow-Statement`, `Financial-Metrics`, `Stock-Peers`, `Earnings-Calendar`, `Earnings-Dates`, `EPS-Estimates`, `EPS-Revisions`, `EPS-Trend`, `Revenue-Estimates`, `Growth-Estimates`, `Analyst-Price-Targets`, `Analyst-Upgrades-and-Downgrades`, `Dividends-and-Splits`, `IPO-Calendar`, `SEC-Filings`, `Insider-Transactions`, `Institutional-Holders`, `Senate-Lobbying-Data`, `USA-Spending-Data`
-- **Broker accounts:** `Broker-Connections`, `Account-Balances`, `Account-Holdings`, `All-Account-Holdings`, `Account-Symbol-Lookup`, `Transaction-History`, `Subscription-Status`
-- **Orders:** `Preview-Order`, `Preview-Multiple-Orders`, `List-Preview-Orders`, `Delete-Preview-Order`, `Place-Order`
-- **Triggers:** `Create-Trading-Trigger`, `Update-Trading-Trigger`, `Delete-Trading-Trigger`, `List-Trading-Triggers`, `List-Fired-Triggers`, `Reactivate-Trigger`, `Preview-Trading-Trigger`, `Trigger-Workflow-Schema`
-- **Workflows:** `Workflow-Create`, `Workflow-Update`, `Workflow-Delete`, `Workflow-Open`, `Workflow-Run`, `Workflow-Preview`, `Workflow-Import`, `Workflow-Logs`
-- **Strategy notes:** `Strategy-Create`, `Strategy-Update`, `Strategy-Open`, `Strategy-Preview`, `Strategy-Import`, `Fetch-Strategy`, `Autofetch-Strategy`, `List-Strategy`, `Strategy-Save-Instructions`
-- **Misc:** `Get-Instructions`, `List-Tool-Safety`, `Fetch-URL`, `Chart-Vision-Analysis`
-
-## Safety model (what an agent must respect)
-
-- **Read vs. write:** Most tools are read-only. The mutating ones are `Place-Order`, `Preview-*`, `Delete-Preview-Order`, `Create-/Update-/Delete-Trading-Trigger`, `Reactivate-Trigger`, and `Workflow-Create/Update/Delete/Run`. Always preview before placing.
-- **Order placement requires explicit user confirmation.** Never call `Place-Order` from autonomous loops. Stage with `Preview-Order` / `Preview-Multiple-Orders`, present the preview, and wait for the user to say "yes, submit".
-- **Atlas does not access local files or run shell commands.** All execution happens server-side; the client only sends JSON over HTTPS.
-- **Rate limits:** free tier ~10 tool calls/month; bursts capped at ~60 requests/minute. On 429, surface the error verbatim and stop — don't retry in a loop.
-- **Robinhood and Fidelity** are explicitly **not** supported for trading. If asked, tell the user to use Alpaca, Webull, Tradier, Public, or one of the other supported brokers.
-
-Full details: [docs/security.md](docs/security.md).
-
-## Test prompt (always run after install)
-
-> "Get me a stock quote for SPY using Atlas."
-
-Expected: the agent calls `Stock-Quote({"symbol":"SPY"})` and returns price, change, volume, and timestamp. If you get `401`/`403`, the API key is wrong or revoked. If you get `429`, you're rate-limited. If the tool isn't listed at all, the client config didn't load — restart the client.
-
-## Troubleshooting (top hits)
-
-| Symptom | Likely cause | Fix |
+| What you see | What it means | What to do |
 |---|---|---|
-| Tools don't appear | Client didn't reload config | Fully quit + relaunch the client |
-| `401 Unauthorized` | Bad / revoked key | Regenerate at dashboard, paste fresh value |
-| `403 Forbidden` | Account not entitled to that tool | Check `Subscription-Status` |
-| `429 rate_limit` | Free-tier or burst cap hit | Wait, upgrade plan |
-| Streaming hangs | Client doesn't support `streamable-http` | Use the Docker stdio bridge ([docs/docker.md](docs/docker.md)) |
-| `connect ECONNREFUSED` to localhost | User edited URL by mistake | Restore `https://atlasmcp.finmanagerai.com/mcp` |
+| The tools do not appear | The assistant has not re-read its settings | Quit it fully and open it again |
+| 401 | Not signed in, or the key is wrong or was replaced | Sign in again, or copy the key again from the dashboard |
+| An answer saying the plan's requests are used up | The month's requests are spent | `Subscription-Status` shows what is left and links to the dashboard |
+| It connects and then hangs | The assistant cannot speak streamable HTTP | Use the bridge in [docs/docker.md](docs/docker.md) |
 
-## When the user asks an agent to do something
+## Using it once it is connected
 
-- Identify the right tool from the catalog above. Prefer the most specific tool (e.g. `Top-Volume-and-OI-Contracts` over filtering `Options-Chain` by hand).
-- Send minimal arguments. Use `Get-Instructions` if you're unsure how a tool wants its inputs.
-- For multi-step tasks (scan → preview → alert), prefer composing a `Workflow-*` instead of chaining tools manually — workflows are persisted and re-runnable.
-- Never invent an API key. Never echo a key back to the user.
+- The full list of tools, with what each one can do: [docs/tools.md](docs/tools.md).
+- What is possible with workflows, alerts, plays and orders, with every field
+  and templates: the skills under [plugin/skills](plugin/skills).
+- Looking something up uses one request of the person's plan. Working on their
+  own setups does not.
+- A tool that can send or change an order says so. Preview first, show the
+  person, and place only when they say to.
+- With more than one broker account connected, ask which. Never choose.

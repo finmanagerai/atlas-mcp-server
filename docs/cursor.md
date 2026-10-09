@@ -2,9 +2,9 @@
 
 Connect Atlas to the Cursor IDE.
 
-## 1. Get an API key
+## 1. Get your access key
 
-Sign in at https://www.mind-vest.io/atlas → **Dashboard** → **API Keys** → **Generate key**.
+Sign in at https://www.mind-vest.io/atlas, open the **Dashboard**, and copy the key under **Profile → API / CLI / MCP Key**.
 
 ## 2. Edit Cursor's MCP config
 
@@ -16,7 +16,7 @@ Cursor reads MCP server configs from `~/.cursor/mcp.json` (user-scope) or `<proj
     "atlas": {
       "url": "https://atlasmcp.finmanagerai.com/mcp",
       "headers": {
-        "Authorization": "Bearer YOUR_ATLAS_API_KEY"
+        "Authorization": "Bearer YOUR_ATLAS_ACCESS_KEY"
       }
     }
   }
@@ -39,14 +39,14 @@ In Composer (Cmd/Ctrl-I):
 
 | Name | Required | Notes |
 |---|---|---|
-| `Authorization` header | yes | `Bearer YOUR_ATLAS_API_KEY`, inline in config |
+| `Authorization` header | yes | `Bearer YOUR_ATLAS_ACCESS_KEY`, inline in config |
 
 ## Troubleshooting
 
 - **`atlas` shows red in Settings → MCP.** Hover for the error message. Most common: bad JSON, wrong URL, or `Bearer` typo.
 - **Tool calls succeed but show no output.** Cursor sometimes truncates large JSON. Ask the model to summarize rather than dump the raw payload.
-- **`401`/`403`.** Regenerate the key.
-- **`429 rate_limit`.** Free-tier cap or burst limit; wait or upgrade.
+- **`401`.** The key is wrong or was replaced. Copy it again from the dashboard.
+- **"Your plan's requests are used up."** `Subscription-Status` shows what is left this month.
 
 ## Capabilities & permissions
 

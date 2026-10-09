@@ -1,0 +1,22 @@
+{
+  "name": "mindvest-atlas",
+  "version": "1.0.0",
+  "description": "Tools for AI agents to scan options flow, analyze real-time stock market data, and build investing and trading workflows that Atlas carries out in your own broker account.",
+  "author": {
+    "name": "FinManager AI",
+    "email": "accesspoint@finmanagerai.com",
+    "url": "https://www.mind-vest.io"
+  },
+  "homepage": "https://www.mind-vest.io/atlas",
+  "repository": "https://github.com/finmanagerai/atlas-mcp-server",
+  "keywords": [
+    "investing",
+    "trading",
+    "options flow",
+    "market data",
+    "stocks",
+    "options",
+    "workflows",
+    "alerts"
+  ]
+}

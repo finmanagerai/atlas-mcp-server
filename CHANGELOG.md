@@ -4,7 +4,20 @@ All notable changes to the public Atlas MCP registry artifacts in this repositor
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
+## [1.1.0] — 2026-10-09
+
+### Changed
+- What Atlas is, said plainly everywhere: tools for AI agents to scan options flow, analyze real-time stock market data, and build investing and trading workflows that Atlas carries out in your own broker account. The registry description, the readme and the install skill were written when Atlas was mostly market data.
+- `docs/tools.md` is now written from the live server (157 tools; it listed 85, several under names that no longer exist) and marks each tool as reads, adds, changes or acts.
+- Signing in through the browser comes first on every install page. The access key is for clients that cannot open a sign-in page, and the pages say where it actually is (Profile, API / CLI / MCP Key).
+- Removed claims that were not true: alerts by SMS and Telegram, and fixed request limits.
+
+### Added
+- `plugin/`: the MindVest Atlas plugin. The server plus six skills (`atlas-get-started`, `atlas-market-data`, `atlas-workflows`, `atlas-alerts`, `atlas-signals`, `atlas-triggers-and-trades`) that say what is possible, list every field, and carry templates. The field lists under each skill's `references/` are written from the live server.
+- `scripts/build-plugin.py`: builds the archives to upload. `mindvest-atlas-chatgpt.zip` for ChatGPT and Codex, `mindvest-atlas-claude-code.zip` for Claude Code, and one zip per skill for Claude's skill upload. Each release carries them.
+- `.claude-plugin/marketplace.json`, so Claude Code can install the plugin from this repository.
+
+## [1.0.1] — docs
 
 ### Added
 - Per-client install recipes under `docs/`: Claude Desktop, Claude Code, Cursor, Windsurf, OpenAI Codex CLI, OpenClaw, Docker stdio bridge.

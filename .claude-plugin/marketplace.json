@@ -1,0 +1,14 @@
+{
+  "name": "mindvest",
+  "owner": {
+    "name": "FinManager AI",
+    "email": "accesspoint@finmanagerai.com"
+  },
+  "plugins": [
+    {
+      "name": "mindvest-atlas",
+      "source": "./plugin",
+      "description": "Tools for AI agents to scan options flow, analyze real-time stock market data, and build investing and trading workflows that Atlas carries out in your own broker account."
+    }
+  ]
+}

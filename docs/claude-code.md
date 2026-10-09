@@ -2,15 +2,36 @@
 
 Connect Atlas to Anthropic's Claude Code CLI.
 
-## 1. Get an API key
+## The short way: sign in
 
-Sign in at https://www.mind-vest.io/atlas → **Dashboard** → **API Keys** → **Generate key**.
+```bash
+claude mcp add --transport http atlas https://atlasmcp.finmanagerai.com/mcp
+```
+
+Then run `/mcp` inside a `claude` session and choose `atlas`. It opens Atlas's
+sign-in page in your browser; sign in and approve. No key is needed.
+
+To get the skills as well (what is possible with workflows, alerts, plays and
+orders, with templates), install the plugin instead:
+
+```bash
+/plugin marketplace add finmanagerai/atlas-mcp-server
+/plugin install mindvest-atlas@mindvest
+```
+
+## The other way: your access key
+
+For a setup where no browser can be opened.
+
+## 1. Get your access key
+
+Sign in at https://www.mind-vest.io/atlas, open the **Dashboard**, and copy the key under **Profile → API / CLI / MCP Key**.
 
 ## 2. Install command (one-liner)
 
 ```bash
 claude mcp add --transport http atlas https://atlasmcp.finmanagerai.com/mcp \
-  --header "Authorization: Bearer YOUR_ATLAS_API_KEY"
+  --header "Authorization: Bearer YOUR_ATLAS_ACCESS_KEY"
 ```
 
 This writes to `~/.claude.json` (user-scope) by default. To scope to the current project instead, add `--scope project` (writes to `./.claude/settings.local.json`).
@@ -24,7 +45,7 @@ This writes to `~/.claude.json` (user-scope) by default. To scope to the current
       "type": "http",
       "url": "https://atlasmcp.finmanagerai.com/mcp",
       "headers": {
-        "Authorization": "Bearer YOUR_ATLAS_API_KEY"
+        "Authorization": "Bearer YOUR_ATLAS_ACCESS_KEY"
       }
     }
   }
@@ -58,7 +79,7 @@ You can also set `ATLAS_API_KEY` in your shell and reference it in the header va
 - **`claude mcp list` shows `failed`.** Run `claude mcp get atlas` to inspect the config; check for typos in URL or `Bearer ` prefix.
 - **Permission prompt loops.** Approve Atlas tools once for the session, or add `mcp__atlas__*` to `permissions.allow` in `settings.json` (see [Claude Code docs on permissions](https://docs.anthropic.com/claude/docs/claude-code)).
 - **`401`/`403`.** Bad key. Regenerate from the dashboard.
-- **`429 rate_limit`.** Wait or upgrade plan.
+- **A tool says your plan's requests are used up.** `Subscription-Status` shows what is left this month.
 
 ## Capabilities & permissions
 

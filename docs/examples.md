@@ -1,82 +1,119 @@
-# Atlas MCP — Example Prompts
+# Atlas: examples
 
-A grab-bag of natural-language prompts that route to the right tools. Use these to verify your install or as starting points for your own agents.
+Things to ask, and the tools an assistant would reach for. The names are the
+ones in [tools.md](tools.md).
 
-## Quick checks (read-only, free-tier friendly)
+## To check it works
 
 > Get me a quote for SPY.
 
-→ `Stock-Quote({"symbol":"SPY"})`
+→ `Stock-Quote`
 
-> What are the next 10 SPY option expirations?
+> When does NVDA next report, and what do analysts expect?
 
-→ `Option-Expiration-Dates({"symbol":"SPY","filter":"next_10"})`
+→ `Earnings-Dates`, `EPS-Estimates`, `Analyst-Price-Targets`
 
-> Show me NVDA's earnings dates and the most recent analyst price targets.
+## Scanning options flow
 
-→ `Earnings-Dates` + `Analyst-Price-Targets`
+> What are the biggest options trades in the market today?
 
-## Options flow
+→ `Options-Flow` with no symbol
 
-> Top 20 highest-volume contracts on QQQ today.
+> Show me call sweeps over $250k on NVDA today.
 
-→ `Top-Volume-and-OI-Contracts({"symbol":"QQQ","sort_by":"volume","limit":20})`
+→ `Options-Flow` with the symbol, the side and a minimum premium
 
-> For TSLA's nearest expiration, where is gamma concentrated?
+> Which has more flow right now: PANW, CRWD or NET?
 
-→ `Gamma-Exposure-Heatmap({"symbol":"TSLA"})` + `Analyze-Greek-Exposures`
+→ `Options-Flow` with all three
 
-> Pull the historical chain for AAPL on 2026-01-17 and chart implied vol around the strike at $200.
+> Are calls or puts leading on SPY?
 
-→ `Historical-Options-Chain` + `Historical-Strike-Quotes`
+→ `Unusual-Flow-Ratio` for the money traded, `Put-Call-Ratio` for open interest
 
-## Multi-symbol research
+## Analyzing a stock
 
-> Compare NVDA, AMD, and AVGO on the same dashboard: 1Y price, last quarter income statement, and analyst targets.
+> Give me the picture on AAPL before earnings.
 
-→ `Multi-Chart-View` + `Income-Statement` (×3) + `Analyst-Price-Targets` (×3)
+→ `Earnings-Dates`, `Multi-Timeframe-Price-Overview`, `EPS-Estimates`, `Options-Flow`
 
-## Account & broker
+> Where is the largest gamma level on SPY today, and is price above it?
 
-> What's my buying power across all connected brokers, and which positions are up the most this week?
+→ `Greek-Exposure-Single-Expiration`, `Stock-Quote`
 
-→ `Broker-Connections` + `Account-Balances` + `All-Account-Holdings`
+> Chart NVDA, AMD and AVGO side by side for the last year.
 
-> Show me the last 30 days of fills on my Tradier account.
+→ `Multi-Chart-View`
 
-→ `Transaction-History`
+> Pull the chain for TSLA for this Friday and show me the 10 strikes around the price.
 
-## Order staging (preview only)
+→ `Option-Expiration-Dates`, `Options-Chain`
 
-> Preview buying 5 shares of NVDA and 5 shares of AMD on my Alpaca account. Do **not** submit.
+## Your account
 
-→ `Preview-Multiple-Orders` (✅ stops here)
+> What is my buying power, and what am I holding?
 
-> List my pending preview orders.
+→ `Broker-Connections`, `Account-Balances`, `All-Account-Holdings`
 
-→ `List-Preview-Orders`
+> How much of my plan is left this month?
 
-## Triggers & workflows
+→ `Subscription-Status`
 
-> If QQQ closes above 430 today, send a Discord alert and stage a 1-contract long call at the next-week ATM strike.
+## Workflows
 
-→ `Create-Trading-Trigger` (with workflow body that calls `Preview-Order` + a Discord alert step)
+> Every weekday at 9:30, send me a brief on SPY and the five names on my list.
 
-> Run my "morning watchlist scan" workflow now.
+→ `Workflow-Preview`, then `Workflow-Create`
 
-→ `Workflow-Run({"name":"morning watchlist scan"})`
+> When SPY breaks above 600, buy the nearest call with $500, take half off at
+> +30%, and show me the trade before it goes in.
 
-## Strategy notes
+→ `Create-Alert` for the level, `Trigger-Workflow-Schema`, `Workflow-Preview`, `Workflow-Create`
 
-> Save my "QQQ gamma squeeze" notes as an Atlas strategy and auto-fetch the inputs each morning.
+> What did my SPY workflow do today, and how has it done this month?
 
-→ `Strategy-Create` + `Autofetch-Strategy`
+→ `Workflow-List`, `Workflow-Logs`, `Workflow-Performance`
 
-## Things to NOT prompt for
+## Alerts
 
-These will fail or be refused by Atlas:
+> Tell me when a call sweep over $250k prints on NVDA.
 
-- "Trade Robinhood / Fidelity for me" — unsupported.
-- "Read /home/me/secrets.env" — Atlas has no local file access.
-- "Run `rm -rf /`" — Atlas has no shell tool.
-- "Show another user's positions" — bearer is bound to the authenticated user.
+→ `List-Alert-Types`, `Preview-Alert`, `Create-Alert`
+
+> Tell me when SPY crosses its 20 EMA on the 5-minute chart.
+
+→ `Create-Alert`
+
+## Plays
+
+> Post it to my group: SPY 780 calls at 2.10, out at +50% and +100%, stop 30%.
+
+→ `Signal-Groups`, `Signal-Post`
+
+> What has been posted on the community board today?
+
+→ `Signal-List`
+
+## Orders and trades
+
+> Preview buying 10 NVDA at 900 with a stop at 880 and a target at 940.
+
+→ `Broker-Connections`, `Preview-Order`
+
+> Place it.
+
+→ `Place-Order` with that preview
+
+> Move the stop on my SPY trade to breakeven.
+
+→ `List-Trading-Triggers`, `Trade-Edit-Exit`
+
+> Close it.
+
+→ `Trade-Close`
+
+## A good habit
+
+Preview before placing, and say what is about to happen before it does. For
+what is possible with each of these, and templates to start from, see the
+skills under [plugin/skills](../plugin/skills).

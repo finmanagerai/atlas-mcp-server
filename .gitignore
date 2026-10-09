@@ -5,3 +5,4 @@
 
 # mcp-publisher local auth state
 .mcpregistry_*
+dist/

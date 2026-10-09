@@ -2,9 +2,9 @@
 
 Connect Atlas to the Windsurf IDE.
 
-## 1. Get an API key
+## 1. Get your access key
 
-Sign in at https://www.mind-vest.io/atlas → **Dashboard** → **API Keys** → **Generate key**.
+Sign in at https://www.mind-vest.io/atlas, open the **Dashboard**, and copy the key under **Profile → API / CLI / MCP Key**.
 
 ## 2. Edit Windsurf's MCP config
 
@@ -16,7 +16,7 @@ Windsurf reads `~/.codeium/windsurf/mcp_config.json`.
     "atlas": {
       "serverUrl": "https://atlasmcp.finmanagerai.com/mcp",
       "headers": {
-        "Authorization": "Bearer YOUR_ATLAS_API_KEY"
+        "Authorization": "Bearer YOUR_ATLAS_ACCESS_KEY"
       }
     }
   }
@@ -45,7 +45,7 @@ In Cascade:
 
 - **`atlas` not showing up.** Confirm config path; some Windsurf builds also read from `~/.windsurf/mcp_config.json`. Try both.
 - **"Tool call timed out".** Streaming responses can exceed Windsurf's default tool timeout for big options chains. Ask for fewer expirations or a single strike range.
-- **`401`/`403` / `429`.** Same as the other clients — bad key or rate limit.
+- **`401`.** The key is wrong or was replaced. Copy it again from the dashboard.
 
 ## Capabilities & permissions
 

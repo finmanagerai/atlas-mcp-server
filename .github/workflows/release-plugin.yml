@@ -1,0 +1,38 @@
+name: Build the plugin archives
+
+# A version tag builds the archives people upload and attaches them to that
+# release. The same tag publishes server.json to the MCP registry (publish.yml).
+on:
+  push:
+    tags:
+      - "v*.*.*"
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Build
+        run: python3 scripts/build-plugin.py
+
+      - name: Bundle the per-skill archives
+        run: cd dist && zip -r mindvest-atlas-claude-skills.zip claude-skills
+
+      - name: Attach to the release
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: |
+            dist/mindvest-atlas-chatgpt.zip
+            dist/mindvest-atlas-claude-code.zip
+            dist/mindvest-atlas-claude-skills.zip
+
+      - name: Keep the archives with the run
+        uses: actions/upload-artifact@v4
+        with:
+          name: mindvest-atlas-plugin
+          path: dist/

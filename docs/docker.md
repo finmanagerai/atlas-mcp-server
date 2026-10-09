@@ -4,9 +4,9 @@ For MCP clients that **only speak stdio** (don't yet support `streamable-http`),
 
 You don't need this for Claude Desktop, Claude Code, Cursor, or recent Windsurf builds — those speak streamable-HTTP natively.
 
-## 1. Get an API key
+## 1. Get your access key
 
-Sign in at https://www.mind-vest.io/atlas → **Dashboard** → **API Keys** → **Generate key**.
+Sign in at https://www.mind-vest.io/atlas, open the **Dashboard**, and copy the key under **Profile → API / CLI / MCP Key**.
 
 ## 2. Pull the bridge image
 
@@ -32,7 +32,7 @@ docker pull ghcr.io/sparfenyuk/mcp-proxy:latest
         "https://atlasmcp.finmanagerai.com/mcp"
       ],
       "env": {
-        "ATLAS_API_KEY": "YOUR_ATLAS_API_KEY"
+        "ATLAS_API_KEY": "YOUR_ATLAS_ACCESS_KEY"
       }
     }
   }
@@ -47,7 +47,7 @@ The client launches the container per session, the container speaks stdio to the
 docker run --rm -i \
   ghcr.io/sparfenyuk/mcp-proxy:latest \
   --transport streamablehttp \
-  --headers Authorization "Bearer YOUR_ATLAS_API_KEY" \
+  --headers Authorization "Bearer YOUR_ATLAS_ACCESS_KEY" \
   https://atlasmcp.finmanagerai.com/mcp <<'EOF'
 {"jsonrpc":"2.0","id":1,"method":"tools/list"}
 EOF
@@ -69,7 +69,7 @@ You should see a JSON-RPC response listing all Atlas tools.
 - **Bridge connects but no tools listed.** The bridge launched but the upstream returned an error — check `ATLAS_API_KEY`. Re-run the shell test above and inspect the response.
 - **Slow first response.** The image pull happens on first use. Pre-pull or warm with `docker pull`.
 - **`401`/`403`.** Bad key. Regenerate.
-- **`429 rate_limit`.** Wait or upgrade.
+- **A tool says your plan's requests are used up.** `Subscription-Status` shows what is left this month.
 
 ## Capabilities & permissions
 

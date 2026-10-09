@@ -1,0 +1,242 @@
+{
+  "version": "2026-08-12",
+  "summary": "A play is ONE trade a person is calling: what to buy, where to get in, where to get out, and how much. Every number carries a UNIT field saying what it is measured in — that is the part AI callers get wrong.",
+  "the_one_rule": "NEVER send a number without checking its unit field. On an option, '770' can be a $770-per-contract premium ($77,000 for one contract) or the stock at $770. entry_unit decides which.",
+  "how_to_pick_the_unit": "COMPARE THE NUMBER TO THE STRIKE. An option's own price is a small fraction of its strike, and the stock trades right around it. So on a 780 strike: 2.10 is the premium ('contract'), 773 is the stock ('price'), 50 is a percentage ('pct'). If the user says 'get in at 773' on a 780 call they mean the STOCK — pass entry_unit 'price'. If they say 'pay 2.10' they mean the premium — 'contract'. The same test decides tp_unit and stop_unit. A stop can never exceed 100% on anything you BUY: you cannot lose more than you paid, so a stop of 223 is a price, not a percentage. Atlas REFUSES a number that cannot be what it is labelled and names the label to use — read the error and fix the unit, do not resend the same call or drop the field.",
+  "ask_do_not_guess": "If you cannot tell which unit a number is from what the user said, ASK THEM. This publishes a call under their name and can place a real order; a wrong unit is a different trade, not a typo.",
+  "fields": [
+    {
+      "name": "symbol",
+      "required": true,
+      "kind": "string",
+      "help": "The ticker, e.g. SPY."
+    },
+    {
+      "name": "asset_class",
+      "required": false,
+      "kind": "string",
+      "options": [
+        "option",
+        "stock"
+      ],
+      "default": "option"
+    },
+    {
+      "name": "side",
+      "required": false,
+      "kind": "string",
+      "options": [
+        "buy",
+        "sell"
+      ],
+      "default": "buy"
+    },
+    {
+      "name": "option_type",
+      "required": "options only",
+      "kind": "string",
+      "options": [
+        "call",
+        "put"
+      ]
+    },
+    {
+      "name": "strike",
+      "required": "options only",
+      "kind": "number"
+    },
+    {
+      "name": "expiration_date",
+      "required": "options only",
+      "kind": "date",
+      "help": "YYYY-MM-DD."
+    },
+    {
+      "name": "entries",
+      "required": false,
+      "kind": "array",
+      "help": "[{price}] — the ONE price to get in at. LEAVE IT EMPTY to mean 'take it now, at market'. Only send a price when the user named one; inventing an entry turns a fill-now call into an order that may never fill."
+    },
+    {
+      "name": "entry_unit",
+      "required": false,
+      "kind": "string",
+      "options": [
+        "contract",
+        "price"
+      ],
+      "default": "contract",
+      "help": "WHAT THE ENTRY NUMBER IS. 'contract' = the option's own premium, placed as a LIMIT at that price. 'price' = the STOCK's price — it waits for the underlying to reach it and then buys at market. Stocks are always 'price'."
+    },
+    {
+      "name": "entry_operator",
+      "required": false,
+      "kind": "string",
+      "options": [
+        "lte",
+        "gte"
+      ],
+      "default": "lte",
+      "help": "Only with entry_unit='price'. 'lte' waits for the stock to DROP to it; 'gte' waits for it to RISE to it (a breakout). Ask the user which — do not assume."
+    },
+    {
+      "name": "tps",
+      "required": false,
+      "kind": "array",
+      "help": "The take-profit ladder, in the order they should fill: [{target, quantity, stop_after, stop_after_unit}]. ALWAYS ASK FOR TARGETS. A play with none is legal ('I will say when to get out') but it is rarely what the user meant, and posting one without asking is the single most common mistake. quantity is '50%', a plain count like 3, or 'remaining'; the LAST rung always closes the rest. Amounts are replicated as PROPORTIONS, so they scale to whoever copies the play."
+    },
+    {
+      "name": "tp_unit",
+      "required": false,
+      "kind": "string",
+      "options": [
+        "pct",
+        "contract",
+        "price"
+      ],
+      "help": "What the targets are measured in. 'pct' = % gain on the premium (50 means +50%). 'contract' = the option's own $ price. 'price' = the STOCK's $ price."
+    },
+    {
+      "name": "stop",
+      "required": false,
+      "kind": "number",
+      "help": "Where to get out if it goes wrong. Write it positive; it is stored as a loss."
+    },
+    {
+      "name": "stop_unit",
+      "required": false,
+      "kind": "string",
+      "options": [
+        "pct",
+        "contract",
+        "price",
+        "trail"
+      ],
+      "help": "The three bases of tp_unit, plus 'trail': a TRAILING stop, where `stop` is a distance in percent behind the best price since entry (the share price on a stock, the premium on an option), tightening only. A % stop works on any side, including puts."
+    },
+    {
+      "name": "contracts",
+      "required": false,
+      "kind": "integer",
+      "help": "How many the AUTHOR is taking. Sizes the AUTHOR ONLY — every follower is sized from their own per-trade budget. Use 'quantity' for stocks. LEAVE IT OUT unless the user stated a size: omitted, the play is sized from the poster's own per-trade budget at the price it actually pays; sent, it OVERRIDES that budget. A reflexive 1 turns a $1,000 limit into one contract. Ask if you want to; never invent it."
+    },
+    {
+      "name": "trade_budget",
+      "required": false,
+      "kind": "number",
+      "help": "THE SAME ANSWER IN MONEY, in dollars. 'put $500 into it' is trade_budget: 500 — Atlas works out how many that buys at the price the order actually pays, as close under it as whole units allow and never over. It REPLACES contracts/quantity: send ONE of them, never both, because they are two instructions for one thing. Use whichever the user said — 'two contracts' is a count, 'about $500 worth' is a budget. Sizes the AUTHOR only, exactly like the count it replaces."
+    },
+    {
+      "name": "enter_at",
+      "required": false,
+      "kind": "date-time",
+      "help": "Optional. Enter at this moment, whichever comes first with the price."
+    },
+    {
+      "name": "exit_at",
+      "required": false,
+      "kind": "date-time",
+      "help": "Optional. Close at this moment whatever the position is doing."
+    },
+    {
+      "name": "reason",
+      "required": false,
+      "kind": "string",
+      "help": "Why. The followers read this."
+    },
+    {
+      "name": "called_at",
+      "required": false,
+      "kind": "date-time",
+      "help": "When the call was MADE, if that is not now. ISO-8601 with an offset. Omit for a play being called this moment, which is the usual case and the default. Set it when writing down a call that was made earlier — read off a chart, or relayed from somewhere else — so the record says when it happened rather than when it was typed."
+    },
+    {
+      "name": "score",
+      "required": false,
+      "kind": "integer",
+      "help": "1-10, the author's own conviction. DEFAULTS TO 10, not 1 — a play called without a number is being called without reservation. SET IT whenever the user rates the play ('this one's a 6', 'low conviction', 'I really like this one'), and change it with Signal-Update when they change their mind about a play that is already up. Never invent a rating they did not give. It is an opinion only: it never sizes, filters or places anything."
+    }
+  ],
+  "before_you_post": [
+    "Did the user give an ENTRY price, or do they mean take it now?",
+    "Did they say a SIZE? A count is contracts/quantity, an amount is trade_budget — one or the other, never both.",
+    "Did they RATE it? Pass score; leaving it out means 10 (no reservation), which is a claim of its own.",
+    "If they gave one on an option: is it the CONTRACT's price or the STOCK's? Set entry_unit.",
+    "Did you ask for TARGETS and a STOP, and set tp_unit / stop_unit for them?",
+    "Are they taking it themselves? Only then set trade_for_me.",
+    "Do NOT set snaptrade_account_id when they have a saved default (Signal-Broker says)."
+  ],
+  "examples": [
+    {
+      "user_said": "buy the SPY 780 calls at 2.10, out at +50% and +100%, stop 30%",
+      "payload": {
+        "symbol": "SPY",
+        "asset_class": "option",
+        "side": "buy",
+        "option_type": "call",
+        "strike": 780,
+        "expiration_date": "2026-08-21",
+        "entries": [
+          {
+            "price": 2.1
+          }
+        ],
+        "entry_unit": "contract",
+        "tps": [
+          {
+            "target": 50,
+            "quantity": "50%"
+          },
+          {
+            "target": 100,
+            "quantity": "remaining"
+          }
+        ],
+        "tp_unit": "pct",
+        "stop": 30,
+        "stop_unit": "pct"
+      }
+    },
+    {
+      "user_said": "buy SPY 780 calls when SPY drops to 773, take profit at 50%",
+      "payload": {
+        "symbol": "SPY",
+        "asset_class": "option",
+        "side": "buy",
+        "option_type": "call",
+        "strike": 780,
+        "expiration_date": "2026-08-21",
+        "entries": [
+          {
+            "price": 773
+          }
+        ],
+        "entry_unit": "price",
+        "entry_operator": "lte",
+        "tps": [
+          {
+            "target": 50,
+            "quantity": "remaining"
+          }
+        ],
+        "tp_unit": "pct"
+      },
+      "note": "773 is the STOCK. entry_unit='price' or this becomes a $773 premium."
+    },
+    {
+      "user_said": "grab the 772 puts now, I'll call the exit",
+      "payload": {
+        "symbol": "SPY",
+        "asset_class": "option",
+        "side": "buy",
+        "option_type": "put",
+        "strike": 772,
+        "expiration_date": "2026-08-21",
+        "entries": [],
+        "tps": [],
+        "stop": null
+      },
+      "note": "No entries = fill now at market. Confirm they really want no exits."
+    }
+  ]
+}

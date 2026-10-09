@@ -49,5 +49,5 @@ Add `ATLAS_API_KEY` as a repository secret (use a key from a dedicated CI accoun
 
 ## Caveats
 
-- This smoke test counts against your account's `monthly_limit`. On the free tier (~10 calls/month) running every 30 minutes will exhaust quota in <2 hours — schedule less aggressively or use a paid CI key.
+- The quote this test asks for uses one request of the account's plan each time it runs. Schedule it with that in mind; `Subscription-Status` shows what is left.
 - The script does not test workflow / trigger writes. If you want those covered, add a "create → preview → delete" round-trip and gate it behind a `CI_FULL=1` env var.

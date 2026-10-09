@@ -4,9 +4,9 @@ Connect Atlas to the [`codex`](https://github.com/openai/codex) CLI. Codex confi
 
 > Codex's MCP schema has shifted across builds. The block below targets recent versions that support remote streamable-HTTP servers. If your build only accepts stdio servers (older Codex), use the [Docker stdio bridge](docker.md) instead.
 
-## 1. Get an API key
+## 1. Get your access key
 
-Sign in at https://www.mind-vest.io/atlas → **Dashboard** → **API Keys** → **Generate key**.
+Sign in at https://www.mind-vest.io/atlas, open the **Dashboard**, and copy the key under **Profile → API / CLI / MCP Key**.
 
 ## 2. Edit `~/.codex/config.toml`
 
@@ -18,7 +18,7 @@ type = "streamable-http"
 url  = "https://atlasmcp.finmanagerai.com/mcp"
 
 [mcp_servers.atlas.headers]
-Authorization = "Bearer YOUR_ATLAS_API_KEY"
+Authorization = "Bearer YOUR_ATLAS_ACCESS_KEY"
 ```
 
 If your Codex build expects a different key (e.g. `transport` instead of `type`, or wants the auth as an env var), `codex --help` and `codex mcp --help` will show the current field names — the URL and bearer header don't change.
@@ -38,7 +38,7 @@ args = [
 ]
 
 [mcp_servers.atlas.env]
-ATLAS_API_KEY = "YOUR_ATLAS_API_KEY"
+ATLAS_API_KEY = "YOUR_ATLAS_ACCESS_KEY"
 ```
 
 ## 3. Verify
@@ -69,7 +69,7 @@ Expect `Stock-Quote` and `Option-Expiration-Dates` calls.
 - **`codex mcp list` doesn't show `atlas`.** Check TOML syntax (`codex` is strict about quoting). Run `python3 -c 'import tomllib; tomllib.load(open("/path/to/config.toml","rb"))'` to validate.
 - **"Unknown transport" / "Unsupported config".** Your Codex build pre-dates remote-HTTP MCP support — use the stdio fallback above.
 - **`401`/`403`.** Bad key. Regenerate.
-- **`429 rate_limit`.** Wait or upgrade.
+- **A tool says your plan's requests are used up.** `Subscription-Status` shows what is left this month.
 
 ## Capabilities & permissions
 

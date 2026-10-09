@@ -1,0 +1,835 @@
+{
+  "version": "1.0",
+  "summary": "Trigger workflows produce `{ triggers: [ {symbol, ...fields} ] }` — one entry per stock. Each entry must populate every required field whose `when` condition holds; fields outside the applicable set are ignored. The workflow engine compiles the flat object into the nested rule shape the trading worker accepts, rejecting anything that does not match.",
+  "envelope": {
+    "shape": {
+      "triggers": [
+        {
+          "symbol": "string",
+          "...": "fields defined below"
+        }
+      ]
+    },
+    "notes": [
+      "symbol is a top-level key on each entry and maps to trading_trigger.symbol.",
+      "All other keys map to the nested rule via the field's rule_path.",
+      "Every trade knob is editable field-by-field: contracts / quantity, enter_side (buy/sell, buy_to_open/sell_to_open), option_type (call/put), strike, expiry, enter_order_type (market/limit), stop-loss, take-profit, and the take-profit LADDER — set or change any one and echo the rest. When editing an EXISTING trade, read the current output_schema first and resend the WHOLE entry with only the field(s) you are changing modified (the store replaces output_schema verbatim)."
+    ]
+  },
+  "section_modes": {
+    "trades_mode": "manual | auto (default manual when absent)",
+    "plays_mode": "manual | auto (default manual when absent) — the same for signal plays, stored under `plays`",
+    "notes": [
+      "manual: the entries in `triggers` ARE the trades. One per ticker, exactly those.",
+      "auto: `triggers` holds exactly ONE entry, used as a TEMPLATE. Leave its symbol null so the run picks the tickers, and leave option_type / label / cancels_labels / activates_labels off so it decides the side and any one-cancels-other pairing.",
+      "On auto, every value FIXED on that one entry (a stop, a take-profit, a size, a budget, a ladder) is applied to every trade the run creates — set it once.",
+      "auto with two or more entries is REJECTED (400): only the first would be used, and the rest would sit in the form never trading."
+    ]
+  },
+  "plays": {
+    "plays": "A list of plays, authored in the SAME shape as `triggers` (a trade card). A play is written as a trade and renamed at send time — same contract, entry, stop and ladder — so everything in `fields` below applies here too.",
+    "score": "On each play entry: the author's conviction, an integer 1-10. OMIT it to let the run rate each play itself, which is the default and usually right. Never 0.",
+    "plays_reason": "Top-level, alongside `plays`: ONE sentence carried by every play this workflow sends. Omit it (the default) and the run writes each play's own from what it actually saw that run, which is worth more to a follower than a line written weeks earlier. Set it and that exact sentence is pinned on every play.",
+    "plays_destinations": "Top-level: where the plays go. A list where \"community\" means the public board and anything else is a signal group id. Omit (the default) for the board. SEVERAL destinations is still ONE play — one signal, one tracked trade, one exit — reaching everybody across those groups; it is NOT one play per group.",
+    "trade_for_me": "On each play entry: true if the AUTHOR's own order goes in alongside the post. The account is the workflow's own broker (snaptrade_account_id), which is OPTIONAL for a play workflow — set it only if a play carries this. Never set trade_for_me on somebody's behalf: it puts real money in, and it is theirs to ask for."
+  },
+  "fields": [
+    {
+      "name": "asset_class",
+      "rule_path": "execution.asset_class",
+      "label": "Asset class",
+      "help": "Stock or options contract",
+      "kind": "string",
+      "options": [
+        "stock",
+        "option"
+      ],
+      "required": true
+    },
+    {
+      "name": "option_type",
+      "rule_path": "execution.option_type",
+      "label": "Option type",
+      "help": "Call or put",
+      "kind": "string",
+      "options": [
+        "call",
+        "put"
+      ],
+      "required": true,
+      "when": {
+        "field": "asset_class",
+        "equals": "option"
+      }
+    },
+    {
+      "name": "strike",
+      "rule_path": "execution.strike",
+      "label": "Strike price",
+      "help": "Option strike in dollars. Must be a concrete number the chain exposes.",
+      "kind": "number",
+      "placeholder": "500",
+      "required": true,
+      "when": {
+        "field": "asset_class",
+        "equals": "option"
+      }
+    },
+    {
+      "name": "expiry",
+      "rule_path": "execution.expiry",
+      "label": "Expiry date",
+      "help": "Option expiration as YYYY-MM-DD.",
+      "kind": "date",
+      "required": true,
+      "when": {
+        "field": "asset_class",
+        "equals": "option"
+      }
+    },
+    {
+      "name": "contracts",
+      "rule_path": "execution.contracts",
+      "label": "Contracts",
+      "help": "Positive integer number of option contracts.",
+      "kind": "integer",
+      "placeholder": "1",
+      "required": true,
+      "when": {
+        "field": "asset_class",
+        "equals": "option"
+      }
+    },
+    {
+      "name": "quantity",
+      "rule_path": "execution.quantity",
+      "label": "Shares",
+      "help": "Positive number of shares.",
+      "kind": "number",
+      "placeholder": "100",
+      "required": true,
+      "when": {
+        "field": "asset_class",
+        "equals": "stock"
+      }
+    },
+    {
+      "name": "enter_side",
+      "rule_path": "enter.side",
+      "label": "Entry side",
+      "help": "shares: 'buy' or 'sell'. options: 'buy_to_open' or 'sell_to_open' (plain buy/sell are accepted and resolved).",
+      "kind": "string",
+      "options": [
+        "buy",
+        "sell",
+        "buy_to_open",
+        "sell_to_open"
+      ],
+      "required": true
+    },
+    {
+      "name": "enter_order_type",
+      "rule_path": "enter.order_type",
+      "label": "Entry order type",
+      "help": "market fills immediately; limit waits for the price.",
+      "kind": "string",
+      "options": [
+        "market",
+        "limit"
+      ],
+      "required": true
+    },
+    {
+      "name": "enter_limit_price",
+      "rule_path": "enter.limit_price",
+      "label": "Entry limit price",
+      "help": "Required when enter_order_type is limit.",
+      "kind": "number",
+      "placeholder": "0.00",
+      "required": true,
+      "when": {
+        "field": "enter_order_type",
+        "equals": "limit"
+      }
+    },
+    {
+      "name": "enter_trigger_metric",
+      "rule_path": "enter.trigger.metric",
+      "label": "Entry watch metric",
+      "help": "Leave it as \"price\" (or omit it). The worker compares against the live price whatever this says — bid/ask/last are accepted for old rules but behave identically, so this is not a decision to spend time on. Whether there IS a watch is decided by enter_trigger_value, not by this.",
+      "kind": "string",
+      "options": [
+        "price",
+        "ask",
+        "bid",
+        "last"
+      ],
+      "required": false
+    },
+    {
+      "name": "enter_trigger_operator",
+      "rule_path": "enter.trigger.operator",
+      "label": "Entry watch operator",
+      "help": "Compare metric to enter_trigger_value. Must be one of: lt, lte, gt, gte, eq. Omit for a market/immediate entry.",
+      "kind": "string",
+      "options": [
+        "lt",
+        "lte",
+        "gt",
+        "gte",
+        "eq"
+      ],
+      "required": false
+    },
+    {
+      "name": "enter_trigger_value",
+      "rule_path": "enter.trigger.value",
+      "label": "Entry watch price level",
+      "help": "Price the worker watches before entering. Set it (with metric + operator) to WAIT for a level. OMIT it (None) to enter right away. It is INDEPENDENT of enter_order_type: a watch decides WHEN, the order type decides HOW — watching a price and then buying at market is the normal case.",
+      "kind": "number",
+      "placeholder": "500.00",
+      "required": false
+    },
+    {
+      "name": "order_strategy",
+      "rule_path": "order_strategy",
+      "label": "Exit strategy",
+      "help": "bracket = broker-managed stop+target (OCO). one_triggers_other = worker evaluates a second watch.",
+      "kind": "string",
+      "options": [
+        "bracket",
+        "one_triggers_other"
+      ],
+      "required": true
+    },
+    {
+      "name": "bracket_stop_loss_stop_price",
+      "rule_path": "exit.stop_loss.stop_price",
+      "label": "Stop loss trigger price (UNDERLYING)",
+      "help": "For options: UNDERLYING price level — when SPY touches this, the worker closes the option leg at MARKET. NOT the contract price. For stocks: broker-managed stop trigger on the share price. WHICH SIDE: a stop sits where the trade LOSES — BELOW the entry for long stock / a long CALL / a short put, ABOVE it for short stock / a long PUT / a short call. A long put profits as the underlying FALLS, so its stop is above. A stop on the wrong side is already true at entry and is REJECTED at compile.",
+      "kind": "number",
+      "placeholder": "0.00",
+      "required": false,
+      "when": {
+        "field": "order_strategy",
+        "equals": "bracket"
+      }
+    },
+    {
+      "name": "bracket_stop_loss_limit_price",
+      "rule_path": "exit.stop_loss.limit_price",
+      "label": "Stop loss limit price (stocks only)",
+      "help": "Stocks only — turns the broker stop into a stop-limit order. IGNORED for option brackets: the worker always closes at market for safety on a stop-out.",
+      "kind": "number",
+      "placeholder": "0.00",
+      "required": false,
+      "when": {
+        "field": "order_strategy",
+        "equals": "bracket"
+      }
+    },
+    {
+      "name": "bracket_stop_loss_stop_pct",
+      "rule_path": "exit.stop_loss.stop_pct",
+      "label": "Stop loss (%)",
+      "help": "Percent move from entry — e.g. -35 closes when the contract premium drops 35% from fill. Mutually exclusive with the $ variant; pick one.",
+      "kind": "number",
+      "placeholder": "-35",
+      "required": false,
+      "when": {
+        "field": "order_strategy",
+        "equals": "bracket"
+      }
+    },
+    {
+      "name": "bracket_stop_loss_trailing_pct",
+      "rule_path": "exit.stop_loss.trailing_pct",
+      "label": "Trailing stop (%)",
+      "help": "A TRAILING stop, for shares and options: a distance in percent behind the best price since the entry (the SHARE price on a stock, the contract premium on an option), tightening only — 10 closes when the price gives back 10% from its best since the fill. It IS the stop: mutually exclusive with bracket_stop_loss_stop_price and bracket_stop_loss_stop_pct; send exactly one of the three. Always positive.",
+      "kind": "number",
+      "placeholder": "10",
+      "required": false,
+      "when": {
+        "field": "order_strategy",
+        "equals": "bracket"
+      }
+    },
+    {
+      "name": "bracket_take_profit_limit_price",
+      "rule_path": "exit.take_profit.limit_price",
+      "label": "Take profit price (UNDERLYING for options, contract for stocks)",
+      "help": "For options: UNDERLYING price level — when SPY touches this, the worker closes the option leg at MARKET. NOT the contract price. For stocks: broker-managed sell limit on the share price. WHICH SIDE: a target sits where the trade WINS — ABOVE the entry for long stock / a long CALL / a short put, BELOW it for short stock / a long PUT / a short call. A target on the wrong side is already true at entry and is REJECTED at compile.",
+      "kind": "number",
+      "placeholder": "0.00",
+      "required": false,
+      "when": {
+        "field": "order_strategy",
+        "equals": "bracket"
+      }
+    },
+    {
+      "name": "bracket_take_profit_limit_pct",
+      "rule_path": "exit.take_profit.limit_pct",
+      "label": "Take profit (%)",
+      "help": "Percent move from entry — e.g. 40 closes when the contract premium rises 40% from fill. Mutually exclusive with the $ variant; pick one.",
+      "kind": "number",
+      "placeholder": "40",
+      "required": false,
+      "when": {
+        "field": "order_strategy",
+        "equals": "bracket"
+      }
+    },
+    {
+      "name": "bracket_price_basis",
+      "rule_path": "exit.price_basis",
+      "label": "Exit levels are the CONTRACT price",
+      "help": "Set to \"contract\" when the take-profit / stop levels are the OPTION's own price rather than the underlying. A $ level then means \"the contract trades at this premium\", which is how the Triggers form, the Discord bot and signal plays already express them. Percent levels are contract-priced by definition and need no basis. Omit for underlying levels — that is the default and covers every stock leg.",
+      "kind": "string",
+      "options": [
+        "contract"
+      ],
+      "required": false,
+      "when": {
+        "field": "order_strategy",
+        "equals": "bracket"
+      }
+    },
+    {
+      "name": "exit_order_type",
+      "rule_path": "exit.order_type",
+      "label": "Exit order type",
+      "help": "How the CLOSE order is placed when the exit fires — the TAKE-PROFIT / non-stop close for a bracket, or the exit watch for one_triggers_other. market fills immediately; limit rests at exit_limit_price. Default market. SAFETY: an OPTION stop-loss ALWAYS closes at MARKET regardless of this setting (never rest a limit on a stop-out).",
+      "kind": "string",
+      "options": [
+        "market",
+        "limit"
+      ],
+      "required": false
+    },
+    {
+      "name": "exit_limit_price",
+      "rule_path": "exit.limit_price",
+      "label": "Exit limit price",
+      "help": "CONTRACT price the limit CLOSE rests at (option premium, or share price for stocks) — required when exit_order_type is limit. This is NOT an underlying threshold; it is the price the broker targets for the close.",
+      "kind": "number",
+      "placeholder": "0.00",
+      "required": true,
+      "when": {
+        "field": "exit_order_type",
+        "equals": "limit"
+      }
+    },
+    {
+      "name": "enter_at_time",
+      "rule_path": "enter.at_time",
+      "label": "Entry time",
+      "help": "Absolute date+time to ENTER at, ISO-8601 with an offset (e.g. \"2026-07-10T09:35:00-04:00\" or \"2026-07-10T13:35:00Z\"). Whichever comes first — this clock time OR the entry watch price — fires the entry. Leave None to ignore; AI may set it. A time-only entry (no watch price) is allowed.",
+      "kind": "string",
+      "required": false
+    },
+    {
+      "name": "exit_at_time",
+      "rule_path": "exit.at_time",
+      "label": "Exit time",
+      "help": "Absolute date+time to FORCE-CLOSE at, ISO-8601 with an offset (e.g. \"2026-07-10T15:55:00-04:00\" or \"2026-07-10T19:55:00Z\"). Whichever comes first — this clock time OR the SL/TP (or exit watch) — closes ALL remaining at MARKET. Leave None to ignore; AI may set it.",
+      "kind": "string",
+      "required": false
+    },
+    {
+      "name": "exit_trigger_metric",
+      "rule_path": "exit.trigger.metric",
+      "label": "Exit watch metric",
+      "help": "Leave it as \"price\" (or omit it) — same as the entry watch metric, the worker compares against the live price whatever this says. Omit exit_trigger_value for an enter-only trade with no exit watch.",
+      "kind": "string",
+      "options": [
+        "price",
+        "ask",
+        "bid",
+        "last"
+      ],
+      "required": false,
+      "when": {
+        "field": "order_strategy",
+        "equals": "one_triggers_other"
+      }
+    },
+    {
+      "name": "exit_trigger_operator",
+      "rule_path": "exit.trigger.operator",
+      "label": "Exit watch operator",
+      "help": "Comparison operator for the exit watch. Must be one of: lt, lte, gt, gte, eq. NOT the same as enter_trigger_operator — they point OPPOSITE ways. The exit must not already hold at the price the entry fires: a stop under a `gte 500` breakout entry is `lte 490`, never `lte 520` (already true at 500) and never `gte` anything at or below 500. Omit for an enter-only trade.",
+      "kind": "string",
+      "options": [
+        "lt",
+        "lte",
+        "gt",
+        "gte",
+        "eq"
+      ],
+      "required": false,
+      "when": {
+        "field": "order_strategy",
+        "equals": "one_triggers_other"
+      }
+    },
+    {
+      "name": "exit_trigger_value",
+      "rule_path": "exit.trigger.value",
+      "label": "Exit watch price level",
+      "help": "Target price for the exit watch. OMIT it (None) for an enter-only trade with no second watch.",
+      "kind": "number",
+      "placeholder": "0.00",
+      "required": false,
+      "when": {
+        "field": "order_strategy",
+        "equals": "one_triggers_other"
+      }
+    },
+    {
+      "name": "oco_group",
+      "rule_path": "oco_group",
+      "label": "OCO group (first wins)",
+      "help": "Optional label. Triggers in the same workflow run that share this label form a one-cancels-others basket — when one fires, the rest deactivate. Works cross-ticker.",
+      "kind": "string",
+      "placeholder": "morning_setup",
+      "required": false
+    },
+    {
+      "name": "bracket_take_profit_levels",
+      "rule_path": "exit.take_profit_levels",
+      "label": "Take-profit ladder (scale-out)",
+      "help": "Scaled multi-level take-profit (\"multi ladder view\") — an ARRAY, one object per level, e.g. [{\"pct\":30,\"quantity\":\"50%\",\"stop_after_pct\":20},{\"pct\":70,\"quantity\":\"remaining\"}]. Each level: EXACTLY ONE of `price` ($ level — UNDERLYING for options) or `pct` (% move from the entry contract premium, positive). ALL levels MUST share ONE unit — every level `pct` OR every level `price`, NEVER a mix (a mixed ladder is rejected at compile). `quantity` is a number of contracts/shares, a percent string like \"40%\", or \"remaining\"; the LAST level should be \"remaining\". TRAILING STOP per level (moves the stop-loss AFTER that level fills): give `stop_after_pct` for a % trailing stop (% from entry premium; may be positive = lock in profit) OR `stop_after_price` for a $ one — pick at most ONE. NEVER on the FIRST level: a level's stop_after arms when the PREVIOUS target fills, so level 0 has none and the trade's own stop-loss owns the run to TP1. Set that key to null to let Atlas DECIDE the trailing stop at run time (a template AI slot the decision step fills — like a null price/pct); OMIT both keys to keep the current stop. Mutually exclusive with the single bracket_take_profit_limit_price / _pct.",
+      "kind": "array",
+      "required": false,
+      "when": {
+        "field": "order_strategy",
+        "equals": "bracket"
+      }
+    },
+    {
+      "name": "bracket_take_profit_loop",
+      "rule_path": "exit.take_profit_loop",
+      "label": "Ladder AI re-decision loop",
+      "help": "Boolean. Only with bracket_take_profit_levels. When true, after each level fills the workflow re-runs and the AI re-decides the remaining ladder. Echo the template value verbatim; never invent it.",
+      "kind": "boolean",
+      "required": false,
+      "when": {
+        "field": "order_strategy",
+        "equals": "bracket"
+      }
+    },
+    {
+      "name": "bracket_trade_budget",
+      "rule_path": "_budget_cents",
+      "label": "Most to put into this trade ($)",
+      "help": "The most this trade may spend, in dollars. When the author sets it the SIZE is not authored at all: the worker works out how many contracts / shares fit at the premium the order actually pays, landing as close under the budget as whole units allow. OMIT `contracts` / `quantity` entirely when this is set — anything you put there is discarded. Never invent a budget: echo the template value or leave it out.",
+      "kind": "number",
+      "placeholder": "1000",
+      "required": false
+    },
+    {
+      "name": "bracket_exit_split",
+      "rule_path": "exit.take_profit_levels[].quantity",
+      "label": "How the exits split",
+      "help": "How much of the position comes off at each take-profit level: \"follow\" (the amounts as written — the default), \"front\" (most out at the first target), \"back\" (most left on for the last), \"even\" (the same at each). Only affects a ladder with 2+ levels; the last level always closes whatever is left. Echo the template value verbatim; never invent it.",
+      "kind": "string",
+      "options": [
+        "follow",
+        "front",
+        "back",
+        "even"
+      ],
+      "required": false,
+      "when": {
+        "field": "order_strategy",
+        "equals": "bracket"
+      }
+    },
+    {
+      "name": "label",
+      "rule_path": "label",
+      "label": "Leg label",
+      "help": "Optional name for THIS trigger/leg so other legs in the same run can reference it via cancels_labels (OCO) or activates_labels (OEO). Cross-ticker is fine — the label is the only key.",
+      "kind": "string",
+      "placeholder": "long_call",
+      "required": false
+    },
+    {
+      "name": "cancels_labels",
+      "rule_path": "cancels_labels",
+      "label": "OCO cancels (by label)",
+      "help": "Optional ARRAY of other legs' `label` values. When THIS leg fires it DEACTIVATES those legs (one-cancels-others). Use for a call+put pair where the first to fill kills the other. (oco_group is the simpler symmetric form; cancels_labels is the explicit directed form.)",
+      "kind": "array",
+      "required": false
+    },
+    {
+      "name": "activates_labels",
+      "rule_path": "activates_labels",
+      "label": "OEO activates (by label)",
+      "help": "Optional ARRAY of other legs' `label` values. When THIS leg fires it ARMS those legs (one-triggers-other) — e.g. an entry leg that, once filled, activates a staged hedge leg.",
+      "kind": "array",
+      "required": false
+    }
+  ],
+  "examples": {
+    "option_bracket_long_call": {
+      "description": "Buy 1 SPY 500C, close at market when SPY drops to 497 (stop) or rises to 505 (take profit). Both levels are UNDERLYING prices.",
+      "flat": {
+        "symbol": "SPY",
+        "asset_class": "option",
+        "option_type": "call",
+        "strike": 500,
+        "expiry": "2026-05-02",
+        "contracts": 1,
+        "enter_side": "buy_to_open",
+        "enter_order_type": "market",
+        "enter_trigger_metric": "price",
+        "enter_trigger_operator": "gte",
+        "enter_trigger_value": 500,
+        "order_strategy": "bracket",
+        "bracket_stop_loss_stop_price": 497,
+        "bracket_take_profit_limit_price": 505
+      }
+    },
+    "stock_oto_long": {
+      "description": "Buy 100 NVDA at 900, worker-evaluated stop at 880",
+      "flat": {
+        "symbol": "NVDA",
+        "asset_class": "stock",
+        "quantity": 100,
+        "enter_side": "buy",
+        "enter_order_type": "limit",
+        "enter_limit_price": 900,
+        "enter_trigger_metric": "price",
+        "enter_trigger_operator": "lte",
+        "enter_trigger_value": 900,
+        "order_strategy": "one_triggers_other",
+        "exit_order_type": "market",
+        "exit_trigger_metric": "last",
+        "exit_trigger_operator": "lte",
+        "exit_trigger_value": 880
+      }
+    }
+  },
+  "schedule": {
+    "trigger_source": [
+      "cron",
+      "alert",
+      "both",
+      "manual"
+    ],
+    "schedule": "one line per time, in `timezone`: a 5-field cron line ('30 9 * * 1-5') recurs; 'once YYYY-MM-DD HH:MM' fires at that date and time and never again. Cron lines OR once lines, never both. Used when trigger_source is 'cron' or 'both'.",
+    "run_once_at": "Workflow-Create / Workflow-Update patch shortcut: a list of 'YYYY-MM-DD HH:MM' moments, written as once lines for you.",
+    "manual": "trigger_source 'manual' = nothing fires it; the user presses Run now."
+  },
+  "alert_wiring": {
+    "trigger_source": [
+      "cron",
+      "alert",
+      "both",
+      "manual"
+    ],
+    "alert_id": "id of an existing alert to drive this workflow (when trigger_source includes 'alert')",
+    "alert_max_runs_per_day": "optional positive integer: cap how many times the alert may run this workflow per day (resets each Eastern morning). Omit / null for unlimited."
+  },
+  "alert_types": {
+    "version": "2026-09-23",
+    "description": "Source-of-truth catalog of Atlas alert types — the SAME menu a person uses in the app's alert form. READ this (via the List-Alert-Types tool) and create alerts the SAME way a human navigates the form: pick a type whose create_ui is true, then fill its conditions using ONLY the options listed here (the `label` is the exact wording the app shows on the button). For anything about a Greek / dealer exposure — the 'wall' (king node) shifting to a new strike OR the net exposure flipping sides (the 'gamma flip') — the ONLY type is 'Greek exposure move' (king_node); which of the two it watches is conditions.move_mode. There is NO separate 'greek flip' / 'gamma flip' TYPE in the app; never create one. Types with create_ui:false (only `custom`) are EDIT-ONLY — not in the create form, so do NOT create them. Create with the Create-Alert tool, or with Manage-Alerts inside an alert-creator workflow. Periodic exposure metrics sample ~every 5 min; price/flow_rank check every few seconds.",
+    "common": {
+      "symbol": "Ticker. Required for every type EXCEPT flow_rank, top_flow and trigger_event.",
+      "expiration_date": "Optional YYYY-MM-DD on greek/exposure types to scope to ONE expiry (e.g. 'SPY GEX flip for 05/06'); omit for the whole chain.",
+      "active_from_time": "Optional HH:MM in US/Eastern — the app's 'Active from' time. Only evaluate at/after this each day (pairs with active_to_time to bound an intraday window).",
+      "active_to_time": "Optional HH:MM in US/Eastern — the app's 'Active until' time. Only evaluate at/before this each day.",
+      "active_days": "Optional days-of-week filter for the active window; 'weekdays' (Mon-Fri) is the common value. Omit to evaluate every day.",
+      "cooldown_seconds": "Min gap between fires per user (floor 30, default 300).",
+      "fire_on_start": "Optional bool — king_node / volume_spike / volume_shift / flow_rank / top_flow only. Fire ONCE at the start of the active window each day (active_from_time), even with NO shift, so an alert bound to a workflow/task gets that first entry at the open. Rides the normal same-day rules (a brand-new alert still needs fire_same_day to fire today). A real shift on the same tick wins over it.",
+      "notify_discord": "The app's 'Send a DM when it fires' toggle (default true). Auto-suppressed if a connected workflow already DMs.",
+      "notes": "Optional free-text note (top-level field, max ~2000 chars). Attach context or a directive for the workflow/task this alert triggers — e.g. 'Only go long if SPY is green on the day.' When the alert fires, the note is FORWARDED to the triggered workflow/task's agent AND shown in the alert DM. Optional; omit for none.",
+      "fan_out": "Identical alerts (same type+symbol+conditions) across many users are evaluated ONCE and the DM is fanned out per subscriber.",
+      "on_fire": "Optional 'When it goes off, also…' actions (any combination): run workflows (workflow_id for one, or workflow_ids:[...] for many), run run-once tasks (task_ids:[...]), re-arm triggers (reactivate_trigger_id for one, or reactivate_trigger_ids:[...] for many), arm a NEW trigger ({\"trigger\": {symbol, snaptrade_account_id, rule}}), or place a LIVE order ({\"order\": {symbol, snaptrade_account_id, rule, \"live\": true}} — double-gated: needs live:true AND the server switch).",
+      "intraday_only": "Optional bool, default false. false = a change that happened while the market was SHUT still counts: the last reading of the previous session is compared against the first of this one, so an overnight/weekend move fires at the open. true = only a change DURING one session counts; the first reading of each ET day just re-arms the alert. Supported on king_node, level_approach, volume_spike, volume_shift, flow_rank, top_flow, price and contract_price. SEPARATE from the contract roll: an alert with no expiration_date pinned follows the FRONT expiry, which rolls daily, and the worker always re-baselines on a roll rather than reporting it as a move — so a roll never fires, whatever this is set to.",
+      "expiration_range": "Optional how far out, on king_node / volume_spike / level_approach (a Greek wall) and flow: '0dte' (the nearest expiry; the default on exposure types), '1w', '1m', '3m', '6m' (exposure is summed across every expiry in the window; on flow it keeps only trades on contracts expiring inside it), or 'any' (flow only, the default: no filter). Set this OR expiration_date, never both."
+    },
+    "alert_types": [
+      {
+        "type": "flow",
+        "label": "Options flow",
+        "create_ui": true,
+        "symbol_required": true,
+        "description": "Options flow — alerts you when a big options trade hits the tape for your ticker; you set the minimum premium/size and other filters. Fires on an options-flow trade matching the filter.",
+        "conditions": {
+          "action": "buy|sell",
+          "open_close": "open|close",
+          "trade_type": "sweep|block|iso",
+          "min_premium": "number",
+          "max_premium": "number",
+          "min_size": "number",
+          "max_size": "number",
+          "min_volume": "number",
+          "min_open_interest": "number",
+          "min_spot": "number",
+          "max_spot": "number",
+          "from_time": "HH:MM",
+          "to_time": "HH:MM",
+          "option_symbol": "OCC",
+          "expiration_date": "YYYY-MM-DD",
+          "strike": "number"
+        },
+        "example": {
+          "name": "SPY big sweeps",
+          "symbol": "SPY",
+          "alert_type": "flow",
+          "conditions": {
+            "trade_type": "sweep",
+            "min_premium": 250000,
+            "action": "buy"
+          }
+        }
+      },
+      {
+        "type": "king_node",
+        "label": "Greek exposure move",
+        "create_ui": true,
+        "symbol_required": true,
+        "description": "Greek exposure move — THE Greek / dealer-exposure alert (there is no separate 'greek flip' or 'gamma flip' TYPE; the flip lives here as conditions.move_mode). Pick which Greek to watch (metric: gamma=GEX, delta=DEX, vanna=VEX, theta=TEX); metric may be comma-separated for multi (AND: fires once EVERY listed Greek has produced its move). conditions.move_mode picks WHAT counts as a move: 'node' (default) = the strike with the most dealer exposure (the king node / 'wall') RELOCATES to a NEW price — any move, either direction, no deadband; 'flip_positive' / 'flip_negative' / 'flip' = the Greek's NET exposure crosses zero into positive / into negative / either way (this is the classic 'gamma flip'); 'any' = a node move OR an either-way flip, whichever lands first. A flip mode never fires off the starting state — it needs a real crossing between two readings. Optionally pin expiration_date to one expiry; blank tracks the front/0DTE expiry, which rolls daily. The chart marks BOTH walls at once — purple for the biggest positive net exposure, yellow for the biggest negative — and node_positive / node_negative let an alert follow either one on its own.",
+        "conditions": {
+          "metric": "gamma|delta|vanna|theta (comma-separated for multi)",
+          "move_mode": "node|node_positive|node_negative|flip_positive|flip_negative|flip|any (optional, default 'node'). node = the WALL (king node — the strike with the most dealer exposure in ABSOLUTE terms) moves to a new strike. node_positive / node_negative = ONE side's wall moves to a new strike: the biggest +net-exposure strike (drawn purple on the chart) or the biggest -net-exposure strike (drawn yellow). flip_negative / flip_positive / flip = PRICE crosses the Greek's FLIP LEVEL. Going up the strikes, a flip level is a strike whose net exposure has the opposite sign to the strike below it; price at or above a strike is in that strike's regime. flip_positive = price crossed up into a positive strike after a negative one (e.g. 89 negative, 90 positive: fires once price is above 90); flip_negative = the reverse; flip = either way. Fires only when PRICE crosses a level on the current ladder, never when a strike changes sign under a stationary price. NOT the whole chain's sum changing sign; any = a wall move OR an either-way flip.",
+          "expiration_date": "YYYY-MM-DD (optional — pin one expiry, else the front/0DTE expiry that rolls daily)"
+        },
+        "example": {
+          "name": "SPY gamma king move",
+          "symbol": "SPY",
+          "alert_type": "king_node",
+          "conditions": {
+            "metric": "gamma"
+          }
+        }
+      },
+      {
+        "type": "volume_spike",
+        "label": "Volume spike",
+        "create_ui": true,
+        "symbol_required": true,
+        "description": "Volume spike — alerts you when a ticker's total daily option volume jumps by the percent you set (threshold_pct). Optionally pin the check to one contract via expiration_date + strike.",
+        "conditions": {
+          "threshold_pct": "number (default 20)",
+          "expiration_date": "YYYY-MM-DD (optional — pin the volume check to one contract's expiry)",
+          "strike": "number (optional — pin to one strike; with expiration_date, checks that one contract every ~30 min)"
+        },
+        "example": {
+          "name": "NVDA vol spike",
+          "symbol": "NVDA",
+          "alert_type": "volume_spike",
+          "conditions": {
+            "threshold_pct": 30
+          }
+        }
+      },
+      {
+        "type": "volume_shift",
+        "label": "Top-volume contract rotation",
+        "create_ui": true,
+        "symbol_required": true,
+        "description": "Top-volume contract rotation — alerts you when a different option contract becomes the most-traded one (#1 by daily volume) for your ticker.",
+        "conditions": {},
+        "example": {
+          "name": "SPY top-volume shift",
+          "symbol": "SPY",
+          "alert_type": "volume_shift"
+        }
+      },
+      {
+        "type": "flow_rank",
+        "label": "New top flow (no ticker)",
+        "create_ui": true,
+        "symbol_required": false,
+        "description": "New top flow — alerts you when a new trade or ticker breaks into the top of the whole market's options flow (incl. outside the standing universe). No ticker needed. top_n sets the cutoff.",
+        "conditions": {
+          "top_n": "number (default 10)"
+        },
+        "example": {
+          "name": "New top flow",
+          "alert_type": "flow_rank",
+          "conditions": {
+            "top_n": 10
+          }
+        }
+      },
+      {
+        "type": "price",
+        "label": "Price level cross",
+        "create_ui": true,
+        "symbol_required": true,
+        "description": "Price level cross — alerts you when the stock price crosses a level you set: above, below, or either way. (direction 'cross' is the app's 'Either way'.)",
+        "conditions": {
+          "level": "number (required)",
+          "direction": "above|below|cross (cross = 'Either way' in the app)"
+        },
+        "example": {
+          "name": "SPY over 600",
+          "symbol": "SPY",
+          "alert_type": "price",
+          "conditions": {
+            "level": 600,
+            "direction": "above"
+          }
+        }
+      },
+      {
+        "type": "contract_price",
+        "label": "Contract price cross",
+        "create_ui": true,
+        "symbol_required": true,
+        "description": "Contract price cross — alerts you when ONE specific option contract's price crosses a level you set. Pick the strike, expiry, and call/put. (direction 'cross' is the app's 'Either way'.)",
+        "conditions": {
+          "strike": "number (required)",
+          "expiration_date": "YYYY-MM-DD (required)",
+          "cp": "call|put (required)",
+          "level": "number (required, option price)",
+          "direction": "above|below|cross (cross = 'Either way' in the app)"
+        },
+        "example": {
+          "name": "SPY 600C 05/06 over $2",
+          "symbol": "SPY",
+          "alert_type": "contract_price",
+          "conditions": {
+            "strike": 600,
+            "expiration_date": "2026-05-06",
+            "cp": "call",
+            "level": 2,
+            "direction": "above"
+          }
+        }
+      },
+      {
+        "type": "level_approach",
+        "label": "Price near greeks",
+        "create_ui": true,
+        "symbol_required": true,
+        "description": "Price near greeks — watches the stock price against a level you pick: a Greek wall (conditions.metric = that Greek's king-node strike, dynamic) or a static conditions.level. conditions.region_mode picks WHAT fires: 'near' (default) = spot gets CLOSE to the level, band = within_pct (default 0.5) or within_points; 'flip_positive' / 'flip_negative' / 'flip' = spot CROSSES the level, changing which side of it the price sits on (ABOVE the level is the positive side, BELOW it the negative side) — into positive / into negative / either way. A flip is ARMED FROM THE ORIGIN SIDE: the first reading only records which side spot is on, so a 'positive → negative' alert set while spot is ALREADY below the level waits for spot to go above it and then cross back down. within_pct / within_points are ignored in the flip modes.",
+        "conditions": {
+          "metric": "gamma|delta|vanna|theta (dynamic king node)",
+          "level": "number (static, alt to metric)",
+          "region_mode": "near|flip_positive|flip_negative|flip (optional, default 'near'). near = spot entered the proximity band. flip_negative = spot crossed the level DOWNWARD; flip_positive = crossed UPWARD; flip = either way. Armed from the origin side, so it never fires off the starting state. THIS IS PRICE, NOT EXPOSURE: the mode names are 'positive'/'negative' because above the level is called the positive side, and a user asking for a 'gamma flip' / 'GEX flip' (the Greek's own net exposure crossing zero) wants alert_type king_node with move_mode, NOT this. Never name an alert of this type a flip.",
+          "within_pct": "number (default 0.5)",
+          "within_points": "number"
+        },
+        "example": {
+          "name": "SPY nears gamma wall",
+          "symbol": "SPY",
+          "alert_type": "level_approach",
+          "conditions": {
+            "metric": "gamma",
+            "within_pct": 0.3
+          }
+        }
+      },
+      {
+        "type": "top_flow",
+        "label": "Top 20 flow",
+        "create_ui": true,
+        "symbol_required": false,
+        "description": "Top 20 flow — alerts you when a ticker enters or drops out of the market's top-20 options-flow leaderboard by premium. No ticker needed.",
+        "conditions": {
+          "top_n": "number (always 20)"
+        },
+        "example": {
+          "name": "Top 20 flow",
+          "alert_type": "top_flow",
+          "conditions": {
+            "top_n": 20
+          }
+        }
+      },
+      {
+        "type": "options_ratio",
+        "label": "Options ratio",
+        "create_ui": true,
+        "symbol_required": true,
+        "description": "Options ratio: who leads, calls or puts, and by how much. Open interest (contracts held) is checked once a day at 09:35 ET; unusual flow (the day's flow board: the largest block and sweep prints, the same ones top flow shows; bullish = calls bought to open + puts sold to open, less calls sold to close + puts bought to close; bearish the mirror; by premium) is checked on the hour from 10:30 ET (a busy name's flow can take a few minutes to read; a read that runs long is simply tried again at the next check). The lead is always the bigger side over the smaller in x (\"Puts lead 2.30x\"); there is no 'even'. Fires when the leader FLIPS, or when a side LEADS by at least lead_x. The DM shows the working: what was measured, both sides' numbers and the division.",
+        "conditions": {
+          "ratio_source": "'open_interest' (checked daily) or 'unusual_flow' (checked hourly). Required.",
+          "ratio_trigger": "'flip' (default): the leader changes (calls ↔ puts, bullish ↔ bearish; the first reading only sets the baseline). 'lead': a side leads by at least lead_x (fires on the crossing, re-arms after dropping back below).",
+          "lead_side": "For 'lead': 'calls' | 'puts' | 'either' on open_interest; 'bullish' | 'bearish' | 'either' on unusual_flow. Default 'either'.",
+          "lead_x": "For 'lead': the minimum lead, bigger side over smaller, e.g. 2 for '2x or more'. At least 1.",
+          "min_dte": "Optional fewest days to expiry to include (0 = today).",
+          "max_dte": "Optional most days to expiry to include. With neither, open interest uses the next 5 expirations and flow uses every expiry.",
+          "strikes_around_spot": "Open interest: listed strikes each side of spot (default 50; 0 = every strike).",
+          "strike_range": "Optional strike band 'low-high', e.g. '550-600' (replaces strikes_around_spot).",
+          "min_premium": "Unusual flow: only prints of at least this premium in dollars.",
+          "min_tag": "Unusual flow: only prints at least this unusual by volume/OI: unusual, very_unusual, extreme_unusual."
+        },
+        "example": {
+          "name": "SPY puts lead 2x on open interest",
+          "alert_type": "options_ratio",
+          "symbol": "SPY",
+          "conditions": {
+            "ratio_source": "open_interest",
+            "ratio_trigger": "lead",
+            "lead_side": "puts",
+            "lead_x": 2,
+            "min_dte": 0,
+            "max_dte": 30
+          }
+        }
+      },
+      {
+        "type": "technicals",
+        "label": "Technicals",
+        "create_ui": true,
+        "symbol_required": true,
+        "description": "Technicals — alerts you when one indicator crosses another (e.g. price crosses the 20 EMA, or the 9 EMA crosses VWAP). Pick the watch and target indicators, the direction, and the timeframe.",
+        "conditions": {
+          "watch": "price|9ema|20ema|50ema|200ema|vwap",
+          "target": "9ema|20ema|50ema|200ema|vwap",
+          "direction": "above|below|cross (default cross)",
+          "timeframe": "1m|5m|15m|30m|1h|1d (default 5m; EMAs are timeframe-relative)"
+        },
+        "example": {
+          "name": "SPY price crosses 20 EMA",
+          "symbol": "SPY",
+          "alert_type": "technicals",
+          "conditions": {
+            "watch": "price",
+            "target": "20ema",
+            "direction": "above",
+            "timeframe": "5m"
+          }
+        }
+      },
+      {
+        "type": "trigger_event",
+        "label": "My trigger acts",
+        "create_ui": true,
+        "symbol_required": false,
+        "description": "My trigger acts — alerts you when one of your OWN trading triggers acts: it places/exits a trade, is paused, or is deleted. No ticker needed. Pick which events to watch; optionally scope to a single trigger, one source workflow/task, one signal group (any trigger a play from that group placed), and/or one broker account.",
+        "conditions": {
+          "events": "one or more of: placed | exited | paused | deleted",
+          "trigger_id": "optional: only this trigger id (omit = any of your triggers)",
+          "source_workflow_id": "optional: only triggers created by this workflow or task id. Omit for any. \"none\" = only triggers no workflow or task created (your own, or a play's)",
+          "signal_group_id": "optional: only triggers that came from this signal group id — any play posted to or taken from that group. Omit for any. \"none\" = only triggers that did NOT come from a signal group",
+          "snaptrade_account_id": "optional: only triggers trading through this broker account (omit = any broker)"
+        },
+        "example": {
+          "name": "Ping me when my SPY sniper trades",
+          "alert_type": "trigger_event",
+          "conditions": {
+            "events": [
+              "placed"
+            ]
+          }
+        }
+      },
+      {
+        "type": "custom",
+        "label": "Custom / placeholder (edit-only)",
+        "create_ui": false,
+        "symbol_required": false,
+        "description": "EDIT-ONLY — reserved for bespoke conditions; not offered in the create form and not auto-evaluated.",
+        "conditions": {}
+      }
+    ]
+  }
+}
