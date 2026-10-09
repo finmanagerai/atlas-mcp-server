@@ -4,6 +4,15 @@ All notable changes to the public Atlas MCP registry artifacts in this repositor
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Plugin 1.2.0 — 2026-10-09
+
+### Added
+- `atlas-agent-run-loop`: how an assistant sets up the loop that wakes it by itself and runs a workflow with nobody prompting it. The wake-up (its own scheduler, or a small script on the person's computer), a check that uses no request when nothing is waiting, the stages of one run, and a standing prompt to start from.
+- `atlas-agent-run-loop-test`: how an assistant proves that loop works, with a workflow that cannot trade. One link at a time: the tools, the assistant waking by itself, and a run started by a schedule or an alert, with what each failure means.
+
+### Changed
+- A waiting run's `waiting_since` is Eastern time.
+
 ## Plugin 1.1.0 — 2026-10-09
 
 ### Added

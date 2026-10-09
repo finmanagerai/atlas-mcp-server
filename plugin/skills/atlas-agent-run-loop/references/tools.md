@@ -1,58 +1,8 @@
-# The tools behind this skill (12)
+# The tools behind this skill (8)
 
 GENERATED from the live server; do not edit by hand. Every field each
 tool accepts. Nothing here is required unless the table says so: it is
 what is possible.
-
-## `Workflow-Create`
-
-🟡 adds. Create a workflow (a recurring AI setup) on the caller's account, saved EXACTLY as supplied.
-
-| Field | Type | Needed | Default |
-|---|---|---|---|
-| `name` | string | no |  |
-| `schedule` | string | no |  |
-| `timezone` | string | no | `"US/Eastern"` |
-| `tools` | array | no |  |
-| `output_tools` | array | no |  |
-| `tool_params` | object | no |  |
-| `instruction` | string | no |  |
-| `output_schema` | object | no |  |
-| `snaptrade_account_id` | string | no |  |
-| `status` | string | no | `"paused"` |
-| `visibility` | string | no | `"private"` |
-| `trigger_source` | string | no | `"cron"` |
-| `run_once_at` | array | no |  |
-| `alert_id` | string | no |  |
-| `alert_ids` | array | no |  |
-| `alert_creator_id` | string | no |  |
-| `alert_creator_ids` | array | no |  |
-| `notify_discord_dm` | boolean | no |  |
-| `purpose` | string | no |  |
-| `alert_max_runs_per_day` | integer | no |  |
-| `notification_format` | string | no |  |
-| `journal_enabled` | boolean | no |  |
-| `journal_instruction` | string | no |  |
-| `journal_allow_prompt_edit` | boolean | no |  |
-| `journal_cadences` | array | no |  |
-| `journal_run_at` | string | no |  |
-| `journal_mode` | string | no |  |
-| `ui_schema` | object | no |  |
-| `auto_accept_updates` | boolean | no |  |
-| `type` | string | no |  |
-| `is_template` | boolean | no |  |
-| `parent_id` | string | no |  |
-
-## `Workflow-Update`
-
-🔴 acts. Update fields on an existing workflow owned by the caller.
-
-| Field | Type | Needed | Default |
-|---|---|---|---|
-| `workflow_id` | string | yes |  |
-| `patch` | object | yes |  |
-| `suggest` | boolean | no | `false` |
-| `note` | string | no | `""` |
 
 ## `Workflow-Agent-Waiting-Runs`
 
@@ -81,18 +31,6 @@ Output: { waiting: [ {waiting_id, workflow_id, workflow_name, started_by, what_s
 |---|---|---|---|
 | `workflow_id` | string | yes |  |
 | `text` | string | yes |  |
-
-The tool's own description, in full:
-
-````text
-Say what you are doing on a run you have not handed in yet, so the person sees it on the workflow's card while you work. Optional, and it changes nothing but that one line: it starts nothing, places nothing and costs nothing.
-
-For a workflow you registered to run yourself. Call it as often as the step changes ("Reading the options chain", "Checking the 5 minute trend"). The card shows the newest line with your name in front. The line is cleared when you hand the run in, and by itself after about twenty minutes of silence.
-
-Args:
-  workflow_id: the workflow you are working on.
-  text: one short line, in plain words. Cut at 140 characters.
-````
 
 ## `Workflow-Agent-Hand-In-Run`
 
@@ -153,6 +91,17 @@ Example (nothing to do):
 | `limit` | integer | no | `25` |
 | `platform` | string | no | `"other"` |
 
+## `List-Trading-Triggers`
+
+🟢 reads. List the user's trading triggers — watching (is_active=true), paused, and saved PREVIEWS (is_active=false with rule._preview).
+
+| Field | Type | Needed | Default |
+|---|---|---|---|
+| `is_active` | boolean | no |  |
+| `symbol` | string | no |  |
+| `limit` | integer | no | `50` |
+| `platform` | string | no | `"other"` |
+
 ## `Workflow-Review`
 
 🔴 acts. A workflow set to "review before it places" holds each run until somebody approves it.
@@ -165,43 +114,13 @@ Example (nothing to do):
 | `reasoning` | string | no |  |
 | `triggers` | array | no |  |
 
-## `Trigger-Workflow-Schema`
+## `Workflow-Update`
 
-🟢 reads. Fetch the canonical schema for AI trigger workflows.
-
-Takes nothing.
-
-## `List-Alerts`
-
-🟢 reads. List the caller's alerts.
+🔴 acts. Update fields on an existing workflow owned by the caller.
 
 | Field | Type | Needed | Default |
 |---|---|---|---|
-| `active_only` | boolean | no | `true` |
-| `platform` | string | no | `"other"` |
-
-## `Create-Alert`
-
-🔴 acts. Create a streaming alert that DMs the user on Discord (and optionally runs a workflow / arms a trigger / places an order) when a condition matches. ⚠️ FIRST call **List-Alert-Types** — it returns the live JSON catalog of every alert_type, its conditions, and a worked example.
-
-| Field | Type | Needed | Default |
-|---|---|---|---|
-| `name` | string | yes |  |
-| `symbol` | string | no |  |
-| `alert_type` | string | no | `"flow"` |
-| `stream_type` | string | no | `"flow_trades"` |
-| `conditions` | object | no |  |
-| `notify_discord` | boolean | no | `true` |
-| `workflow_id` | string | no |  |
-| `cooldown_seconds` | integer | no | `60` |
-| `expires_at` | string | no |  |
-| `on_fire` | object | no |  |
-| `is_active` | boolean | no | `true` |
-| `notes` | string | no |  |
-| `created_by_workflow_id` | string | no |  |
-
-## `Broker-Connections`
-
-🟢 reads. List all connected brokerage accounts for the authenticated user.
-
-Takes nothing.
+| `workflow_id` | string | yes |  |
+| `patch` | object | yes |  |
+| `suggest` | boolean | no | `false` |
+| `note` | string | no | `""` |

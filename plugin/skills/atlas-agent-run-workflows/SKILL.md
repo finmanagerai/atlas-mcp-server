@@ -82,7 +82,7 @@ your own scheduler wakes you.
       "started_by": "alert",
       "what_started_it": "the alert \"SPY over 600\" went off",
       "alert_message": "SPY crossed 600.02",
-      "waiting_since": "2026-11-03T14:31:07+00:00",
+      "waiting_since": "2026-11-03T09:31:07-05:00",
       "seconds_waiting": 95,
       "seconds_left": 3505
     }
@@ -99,9 +99,13 @@ in costs nothing.
 **You keep the time.** Run whenever your own schedule says, and hand in the
 result. Set `trigger_source: "manual"` so nothing on Atlas starts it.
 
-How quickly you act on an alert is how often you ask. If you cannot wake
-yourself at all, say so: the person may prefer an ordinary workflow, which
-Atlas runs the moment the alert goes off.
+Times in an answer are Eastern. Say them to the person in their own time.
+
+How quickly you act on an alert is how often you ask. The
+`atlas-agent-run-loop` skill sets up the wake-up that does the asking, and
+`atlas-agent-run-loop-test` proves it fires with nobody prompting you. If you
+cannot wake yourself at all, say so: the person may prefer an ordinary
+workflow, which Atlas runs the moment the alert goes off.
 
 ### 3. Do the run, and hand it in
 

@@ -175,6 +175,40 @@
       "forms": {
         "trade-card.json": "trigger_workflow_schema"
       }
+    },
+    "atlas-agent-run-loop": {
+      "tools": [
+        "Workflow-Agent-Waiting-Runs",
+        "Workflow-Agent-Report-Progress",
+        "Workflow-Agent-Hand-In-Run",
+        "Workflow-Open",
+        "Workflow-Logs",
+        "List-Trading-Triggers",
+        "Workflow-Review",
+        "Workflow-Update"
+      ],
+      "full": [
+        "Workflow-Agent-Waiting-Runs",
+        "Workflow-Agent-Hand-In-Run"
+      ]
+    },
+    "atlas-agent-run-loop-test": {
+      "tools": [
+        "Workflow-Create",
+        "Workflow-Update",
+        "Workflow-Run",
+        "Workflow-Agent-Waiting-Runs",
+        "Workflow-Agent-Report-Progress",
+        "Workflow-Agent-Hand-In-Run",
+        "Workflow-Logs",
+        "Workflow-Delete",
+        "Create-Alert",
+        "Delete-Alert"
+      ],
+      "full": [
+        "Workflow-Agent-Waiting-Runs",
+        "Workflow-Agent-Hand-In-Run"
+      ]
     }
   }
 }

@@ -115,7 +115,7 @@ Ask: "Show me a quote for SPY." If a price comes back, you are connected.
 ## The plugin
 
 A plugin is the server plus **skills**: short guides that tell an assistant
-what is possible with Atlas and show it templates to start from. Seven come
+what is possible with Atlas and show it templates to start from. Nine come
 with it:
 
 | Skill | What it covers |
@@ -127,6 +127,8 @@ with it:
 | `atlas-signals` | Posting, reading and taking plays |
 | `atlas-triggers-and-trades` | Direct triggers, linked trades (either/or and one-starts-the-other), orders, and managing an open trade |
 | `atlas-agent-run-workflows` | A workflow your own assistant runs: it registers it, picks up the runs that are waiting, and hands in what it decided |
+| `atlas-agent-run-loop` | The loop that wakes your assistant by itself: the wake-up, a check that costs nothing when no run is waiting, and the stages of one run |
+| `atlas-agent-run-loop-test` | Proving that loop works with a workflow that cannot trade: the tools, the assistant waking by itself, and a run started by a schedule or an alert |
 
 Each skill says what is possible, not what you must do. The lists of fields
 inside them are written from the live server, so they match it.

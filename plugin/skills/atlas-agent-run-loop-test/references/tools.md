@@ -1,4 +1,4 @@
-# The tools behind this skill (12)
+# The tools behind this skill (10)
 
 GENERATED from the live server; do not edit by hand. Every field each
 tool accepts. Nothing here is required unless the table says so: it is
@@ -54,6 +54,15 @@ what is possible.
 | `suggest` | boolean | no | `false` |
 | `note` | string | no | `""` |
 
+## `Workflow-Run`
+
+🔴 acts. Run one of the caller's workflows once, now, instead of waiting for its schedule or alert.
+
+| Field | Type | Needed | Default |
+|---|---|---|---|
+| `workflow_id` | string | yes |  |
+| `form_answers` | object | no |  |
+
 ## `Workflow-Agent-Waiting-Runs`
 
 🟢 reads. List the runs that are waiting for you, the agent, to do.
@@ -81,18 +90,6 @@ Output: { waiting: [ {waiting_id, workflow_id, workflow_name, started_by, what_s
 |---|---|---|---|
 | `workflow_id` | string | yes |  |
 | `text` | string | yes |  |
-
-The tool's own description, in full:
-
-````text
-Say what you are doing on a run you have not handed in yet, so the person sees it on the workflow's card while you work. Optional, and it changes nothing but that one line: it starts nothing, places nothing and costs nothing.
-
-For a workflow you registered to run yourself. Call it as often as the step changes ("Reading the options chain", "Checking the 5 minute trend"). The card shows the newest line with your name in front. The line is cleared when you hand the run in, and by itself after about twenty minutes of silence.
-
-Args:
-  workflow_id: the workflow you are working on.
-  text: one short line, in plain words. Cut at 140 characters.
-````
 
 ## `Workflow-Agent-Hand-In-Run`
 
@@ -134,15 +131,6 @@ Example (nothing to do):
   { "workflow_id": "<id>", "reasoning": "Back under the level. Standing aside.", "act": false }
 ````
 
-## `Workflow-Open`
-
-🟢 reads. Show the caller's workflows.
-
-| Field | Type | Needed | Default |
-|---|---|---|---|
-| `workflow_id` | string | no |  |
-| `platform` | string | no | `"other"` |
-
 ## `Workflow-Logs`
 
 🟢 reads. Return recent run logs for a workflow the caller owns.
@@ -153,32 +141,13 @@ Example (nothing to do):
 | `limit` | integer | no | `25` |
 | `platform` | string | no | `"other"` |
 
-## `Workflow-Review`
+## `Workflow-Delete`
 
-🔴 acts. A workflow set to "review before it places" holds each run until somebody approves it.
+🟠 changes. Permanently delete a workflow owned by the caller.
 
 | Field | Type | Needed | Default |
 |---|---|---|---|
 | `workflow_id` | string | yes |  |
-| `action` | string | no | `"show"` |
-| `review_id` | string | no | `""` |
-| `reasoning` | string | no |  |
-| `triggers` | array | no |  |
-
-## `Trigger-Workflow-Schema`
-
-🟢 reads. Fetch the canonical schema for AI trigger workflows.
-
-Takes nothing.
-
-## `List-Alerts`
-
-🟢 reads. List the caller's alerts.
-
-| Field | Type | Needed | Default |
-|---|---|---|---|
-| `active_only` | boolean | no | `true` |
-| `platform` | string | no | `"other"` |
 
 ## `Create-Alert`
 
@@ -200,8 +169,12 @@ Takes nothing.
 | `notes` | string | no |  |
 | `created_by_workflow_id` | string | no |  |
 
-## `Broker-Connections`
+## `Delete-Alert`
 
-🟢 reads. List all connected brokerage accounts for the authenticated user.
+🟠 changes. Switch an alert off and hide it — one, or a whole pile at once.
 
-Takes nothing.
+| Field | Type | Needed | Default |
+|---|---|---|---|
+| `alert_id` | string | no | `""` |
+| `alert_ids` | array | no |  |
+| `purge` | boolean | no | `false` |
