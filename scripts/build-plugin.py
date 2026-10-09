@@ -70,6 +70,10 @@ def check() -> list[str]:
     face = manifest["extensions"]["com.openai"]["interface"]
     if manifest.get("name") != OPENAI_PLUGIN_NAME:
         wrong.append(f"plugin.json name is {manifest.get('name')!r}; OpenAI only accepts {OPENAI_PLUGIN_NAME!r}")
+    # "Value must be an absolute `https://` URL" (a mailto: link was refused, 2026-10-09).
+    for key in ("websiteURL", "supportURL", "privacyPolicyURL", "termsOfServiceURL"):
+        if key in face and not str(face[key]).startswith("https://"):
+            wrong.append(f"plugin.json {key} is {face[key]!r}; OpenAI only accepts an https:// address")
     if face.get("category") not in OPENAI_CATEGORIES:
         wrong.append(f"plugin.json category is {face.get('category')!r}; OpenAI accepts one of {sorted(OPENAI_CATEGORIES)}")
     for key, most in (("displayName", 30), ("shortDescription", 30), ("longDescription", 4000)):
