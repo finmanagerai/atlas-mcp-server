@@ -1,6 +1,6 @@
 {
   "$schema": "https://agent-plugins.org/schemas/1.0.0/plugin.schema.json",
-  "name": "mindvest-atlas",
+  "name": "app-699926e1ef3c8191b1da3adb6ba431b7",
   "version": "1.2.0",
   "description": "Tools for AI agents to scan options flow, analyze real-time stock market data, and build investing and trading workflows that Atlas carries out in your own broker account.",
   "author": {

@@ -29,6 +29,11 @@ DIST = os.path.join(ROOT, "dist")
 # What each archive takes from plugin/ (top-level names).
 CHATGPT = {"plugin.json", "mcp.json", "skills", "assets"}
 CLAUDE_CODE = {".claude-plugin", ".mcp.json", "skills"}
+# OpenAI only takes an upload whose plugin.json `name` is the id of the plugin
+# it replaces ("Plugin name must match the existing plugin", 2026-10-09). This
+# is that plugin's id; the name people see is `displayName`. Claude Code reads
+# its own file (.claude-plugin/plugin.json), which keeps the readable name.
+OPENAI_PLUGIN_NAME = "app-699926e1ef3c8191b1da3adb6ba431b7"
 # Never shipped, whoever asks.
 NEVER = {".DS_Store", "__pycache__", ".git"}
 SECRET_WORDS = ("Bearer ", "api_key", "apikey", "secret", "password", "token=")
@@ -56,6 +61,8 @@ def check() -> list[str]:
     wrong = []
     manifest = json.load(open(os.path.join(SRC, "plugin.json")))
     face = manifest["extensions"]["com.openai"]["interface"]
+    if manifest.get("name") != OPENAI_PLUGIN_NAME:
+        wrong.append(f"plugin.json name is {manifest.get('name')!r}; OpenAI only accepts {OPENAI_PLUGIN_NAME!r}")
     for key, most in (("displayName", 30), ("shortDescription", 30), ("longDescription", 4000)):
         if len(face.get(key) or "") > most:
             wrong.append(f"plugin.json {key} is {len(face[key])} characters; the most is {most}")
