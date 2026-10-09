@@ -3,17 +3,17 @@
 GENERATED from the live server. Do not edit by hand: it is rewritten from
 the same list the server hands to every client, so it cannot fall behind.
 
-157 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
+160 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
 ones your client shows (some add a prefix of their own, such as `mcp__atlas__`).
 
 Each tool says what it can do at its worst, and your client uses that to
 decide when to ask you first:
 
-- 🟢 **reads** (94): looks something up and changes nothing.
-- 🟡 **adds** (15): makes something new of yours (a preview, a
+- 🟢 **reads** (95): looks something up and changes nothing.
+- 🟡 **adds** (16): makes something new of yours (a preview, a
   folder, a copy) and touches nothing else.
 - 🟠 **changes** (19): changes or removes something of yours.
-- 🔴 **acts** (29): can send or change a real order, start a run,
+- 🔴 **acts** (30): can send or change a real order, start a run,
   or change what other people see. Only on your say-so.
 
 ## Stocks
@@ -188,6 +188,9 @@ decide when to ask you first:
 | Tool | | What it does |
 |---|---|---|
 | `Workflow-Abort` | 🟠 changes | Stop a workflow run that is in progress right now. |
+| `Workflow-Agent-Hand-In-Run` | 🔴 acts | Hand in what you decided for one run of a workflow you run yourself. |
+| `Workflow-Agent-Report-Progress` | 🟡 adds | Say what you are doing on a run you have not handed in yet, so the person sees it on the workflow's card while you work. |
+| `Workflow-Agent-Waiting-Runs` | 🟢 reads | List the runs that are waiting for you, the agent, to do. |
 | `Workflow-Apply-Updates` | 🟠 changes | Manually pull the latest parent author edits into an imported workflow that has auto_accept_updates=false. |
 | `Workflow-Collab-Find` | 🟢 reads | Find a person on Atlas to share a workflow with, by name or username. |
 | `Workflow-Collab-Remove` | 🟠 changes | Take somebody off your workflow, or leave one you were added to. |

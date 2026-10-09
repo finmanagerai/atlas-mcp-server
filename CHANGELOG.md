@@ -4,6 +4,15 @@ All notable changes to the public Atlas MCP registry artifacts in this repositor
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Plugin 1.1.0 — 2026-10-09
+
+### Added
+- `atlas-agent-run-workflows`: a workflow your own assistant runs. It registers the workflow, asks Atlas what runs are waiting, and hands in what it decided; Atlas checks it, holds it for review or places it, sends it to followers and logs it. With a step-by-step account of what Atlas does with a run.
+- `atlas-triggers-and-trades` covers linked trades: either/or pairs and one-starts-the-other, with templates.
+
+### Changed
+- `docs/tools.md`: 160 tools. The marketplace tools and two collaborator tools are gone; three were added for workflows an assistant runs.
+
 ## Plugin 1.0.3 — 2026-10-09
 
 ### Changed

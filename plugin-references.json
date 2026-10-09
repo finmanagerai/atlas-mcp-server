@@ -3,58 +3,178 @@
   "skills": {
     "atlas-market-data": {
       "tools": [
-        "Options-Flow", "Options-Flow-Contract", "Unusual-Flow-Ratio", "Put-Call-Ratio",
-        "Top-Volume-and-OI-Contracts", "Volume-and-OI-Charts",
-        "Stock-Quote", "Price-Data-OHLCV", "Multi-Timeframe-Price-Overview", "Price-Chart",
-        "Multi-Chart-View", "Chart-Vision-Analysis", "Ticker-Symbol-Lookup",
-        "Options-Chain", "Single-Option-Quote", "Option-Expiration-Dates",
-        "Historical-Options-Chain", "Historical-Contract-Greeks",
-        "Greek-Exposure-Single-Expiration", "Greek-Exposure-Multi-Expiration",
-        "Greek-Exposure-Heatmap", "Net-Exposure-Charts",
-        "Earnings-Calendar", "Earnings-Dates", "Financial-Metrics", "Income-Statement",
-        "Balance-Sheet", "EPS-Estimates", "Revenue-Estimates", "Analyst-Price-Targets",
-        "SEC-Filings", "Insider-Transactions", "Institutional-Holders", "Web-Search"
+        "Options-Flow",
+        "Options-Flow-Contract",
+        "Unusual-Flow-Ratio",
+        "Put-Call-Ratio",
+        "Top-Volume-and-OI-Contracts",
+        "Volume-and-OI-Charts",
+        "Stock-Quote",
+        "Price-Data-OHLCV",
+        "Multi-Timeframe-Price-Overview",
+        "Price-Chart",
+        "Multi-Chart-View",
+        "Chart-Vision-Analysis",
+        "Ticker-Symbol-Lookup",
+        "Options-Chain",
+        "Single-Option-Quote",
+        "Option-Expiration-Dates",
+        "Historical-Options-Chain",
+        "Historical-Contract-Greeks",
+        "Greek-Exposure-Single-Expiration",
+        "Greek-Exposure-Multi-Expiration",
+        "Greek-Exposure-Heatmap",
+        "Net-Exposure-Charts",
+        "Earnings-Calendar",
+        "Earnings-Dates",
+        "Financial-Metrics",
+        "Income-Statement",
+        "Balance-Sheet",
+        "EPS-Estimates",
+        "Revenue-Estimates",
+        "Analyst-Price-Targets",
+        "SEC-Filings",
+        "Insider-Transactions",
+        "Institutional-Holders",
+        "Web-Search"
       ],
-      "full": ["Options-Flow"]
+      "full": [
+        "Options-Flow"
+      ]
     },
     "atlas-workflows": {
       "tools": [
-        "Trigger-Workflow-Schema", "Workflow-Preview", "Workflow-Create", "Workflow-Update",
-        "Workflow-List", "Workflow-Open", "Workflow-Run", "Workflow-Review", "Workflow-Abort",
-        "Workflow-Logs", "Workflow-Performance", "Workflow-Journal", "Workflow-History",
-        "Workflow-Restore", "Workflow-Delete", "Workflow-Discover", "Workflow-Import",
-        "Workflow-Follow", "Workflow-Folder-List", "Workflow-Folder-Create", "Workflow-Folder-Move"
+        "Trigger-Workflow-Schema",
+        "Workflow-Preview",
+        "Workflow-Create",
+        "Workflow-Update",
+        "Workflow-List",
+        "Workflow-Open",
+        "Workflow-Run",
+        "Workflow-Review",
+        "Workflow-Abort",
+        "Workflow-Logs",
+        "Workflow-Performance",
+        "Workflow-Journal",
+        "Workflow-History",
+        "Workflow-Restore",
+        "Workflow-Delete",
+        "Workflow-Discover",
+        "Workflow-Import",
+        "Workflow-Follow",
+        "Workflow-Folder-List",
+        "Workflow-Folder-Create",
+        "Workflow-Folder-Move"
       ],
-      "full": ["Workflow-Create", "Workflow-Update", "Workflow-Journal"],
-      "forms": { "trade-card.json": "trigger_workflow_schema" }
+      "full": [
+        "Workflow-Create",
+        "Workflow-Update",
+        "Workflow-Journal"
+      ],
+      "forms": {
+        "trade-card.json": "trigger_workflow_schema"
+      }
     },
     "atlas-signals": {
       "tools": [
-        "Signal-Schema", "Signal-Groups", "Signal-Post", "Signal-Update", "Signal-Delete",
-        "Signal-List", "Signal-Show", "Signal-Take", "Signal-My-Order", "Signal-Pending",
-        "Signal-Answer", "Signal-Discover", "Signal-Follow", "Signal-Trade-Settings",
-        "Signal-Group-Create", "Signal-Group-Update", "Signal-Group-Performance"
+        "Signal-Schema",
+        "Signal-Groups",
+        "Signal-Post",
+        "Signal-Update",
+        "Signal-Delete",
+        "Signal-List",
+        "Signal-Show",
+        "Signal-Take",
+        "Signal-My-Order",
+        "Signal-Pending",
+        "Signal-Answer",
+        "Signal-Discover",
+        "Signal-Follow",
+        "Signal-Trade-Settings",
+        "Signal-Group-Create",
+        "Signal-Group-Update",
+        "Signal-Group-Performance"
       ],
-      "full": ["Signal-Post", "Signal-Take", "Signal-Follow"],
-      "forms": { "play.json": "signal_schema" }
+      "full": [
+        "Signal-Post",
+        "Signal-Take",
+        "Signal-Follow"
+      ],
+      "forms": {
+        "play.json": "signal_schema"
+      }
     },
     "atlas-alerts": {
       "tools": [
-        "List-Alert-Types", "Preview-Alert", "Create-Alert", "Update-Alert", "Delete-Alert",
-        "List-Alerts", "Alert-Fires"
+        "List-Alert-Types",
+        "Preview-Alert",
+        "Create-Alert",
+        "Update-Alert",
+        "Delete-Alert",
+        "List-Alerts",
+        "Alert-Fires"
       ],
-      "full": ["Create-Alert", "Update-Alert"],
-      "forms": { "alert-types.json": "list_alert_types" }
+      "full": [
+        "Create-Alert",
+        "Update-Alert"
+      ],
+      "forms": {
+        "alert-types.json": "list_alert_types"
+      }
     },
     "atlas-triggers-and-trades": {
       "tools": [
-        "Broker-Connections", "Account-Balances", "Account-Holdings", "All-Account-Holdings",
-        "Preview-Trading-Trigger", "Create-Trading-Trigger", "Update-Trading-Trigger",
-        "Delete-Trading-Trigger", "List-Trading-Triggers", "List-Fired-Triggers", "Reactivate-Trigger",
-        "Preview-Order", "Preview-Multiple-Orders", "Place-Order", "Cancel-Order", "List-Preview-Orders",
-        "Trade-Close", "Trade-Take-Profit", "Trade-Edit-Exit", "Trade-Edit-Entry", "Trade-Cancel-Entry"
+        "Broker-Connections",
+        "Account-Balances",
+        "Account-Holdings",
+        "All-Account-Holdings",
+        "Preview-Trading-Trigger",
+        "Create-Trading-Trigger",
+        "Update-Trading-Trigger",
+        "Delete-Trading-Trigger",
+        "List-Trading-Triggers",
+        "List-Fired-Triggers",
+        "Reactivate-Trigger",
+        "Preview-Order",
+        "Preview-Multiple-Orders",
+        "Place-Order",
+        "Cancel-Order",
+        "List-Preview-Orders",
+        "Trade-Close",
+        "Trade-Take-Profit",
+        "Trade-Edit-Exit",
+        "Trade-Edit-Entry",
+        "Trade-Cancel-Entry"
       ],
-      "full": ["Create-Trading-Trigger", "Preview-Order", "Place-Order"]
+      "full": [
+        "Create-Trading-Trigger",
+        "Preview-Order",
+        "Place-Order"
+      ]
+    },
+    "atlas-agent-run-workflows": {
+      "tools": [
+        "Workflow-Create",
+        "Workflow-Update",
+        "Workflow-Agent-Waiting-Runs",
+        "Workflow-Agent-Report-Progress",
+        "Workflow-Agent-Hand-In-Run",
+        "Workflow-Open",
+        "Workflow-Logs",
+        "Workflow-Review",
+        "Trigger-Workflow-Schema",
+        "List-Alerts",
+        "Create-Alert",
+        "Broker-Connections"
+      ],
+      "full": [
+        "Workflow-Agent-Waiting-Runs",
+        "Workflow-Agent-Report-Progress",
+        "Workflow-Agent-Hand-In-Run"
+      ],
+      "forms": {
+        "trade-card.json": "trigger_workflow_schema"
+      }
     }
   }
 }
