@@ -1,6 +1,6 @@
 {
   "name": "mindvest-atlas",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Tools for AI agents to scan options flow, analyze real-time stock market data, and build investing and trading workflows that Atlas carries out in your own broker account.",
   "author": {
     "name": "FinManager AI",
