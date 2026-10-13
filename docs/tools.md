@@ -159,7 +159,7 @@ decide when to ask you first:
 | `Signal-List` | 🟢 reads | Read the plays on the community board, or the private ones. |
 | `Signal-My-Order` | 🔴 acts | Change or cancel YOUR OWN order on somebody else's play, while it is still waiting to enter. |
 | `Signal-Pending` | 🟢 reads | The plays sent to you that are waiting for your answer: from the groups you pay for or follow with "manual" chosen. |
-| `Signal-Post` | 🔴 acts | Post a trade play — to the community board, or to one of your groups. |
+| `Signal-Post` | 🔴 acts | Publish one trade idea, called a play, under the user's name: the stock or option contract, the entry price, the profit targets and the stop. |
 | `Signal-Schema` | 🟢 reads | READ THIS BEFORE POSTING OR TAKING A PLAY. |
 | `Signal-Show` | 🟢 reads | Show ONE play as a card, the same one the Signals tab renders. |
 | `Signal-Take` | 🔴 acts | Take a play: place it in YOUR OWN account, now. |

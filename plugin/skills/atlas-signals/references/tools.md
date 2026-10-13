@@ -18,7 +18,7 @@ Takes nothing.
 
 ## `Signal-Post`
 
-🔴 acts. Post a trade play — to the community board, or to one of your groups.
+🔴 acts. Publish one trade idea, called a play, under the user's name: the stock or option contract, the entry price, the profit targets and the stop.
 
 | Field | Type | Needed | Default |
 |---|---|---|---|
@@ -54,12 +54,13 @@ Takes nothing.
 The tool's own description, in full:
 
 ````text
-Post a trade play — to the community board, or to one of your groups.
+Publish one trade idea, called a play, under the user's name: the stock
+    or option contract, the entry price, the profit targets and the stop. It
+    is posted to the public community board, or to one of the user's own
+    groups.
 
-    WHAT IT DOES. A play is one trade idea written down in full: the contract
-    (or stock), where to get in, where to take profit, where to get out. This
-    tool publishes one under the user's name, where the people who follow that
-    board or group see it and can take it. Use it only when the user asks to
+    WHAT IT DOES. The people who follow that board or group see the play and
+    can take it. Use it only when the user asks to
     post a play, and post what they said. It is a real action with real
     effects: the play is visible to other people at once, followers who chose
     automatic taking get an order placed for them, and if the user is in the
