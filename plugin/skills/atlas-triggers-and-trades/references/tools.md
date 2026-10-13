@@ -304,7 +304,7 @@ ACCOUNT RULE: If the user has more than one connected broker account, you MUST s
 
 ## `Trade-Edit-Exit`
 
-🔴 acts. Move a LIVE trade's stop or targets — the pencil on the trade card, from the chat, the CLI or the API (owner, 2026-09-10).
+🔴 acts. Move a LIVE trade's stop or targets — the pencil on the trade card, from the chat, the CLI or the API.
 
 | Field | Type | Needed | Default |
 |---|---|---|---|

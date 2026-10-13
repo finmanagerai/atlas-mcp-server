@@ -6,7 +6,7 @@ what is possible.
 
 ## `Options-Flow`
 
-🟢 reads. Return options-flow trades — historical record across stored streams AND Polygon REST.
+🟢 reads. Return options-flow trades — a historical record of the trades that printed.
 
 | Field | Type | Needed | Default |
 |---|---|---|---|
@@ -43,8 +43,8 @@ what is possible.
 The tool's own description, in full:
 
 ````text
-Return options-flow trades — historical record across stored
-    streams AND Polygon REST. Not a live feed.
+Return options-flow trades — a historical record of the trades
+    that printed. Not a live feed.
 
     GIVE IT TIME. A big name (SPY, QQQ, SPX, NVDA) across several expiries, a
     wide date range, or a cold read can take several minutes, up to about ten.
@@ -53,17 +53,16 @@ Return options-flow trades — historical record across stored
     shorter date range to make it quick.
 
     ── Three modes (chosen by what you pass) ────────────────────────
-      1. **Top-N feed** — `symbol` omitted. Iterates the streamed core
-         universe (read from `stream_subscription` table; no hardcoded
-         list), pulls each ticker's prints for the current trading day,
+      1. **Top-N feed** — `symbol` omitted. Iterates the tickers Atlas
+         streams, pulls each ticker's prints for the current trading day,
          ranks by **premium descending**. Returns the biggest
          block/sweep prints across the universe. Symbols you've queried
          today bubble into the pool too (and retire overnight).
 
       2. **Single-symbol, no specific contract** — `symbol=X` with no
-         `expiration_date`/`strike`/`option_symbol`. Reads stored
-         streaming data first; if empty (e.g. off-universe ticker like
-         INTC), **automatically falls back to Polygon REST** with
+         `expiration_date`/`strike`/`option_symbol`. Reads the recorded
+         flow first; if empty (e.g. a ticker Atlas does not stream, like
+         INTC), **automatically falls back** to a
          multi-expiry historical scan: every expiration within the
          next 30 days, top-volume strikes per expiry, trades + matched
          historical NBBO for real `bs`/`side` derivation. Set
@@ -140,7 +139,7 @@ Return options-flow trades — historical record across stored
     ── Non-streamed tickers and staleness ───────────────────────────
       For tickers we don't stream (INTC, GME, etc.) the historical
       fallback gives a snapshot at query time — every call is a fresh
-      Polygon pull, no cache. Querying again later in the same day
+      pull, no cache. Querying again later in the same day
       surfaces any new prints. The next trading day, the symbol
       automatically retires from the top-N pool unless re-queried —
       so yesterday's block doesn't keep showing as #1 today. To pull
@@ -154,7 +153,7 @@ Return options-flow trades — historical record across stored
                          meant "trades on this date" — use from_date.
         strike: Optional strike filter (with expiration_date).
         side: Optional call/put filter on results.
-        option_symbol: Optional Polygon-style option symbol filter.
+        option_symbol: Optional option contract symbol filter.
         from_date: Trading-day lower bound (YYYY-MM-DD) — the date the
                    trade printed, NOT the contract's expiry. Defaults to
                    the current trading day (anchored 09:30 ET).
@@ -390,7 +389,7 @@ histogram has material to aggregate without a second call.
 
 ## `Single-Option-Quote`
 
-🟢 reads. Fetch live option contract quote(s) from Polygon /quote.
+🟢 reads. Fetch live option contract quote(s).
 
 | Field | Type | Needed | Default |
 |---|---|---|---|

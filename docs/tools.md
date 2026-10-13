@@ -32,7 +32,7 @@ decide when to ask you first:
 | `Historical-Options-Chain` | 🟢 reads | The options chain as it stood on a PAST date: daily prices and VOLUME. |
 | `Option-Expiration-Dates` | 🟢 reads | List available option expiration dates for a symbol. |
 | `Options-Chain` | 🟢 reads | Full options chain — many strikes and sides for one or more expirations. |
-| `Single-Option-Quote` | 🟢 reads | Fetch live option contract quote(s) from Polygon /quote. |
+| `Single-Option-Quote` | 🟢 reads | Fetch live option contract quote(s). |
 
 ## Greek Exposure
 
@@ -48,7 +48,7 @@ decide when to ask you first:
 
 | Tool | | What it does |
 |---|---|---|
-| `Options-Flow` | 🟢 reads | Return options-flow trades — historical record across stored streams AND Polygon REST. |
+| `Options-Flow` | 🟢 reads | Return options-flow trades — a historical record of the trades that printed. |
 | `Options-Flow-Contract` | 🟢 reads | Per-hour premium histogram for a single options contract. |
 | `Top-Volume-and-OI-Contracts` | 🟢 reads | Ranked list of highest-volume or highest-open-interest contracts. |
 | `Unusual-Flow-Ratio` | 🟢 reads | Net call-vs-put POSITIONING from one session of unusual options flow. |
@@ -139,7 +139,7 @@ decide when to ask you first:
 | `Trade-Cancel-Entry` | 🔴 acts | Take an order OFF before it fills. |
 | `Trade-Close` | 🔴 acts | Close a position NOW — everything still open on it, at market. |
 | `Trade-Edit-Entry` | 🔴 acts | Move the price an order is waiting to enter at, or turn back on an order that was taken off before it filled. |
-| `Trade-Edit-Exit` | 🔴 acts | Move a LIVE trade's stop or targets — the pencil on the trade card, from the chat, the CLI or the API (owner, 2026-09-10). |
+| `Trade-Edit-Exit` | 🔴 acts | Move a LIVE trade's stop or targets — the pencil on the trade card, from the chat, the CLI or the API. |
 | `Trade-Take-Profit` | 🔴 acts | Sell the NEXT take-profit rung now, without waiting for its price. |
 
 ## Plays (signals)
@@ -265,7 +265,7 @@ decide when to ask you first:
 | `Delete-Alert` | 🟠 changes | Switch an alert off and hide it — one, or a whole pile at once. |
 | `List-Alert-Types` | 🟢 reads | The catalog of alert types you can create — read THIS before calling Create-Alert to learn what alerts exist and how to fill each one's conditions. |
 | `List-Alerts` | 🟢 reads | List the caller's alerts. |
-| `List-Stream-Subscriptions` | 🟢 reads | List currently active streams (flow / quote / exposure / quote). |
+| `List-Stream-Subscriptions` | 🟢 reads | List which symbols Atlas is streaming live right now, by kind of stream. |
 | `Preview-Alert` | 🟢 reads | Dry-run an alert spec without persisting or DMing. |
 | `Update-Alert` | 🔴 acts | Patch an existing alert's fields without recreating. ``updates`` accepts the same keys Create-Alert exposes (name, symbol, alert_type, stream_type, conditions… |
 
