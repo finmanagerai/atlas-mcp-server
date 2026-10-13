@@ -18,7 +18,7 @@ what is possible.
 | `tool_params` | object | no |  |
 | `instruction` | string | no |  |
 | `output_schema` | object | no |  |
-| `snaptrade_account_id` | string | no |  |
+| `broker_account_id` | string | no |  |
 | `status` | string | no | `"paused"` |
 | `visibility` | string | no | `"private"` |
 | `trigger_source` | string | no | `"cron"` |

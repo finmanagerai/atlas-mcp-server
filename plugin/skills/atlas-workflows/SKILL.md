@@ -48,7 +48,7 @@ Do not have the id? `Workflow-List` has it. Never ask the person to paste one.
 | What starts it | `trigger_source` | `cron` (a schedule), `alert`, `both`, or `manual` (only Run now) |
 | When | `schedule`, `timezone` | One line per time. `30 9 * * 1-5` repeats; `once 2026-11-03 09:35` runs that once. Eastern unless `timezone` says otherwise. `run_once_at` takes a list of dates and times and writes the lines for you |
 | Which alert | `alert_id`, `alert_ids` | From `List-Alerts`. `alert_max_runs_per_day` caps how often an alert may run it |
-| Where it trades | `snaptrade_account_id` | The broker account, from `Broker-Connections`. Needed to turn on a trading workflow |
+| Where it trades | `broker_account_id` | The broker account, from `Broker-Connections`. Needed to turn on a trading workflow |
 | On or off | `status` | `paused` (the default) or `active` |
 | Who can see it | `visibility` | `private` (the default), `unlisted`, `Atlas-public` |
 | Told when it runs | `notify_discord_dm` | `true` (the default) sends the result as a Discord message |
@@ -120,7 +120,7 @@ These are shapes to start from, not rules. Change anything.
   "trigger_source": "alert",
   "alert_id": "<an alert's id, from List-Alerts>",
   "alert_max_runs_per_day": 1,
-  "snaptrade_account_id": "<the account, from Broker-Connections>",
+  "broker_account_id": "<the account, from Broker-Connections>",
   "tools": ["Stock-Quote", "Options-Chain"],
   "tool_params": {
     "Stock-Quote": { "notes": "SPY. Confirm it is still above the level the alert watched." },

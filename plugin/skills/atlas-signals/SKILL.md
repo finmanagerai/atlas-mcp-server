@@ -41,7 +41,7 @@ who chose automatic taking get an order placed for them, and with
 | When | `enter_at`, `exit_at` | Optional times to get in by, or be out by |
 | Why, and how sure | `reason`, `score` (1 to 10) | A play with no score counts as 10 |
 | Where | `group_id` | Empty for the community board |
-| In it yourself | `trade_for_me`, `snaptrade_account_id` | Places the author's own order |
+| In it yourself | `trade_for_me`, `broker_account_id` | Places the author's own order |
 | Two trades, one idea | `second_leg`, `link_mode` | `"oco"`: whichever fills first cancels the other. `"oeo"`: the second starts only once the first fills |
 
 ### The one thing that goes wrong: units

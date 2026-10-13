@@ -32,7 +32,7 @@ answer carries the workflow's id. Keep it.
   "trigger_source": "alert",
   "alert_id": "<an alert's id, from List-Alerts>",
   "alert_max_runs_per_day": 2,
-  "snaptrade_account_id": "<the account, from Broker-Connections>",
+  "broker_account_id": "<the account, from Broker-Connections>",
   "instruction": "My own notes: buy the nearest call when SPY holds above the level on rising volume.",
   "output_schema": {
     "triggers": [

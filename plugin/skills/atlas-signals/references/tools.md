@@ -47,7 +47,7 @@ Takes nothing.
 | `called_at` | string | no | `""` |
 | `group_id` | string | no | `""` |
 | `trade_for_me` | boolean | no | `false` |
-| `snaptrade_account_id` | string | no | `""` |
+| `broker_account_id` | string | no | `""` |
 | `second_leg` | object | no |  |
 | `link_mode` | string | no | `""` |
 
@@ -242,7 +242,7 @@ Publish one trade idea, called a play, under the user's name: the stock
             at midnight New York time); groups have no limit.
         trade_for_me: Place it in YOUR OWN account too. Off unless the user says
             to take their own play.
-        snaptrade_account_id: Which account to use. Leave empty in almost every
+        broker_account_id: Which account to use. Leave empty in almost every
             case — Atlas uses the broker the user saved for posting. Pass one
             only when they name an account for this play, or when Signal-Broker
             shows they have not saved one.
@@ -318,7 +318,7 @@ Publish one trade idea, called a play, under the user's name: the stock
 | Field | Type | Needed | Default |
 |---|---|---|---|
 | `signal_id` | string | yes |  |
-| `snaptrade_account_id` | string | no | `""` |
+| `broker_account_id` | string | no | `""` |
 | `contracts` | integer | no |  |
 | `partner_contracts` | integer | no |  |
 | `late` | boolean | no | `false` |
@@ -349,7 +349,7 @@ Take a play: place it in YOUR OWN account, now. Places a real order.
 
     Args:
         signal_id: The play's id, from Signal-List.
-        snaptrade_account_id: Which account. Leave empty in almost every case —
+        broker_account_id: Which account. Leave empty in almost every case —
             Atlas uses the broker the user saved for taking plays (see
             Signal-Broker).
         contracts: How many of THIS play. Empty = the user's per-trade budget.
@@ -377,7 +377,7 @@ Take a play: place it in YOUR OWN account, now. Places a real order.
 | `cancel` | boolean | no | `false` |
 | `contracts` | integer | no |  |
 | `max_per_trade` | number | no |  |
-| `snaptrade_account_id` | string | no | `""` |
+| `broker_account_id` | string | no | `""` |
 | `exit_split` | array | no |  |
 
 ## `Signal-Pending`
@@ -410,7 +410,7 @@ Takes nothing.
 | `group_id` | string | yes |  |
 | `follow` | boolean | no | `true` |
 | `accept_mode` | string | no | `""` |
-| `snaptrade_account_id` | string | no | `""` |
+| `broker_account_id` | string | no | `""` |
 | `max_per_trade` | number | no |  |
 | `contracts` | integer | no |  |
 
@@ -438,7 +438,7 @@ Follow a public signal group (or stop following it), and set how its
         follow: True to follow (the default), False to stop. Settings are
             ignored when stopping.
         accept_mode: "auto" or "manual". Omit to leave it as it is.
-        snaptrade_account_id: The user's own broker account to place auto (and
+        broker_account_id: The user's own broker account to place auto (and
             hand) takes of this group's plays in. "default" clears it back to
             their default account. Omit to leave it as it is.
         max_per_trade: The most one play from this group may spend, in dollars.
@@ -457,7 +457,7 @@ Follow a public signal group (or stop following it), and set how its
 |---|---|---|---|
 | `group_id` | string | no | `""` |
 | `accept_mode` | string | no | `""` |
-| `snaptrade_account_id` | string | no |  |
+| `broker_account_id` | string | no |  |
 | `max_per_trade` | number | no |  |
 | `contracts` | integer | no |  |
 | `allow_author_close` | boolean | no |  |
