@@ -164,7 +164,7 @@
     "If they gave one on an option: is it the CONTRACT's price or the STOCK's? Set entry_unit.",
     "Did you ask for TARGETS and a STOP, and set tp_unit / stop_unit for them?",
     "Are they taking it themselves? Only then set trade_for_me.",
-    "Do NOT set snaptrade_account_id when they have a saved default (Signal-Broker says)."
+    "Do NOT set broker_account_id when they have a saved default (Signal-Broker says)."
   ],
   "examples": [
     {

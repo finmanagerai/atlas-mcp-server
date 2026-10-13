@@ -31,7 +31,7 @@
     "score": "On each play entry: the author's conviction, an integer 1-10. OMIT it to let the run rate each play itself, which is the default and usually right. Never 0.",
     "plays_reason": "Top-level, alongside `plays`: ONE sentence carried by every play this workflow sends. Omit it (the default) and the run writes each play's own from what it actually saw that run, which is worth more to a follower than a line written weeks earlier. Set it and that exact sentence is pinned on every play.",
     "plays_destinations": "Top-level: where the plays go. A list where \"community\" means the public board and anything else is a signal group id. Omit (the default) for the board. SEVERAL destinations is still ONE play — one signal, one tracked trade, one exit — reaching everybody across those groups; it is NOT one play per group.",
-    "trade_for_me": "On each play entry: true if the AUTHOR's own order goes in alongside the post. The account is the workflow's own broker (snaptrade_account_id), which is OPTIONAL for a play workflow — set it only if a play carries this. Never set trade_for_me on somebody's behalf: it puts real money in, and it is theirs to ask for."
+    "trade_for_me": "On each play entry: true if the AUTHOR's own order goes in alongside the post. The account is the workflow's own broker (broker_account_id), which is OPTIONAL for a play workflow — set it only if a play carries this. Never set trade_for_me on somebody's behalf: it puts real money in, and it is theirs to ask for."
   },
   "fields": [
     {
@@ -547,7 +547,7 @@
       "notify_discord": "The app's 'Send a DM when it fires' toggle (default true). Auto-suppressed if a connected workflow already DMs.",
       "notes": "Optional free-text note (top-level field, max ~2000 chars). Attach context or a directive for the workflow/task this alert triggers — e.g. 'Only go long if SPY is green on the day.' When the alert fires, the note is FORWARDED to the triggered workflow/task's agent AND shown in the alert DM. Optional; omit for none.",
       "fan_out": "Identical alerts (same type+symbol+conditions) across many users are evaluated ONCE and the DM is fanned out per subscriber.",
-      "on_fire": "Optional 'When it goes off, also…' actions (any combination): run workflows (workflow_id for one, or workflow_ids:[...] for many), run run-once tasks (task_ids:[...]), re-arm triggers (reactivate_trigger_id for one, or reactivate_trigger_ids:[...] for many), arm a NEW trigger ({\"trigger\": {symbol, snaptrade_account_id, rule}}), or place a LIVE order ({\"order\": {symbol, snaptrade_account_id, rule, \"live\": true}} — double-gated: needs live:true AND the server switch).",
+      "on_fire": "Optional 'When it goes off, also…' actions (any combination): run workflows (workflow_id for one, or workflow_ids:[...] for many), run run-once tasks (task_ids:[...]), re-arm triggers (reactivate_trigger_id for one, or reactivate_trigger_ids:[...] for many), arm a NEW trigger ({\"trigger\": {symbol, broker_account_id, rule}}), or place a LIVE order ({\"order\": {symbol, broker_account_id, rule, \"live\": true}} — double-gated: needs live:true AND the server switch).",
       "intraday_only": "Optional bool, default false. false = a change that happened while the market was SHUT still counts: the last reading of the previous session is compared against the first of this one, so an overnight/weekend move fires at the open. true = only a change DURING one session counts; the first reading of each ET day just re-arms the alert. Supported on king_node, level_approach, volume_spike, volume_shift, flow_rank, top_flow, price and contract_price. SEPARATE from the contract roll: an alert with no expiration_date pinned follows the FRONT expiry, which rolls daily, and the worker always re-baselines on a roll rather than reporting it as a move — so a roll never fires, whatever this is set to.",
       "expiration_range": "Optional how far out, on king_node / volume_spike / level_approach (a Greek wall) and flow: '0dte' (the nearest expiry; the default on exposure types), '1w', '1m', '3m', '6m' (exposure is summed across every expiry in the window; on flow it keeps only trades on contracts expiring inside it), or 'any' (flow only, the default: no filter). Set this OR expiration_date, never both."
     },
@@ -810,7 +810,7 @@
           "trigger_id": "optional: only this trigger id (omit = any of your triggers)",
           "source_workflow_id": "optional: only triggers created by this workflow or task id. Omit for any. \"none\" = only triggers no workflow or task created (your own, or a play's)",
           "signal_group_id": "optional: only triggers that came from this signal group id — any play posted to or taken from that group. Omit for any. \"none\" = only triggers that did NOT come from a signal group",
-          "snaptrade_account_id": "optional: only triggers trading through this broker account (omit = any broker)"
+          "broker_account_id": "optional: only triggers trading through this broker account (omit = any broker)"
         },
         "example": {
           "name": "Ping me when my SPY sniper trades",
