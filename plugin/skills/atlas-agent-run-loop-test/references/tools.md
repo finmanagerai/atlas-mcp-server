@@ -28,6 +28,8 @@ what is possible.
 | `alert_creator_id` | string | no |  |
 | `alert_creator_ids` | array | no |  |
 | `notify_discord_dm` | boolean | no |  |
+| `notify_phone` | boolean | no |  |
+| `notify_widget` | boolean | no |  |
 | `purpose` | string | no |  |
 | `alert_max_runs_per_day` | integer | no |  |
 | `notification_format` | string | no |  |
@@ -53,6 +55,8 @@ what is possible.
 | `patch` | object | yes |  |
 | `suggest` | boolean | no | `false` |
 | `note` | string | no | `""` |
+| `notify_phone` | boolean | no |  |
+| `notify_widget` | boolean | no |  |
 
 ## `Workflow-Run`
 

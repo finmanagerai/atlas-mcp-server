@@ -44,6 +44,8 @@ Takes nothing.
 | `alert_creator_id` | string | no |  |
 | `alert_creator_ids` | array | no |  |
 | `notify_discord_dm` | boolean | no |  |
+| `notify_phone` | boolean | no |  |
+| `notify_widget` | boolean | no |  |
 | `purpose` | string | no |  |
 | `alert_max_runs_per_day` | integer | no |  |
 | `notification_format` | string | no |  |
@@ -86,7 +88,7 @@ Args — pass each as a flag; this is the FULL field set (nothing lives only in 
     * `plays_destinations` (top-level): where they go. A list where 'community' is the public board and anything else is a signal group id (from Signal-Groups). Omit for the board. SEVERAL destinations is still ONE play — one signal, one tracked trade, one exit — reaching everybody across those groups; it is NOT one play per group.
   A play workflow needs NO broker. broker_account_id is optional there and used only by a play carrying `trade_for_me: true`, which puts the AUTHOR's own money in — never set that unless the user asked for it.
   broker_account_id: broker account id to trade in. Required to activate a trading workflow.
-  ui_schema: dict of UI/display flags stored verbatim (purpose, notify_discord_dm, notification_format are the common ones; pass any others the form uses here). Merged with the purpose/notify flags below.
+  ui_schema: dict of UI/display flags stored verbatim (purpose, notify_discord_dm, notify_phone, notify_widget, notification_format are the common ones; pass any others the form uses here). Merged with the purpose/notify flags below.
   auto_accept_updates: subscriber flag — true auto-applies the author's later edits; false holds the copy at its current revision.
   (A COPY's own size, budget and exit split, execution_overrides, are set with Workflow-Update on an imported copy, not on a fresh create: see "ON A COPY" there.)
   trigger_source: 'cron' (schedule) | 'alert' (an alert fires it) | 'both' | 'manual' (nothing fires it; the user presses Run now).
@@ -98,6 +100,8 @@ Args — pass each as a flag; this is the FULL field set (nothing lives only in 
   alert_creator_id / alert_creator_ids: an alert_creator workflow whose own alerts drive this one — the same binding the form's alert-creator picker writes. Singular for one, the list for several.
   alert_max_runs_per_day: cap on alert-driven runs/day (resets each Eastern morning). Omit / null = unlimited.
   notify_discord_dm: true (default) DMs the run result on Discord; false runs silently. Stored in ui_schema.
+  notify_phone: true sends the same message, made short, to the person's phone; false keeps it off the phone. Omit = the phone follows notify_discord_dm. Stored in ui_schema.
+  notify_widget: true (default) keeps the run's latest message, cut to a few lines, for this workflow's widget in the website's side panel; false does not. Stored in ui_schema.
   status: 'paused' (default) or 'active'.
   visibility: 'private' (default) | 'unlisted' | 'Atlas-public'.
   ui_schema.run_by: "agent" = YOU run this workflow, not Atlas. Atlas keeps the schedule, the alerts, the trade card, the checks, the orders, the followers and the log; the thinking is yours. When a run is due Atlas leaves it waiting for you (Workflow-Agent-Waiting-Runs) and you hand in what you decided (Workflow-Agent-Hand-In-Run), which uses one request each time. `tools` and `instruction` are then your own notes: Atlas does not run them. The card says who it is from; pass ui_schema.from to name your agent yourself. For a workflow that trades, sends the order to place by hand, or writes things up. Leave it out for a workflow Atlas runs, which is the usual case.
@@ -138,6 +142,8 @@ VERIFY AFTER CREATING: exit 0 / success:true means the row was WRITTEN, not that
 | `patch` | object | yes |  |
 | `suggest` | boolean | no | `false` |
 | `note` | string | no | `""` |
+| `notify_phone` | boolean | no |  |
+| `notify_widget` | boolean | no |  |
 
 The tool's own description, in full:
 
@@ -148,6 +154,8 @@ With `suggest`, ALWAYS send `note` — a sentence or two on WHY, in the user's o
 SEND ONLY WHAT YOU ARE CHANGING, in ONE call. Anything you leave out keeps the value it already has, and that holds INSIDE nested objects too, not just at the top level. To change the reasoning, send `instruction` alone; do NOT restate tools, tool_params or output_schema 'to be safe'. Restating a field you did not mean to touch is the most common way an edit damages the rest of a workflow: your copy of it replaces what is stored, so anything your copy lost is gone.
 Nested objects (output_schema, ui_schema, tool_params, execution_overrides) MERGE: a key you name is changed, a key you omit is kept, a key set to null is REMOVED. LISTS are the exception: a list you send replaces the stored list whole, because there is no unambiguous way to say 'change item 2'. So when you touch output_schema.triggers or a bracket_take_profit_levels ladder, include every item you want to keep.
 The patch accepts EVERY workflow field: name, instruction, purpose (via ui_schema), tools, output_tools (what it CALLS once it has decided — see Workflow-Create), tool_params (the note on each tool: when you ADD a tool to tools or output_tools, send its note in the same patch, see Workflow-Create for what a note says; the answer lists the ones still empty under `tools_without_notes`), output_schema (OPTIONAL — no trade is ever forced; omit/clear it to {} for a no-trade workflow; output_schema.trades_mode 'auto' turns its ONE trigger entry into a template Atlas repeats across the tickers it picks, and 'manual' — the default — means the entries ARE the trades; plays_mode does the same for `plays`. Switching a section to auto means sending exactly ONE entry for it, with symbol null; two or more is a 400. A signal_creator's plays also take a per-play `score` (1-10; omit to let the run rate them), a top-level `plays_reason` (one sentence every play carries; omit to let the run write each one) and a top-level `plays_destinations` ('community' and/or group ids — several destinations is ONE play reaching everybody across them, not one play per group)), execution_overrides (a copy's own size, budget and exit split: see ON A COPY below), broker_account_id, trigger_source, schedule, timezone, alert_id, alert_max_runs_per_day, notify_discord_dm + notification_format (via ui_schema), auto_accept_updates, status, visibility.
+notify_phone (top-level argument): true sends each run's message, made short, to the person's phone, false keeps it off; unset, the phone follows notify_discord_dm.
+notify_widget (top-level argument): true keeps each run's latest message, cut to a few lines, for this workflow's side-panel widget on the website; false does not.
 ON A COPY of somebody else's workflow, these are the person's OWN and changing them never stops the copy following its author:
   - THEIR BUDGET: execution_overrides {"budget_cents": 50000} = the most ONE trade may spend in their account, in CENTS (50000 is $500). Atlas works out how many contracts or shares fit when it buys. It replaces any size they had set.
   - THEIR SIZE instead of a budget: execution_overrides {"fixed_contracts": 2} (always 2 contracts) or {"contract_multiplier": 0.5} (half the author's count); for shares fixed_quantity / quantity_multiplier. A size and a budget are one decision: setting one clears the other.
@@ -158,7 +166,7 @@ ON A COPY of somebody else's workflow, these are the person's OWN and changing t
 trigger_source SWITCHES FREELY at any time — cron<->alert<->both<->manual — by sending trigger_source PLUS whatever it now needs (schedule for cron/both, alert_id for alert/both) in the SAME patch call. A schedule or alert_id left over from the PREVIOUS source is harmless (only the ACTIVE source is read) — you never need a separate call to clear the old one first.
 CRITICAL — NEVER build an ARRAY field (output_schema triggers/bracket_take_profit_levels, or any list) with the CLI's per-index dotted flags (--patch.output-schema.triggers.0.symbol SPY --patch.output-schema.triggers.1.symbol QQQ). The CLI's dotted-path builder ALWAYS creates a plain object for numeric segments, never a real array — it silently rewrites your list as {'0': {...}, '1': {...}}, which the dashboard then reads as empty (Array.isArray fails), looking exactly like your edit was dropped even though it saved. Instead pass the WHOLE array-containing value as ONE JSON-string flag, e.g. --patch.output-schema '{"triggers":[{"symbol":"SPY", ...},{"symbol":"QQQ", ...}]}', or call this tool directly with a real `patch` object (not the CLI) when your MCP client supports it.
 EDITING ONE TRADE FIELD (contracts, side, call/put, strike, a ladder level): the trades live in the output_schema.triggers LIST, and a list is sent whole. Workflow-Open first, take the current triggers array, change the field you mean to, and send that array back with every trade still in it. Everything OUTSIDE the list (and every other workflow field) is left alone by itself; you only need to restate the list. Call Trigger-Workflow-Schema for the exact field names.
-EDITING ONE ui_schema KNOB (e.g. just purpose, or turning review-before-it-places on with {"preview_before_place": true}, or the run form with {"run_form": {…}}): send patch.ui_schema with ONLY the key(s) you are changing (e.g. {"purpose": "analysis"}). Every other knob (notify_discord_dm, notification_format, no_subscribers, preview_before_place, run_form, the flow diagram) is left exactly as it was. Same for tool_params: {"Web-Search": {"notes": "..."}} changes that one tool's note and leaves every other tool's params untouched.
+EDITING ONE ui_schema KNOB (e.g. just purpose, or turning review-before-it-places on with {"preview_before_place": true}, or the run form with {"run_form": {…}}): send patch.ui_schema with ONLY the key(s) you are changing (e.g. {"purpose": "analysis"}). Every other knob (notify_discord_dm, notify_phone, notify_widget, notification_format, no_subscribers, preview_before_place, run_form, the flow diagram) is left exactly as it was. Same for tool_params: {"Web-Search": {"notes": "..."}} changes that one tool's note and leaves every other tool's params untouched.
 VERIFY AFTER UPDATING: a 200/success:true means the row was WRITTEN, not that it now holds what you intended — call Workflow-Open right after and confirm every field you changed reads back exactly as intended (especially any array field) BEFORE telling the user it's done.
 Args:
   workflow_id: required UUID.

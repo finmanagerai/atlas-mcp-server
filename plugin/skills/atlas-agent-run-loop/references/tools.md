@@ -124,3 +124,5 @@ Example (nothing to do):
 | `patch` | object | yes |  |
 | `suggest` | boolean | no | `false` |
 | `note` | string | no | `""` |
+| `notify_phone` | boolean | no |  |
+| `notify_widget` | boolean | no |  |
