@@ -210,5 +210,40 @@
         "Workflow-Agent-Hand-In-Run"
       ]
     }
+  },
+  "editions": {
+    "chatgpt": {
+      "dir": "plugin-chatgpt",
+      "skills": {
+        "atlas-signals": {
+          "tools": [
+            "Signal-List",
+            "Signal-Show",
+            "Signal-Groups",
+            "Signal-Pending",
+            "Signal-Discover",
+            "Signal-Group-Performance"
+          ]
+        },
+        "atlas-alerts": {
+          "tools": [
+            "List-Alert-Types",
+            "Preview-Alert",
+            "Create-Alert",
+            "Update-Alert",
+            "Delete-Alert",
+            "List-Alerts",
+            "Alert-Fires"
+          ],
+          "full": [
+            "Create-Alert",
+            "Update-Alert"
+          ],
+          "forms": {
+            "alert-types.json": "list_alert_types"
+          }
+        }
+      }
+    }
   }
 }

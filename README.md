@@ -133,6 +133,12 @@ with it:
 To have your own assistant wake itself on a timer, see
 [docs/agent-run-loop.md](docs/agent-run-loop.md).
 
+**The ChatGPT and Codex archive is a smaller edition.** It reads the market,
+your account and plays, and builds workflows and alerts. It does not place,
+change or close a trade: those skills are left out of it, and the server does
+not offer it those tools. Trading is done in Atlas itself and from the other
+apps.
+
 Each skill says what is possible, not what you must do. The lists of fields
 inside them are written from the live server, so they match it.
 

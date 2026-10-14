@@ -4,6 +4,14 @@ All notable changes to the public Atlas MCP registry artifacts in this repositor
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Plugin 1.3.0 — 2026-10-14
+
+### Changed
+- **The ChatGPT and Codex archive is its own edition, and it places no trade.** OpenAI's submission has the developer confirm that a plugin does not initiate or execute investment trades. That archive now has five skills (getting started, market data, workflows, alerts, reading plays): the skills about orders, waiting trades, open trades, posting and taking plays, and a workflow an assistant runs itself are not in it. The server does not offer that edition the matching tools and refuses a call to one. It is built from `plugin/` with `plugin-chatgpt/` laid over it.
+- The Claude Code archive and the per-skill archives are unchanged: all nine skills.
+- The broker account's field is `broker_account_id` in every skill and field list. The older name is still accepted by the server.
+- No skill or field list names a data or broker provider.
+
 ## Plugin 1.2.0 — 2026-10-09
 
 ### Added

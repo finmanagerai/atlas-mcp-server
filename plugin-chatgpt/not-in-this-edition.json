@@ -1,0 +1,33 @@
+{
+  "about": "GENERATED from the live server; do not edit by hand. The tools the server does not offer to this edition and refuses when it calls them.",
+  "tools": [
+    "Cancel-Order",
+    "Create-Trading-Trigger",
+    "Delete-Trading-Trigger",
+    "Mcp-Call",
+    "Place-Order",
+    "Preview-Multiple-Orders",
+    "Preview-Order",
+    "Preview-Trading-Trigger",
+    "Reactivate-Trigger",
+    "Signal-Answer",
+    "Signal-Broker",
+    "Signal-Delete",
+    "Signal-Follow",
+    "Signal-Group-Create",
+    "Signal-Group-Delete",
+    "Signal-Group-Update",
+    "Signal-My-Order",
+    "Signal-Post",
+    "Signal-Schema",
+    "Signal-Take",
+    "Signal-Trade-Settings",
+    "Signal-Update",
+    "Trade-Cancel-Entry",
+    "Trade-Close",
+    "Trade-Edit-Entry",
+    "Trade-Edit-Exit",
+    "Trade-Take-Profit",
+    "Update-Trading-Trigger"
+  ]
+}

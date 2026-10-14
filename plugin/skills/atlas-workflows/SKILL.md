@@ -43,7 +43,7 @@ Do not have the id? `Workflow-List` has it. Never ask the person to paste one.
 | What it does | `instruction` | Plain words: what to look at, what to decide, when to do nothing |
 | What it reads | `tools` | Tool names, exactly as listed, e.g. `Stock-Quote`. A name that does not exist is dropped without an error |
 | A note per tool | `tool_params` | `{ "Stock-Quote": { "notes": "SPY. Is it above yesterday's close?" } }`. One or two sentences on what to ask that tool for in this workflow |
-| What it does at the end | `output_tools` | Analysis workflows only: tools to call once it has decided, e.g. `Signal-Post` |
+| What it does at the end | `output_tools` | Analysis workflows only: tools to call once it has decided, e.g. `Phone-Notify` |
 | The trade | `output_schema` | Optional. `{ "triggers": [ ... ] }`, each entry one trade. See below |
 | What starts it | `trigger_source` | `cron` (a schedule), `alert`, `both`, or `manual` (only Run now) |
 | When | `schedule`, `timezone` | One line per time. `30 9 * * 1-5` repeats; `once 2026-11-03 09:35` runs that once. Eastern unless `timezone` says otherwise. `run_once_at` takes a list of dates and times and writes the lines for you |
