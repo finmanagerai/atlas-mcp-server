@@ -154,7 +154,7 @@ shows what the run did.
 
 ### Afterwards
 
-Anything the workflow asks for after a decision (`output_tools`: post a play,
+Anything the workflow asks for after a decision (`output_tools`: send a phone message,
 set an alert) comes now, with the decision in front of you. A tool that
 answers with an error did not do the thing: fix the cause, then call again.
 

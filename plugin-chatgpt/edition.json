@@ -1,9 +1,6 @@
 {
-  "about": "The ChatGPT and Codex edition of the plugin. OpenAI's submission has the developer confirm that the plugin does not initiate or execute investment trades, so this edition has no skill that places, changes or closes a trade or a play, and the server does not offer those tools to it. scripts/build-plugin.py builds dist/mindvest-atlas-chatgpt.zip from plugin/ with what is in this folder laid over it: plugin.json replaces the listing, a skill folder here replaces the whole skill of that name, and the skills named in leave_out are not shipped. not-in-this-edition.json is written from the live server by mcp-server/scripts/sync_tool_docs.py.",
+  "about": "The ChatGPT and Codex edition of the plugin. OpenAI's submission has the developer confirm that the plugin does not initiate or execute investment trades, so this edition has no skill about placing an order, a waiting trade or a play by hand, and the server does not offer those tools to it. Workflows stay, the ones an assistant runs itself included (the owner's word, 2026-10-14). scripts/build-plugin.py builds dist/mindvest-atlas-chatgpt.zip from plugin/ with what is in this folder laid over it: plugin.json replaces the listing, a skill folder here replaces the whole skill of that name, and the skills named in leave_out are not shipped. not-in-this-edition.json is written from the live server by mcp-server/scripts/sync_tool_docs.py.",
   "leave_out": [
-    "atlas-triggers-and-trades",
-    "atlas-agent-run-workflows",
-    "atlas-agent-run-loop",
-    "atlas-agent-run-loop-test"
+    "atlas-triggers-and-trades"
   ]
 }

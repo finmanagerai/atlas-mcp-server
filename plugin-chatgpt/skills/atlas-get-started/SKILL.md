@@ -26,6 +26,10 @@ first look around.
      an alert goes off. See `atlas-workflows`.
    - **Set an alert**: be told when something happens in the market. See
      `atlas-alerts`.
+   - **Run a workflow yourself**: you do the thinking for a workflow and hand
+     in each run; Atlas checks it and carries it out on the person's own
+     terms. See `atlas-agent-run-workflows`, and `atlas-agent-run-loop` for
+     running it on a schedule.
    - **Read plays**: the trade ideas posted on the community board and in the
      groups they follow. See `atlas-signals`.
    - **See their account**: holdings, orders, open trades and results.

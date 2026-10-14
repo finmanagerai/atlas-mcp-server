@@ -181,5 +181,5 @@ It is a normal run from there. In order:
 - One decision per run. Handing the same one in twice within a few seconds is
   taken once.
 - A copy of your workflow that somebody else follows runs when yours does.
-- To set an alert or post a play yourself, use `Create-Alert` or `Signal-Post`
-  directly: those need no workflow.
+- To set an alert yourself, use `Create-Alert` directly: that needs no
+  workflow.
