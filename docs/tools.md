@@ -3,7 +3,7 @@
 GENERATED from the live server. Do not edit by hand: it is rewritten from
 the same list the server hands to every client, so it cannot fall behind.
 
-160 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
+161 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
 ones your client shows (some add a prefix of their own, such as `mcp__atlas__`).
 
 Each tool says what it can do at its worst, and your client uses that to
@@ -12,7 +12,7 @@ decide when to ask you first:
 - 🟢 **reads** (95): looks something up and changes nothing.
 - 🟡 **adds** (16): makes something new of yours (a preview, a
   folder, a copy) and touches nothing else.
-- 🟠 **changes** (19): changes or removes something of yours.
+- 🟠 **changes** (20): changes or removes something of yours.
 - 🔴 **acts** (30): can send or change a real order, start a run,
   or change what other people see. Only on your say-so.
 
@@ -230,6 +230,7 @@ decide when to ask you first:
 | Tool | | What it does |
 |---|---|---|
 | `Get-Instructions` | 🟢 reads | Read the signed-in user's saved instructions (read-only). |
+| `Side-Panel-Widgets` | 🟠 changes | The widgets in the person's side panel on the website and the phone apps, under Recents: list them, add one, change one, remove one, or move one. |
 | `Subscription-Status` | 🟢 reads | Get the authenticated user's subscription tier, monthly usage, remaining requests, and limits. |
 
 ## Memory
