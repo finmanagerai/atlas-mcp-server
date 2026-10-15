@@ -92,7 +92,8 @@ Create a streaming alert that DMs the user on Discord (and optionally
                          king_node (conditions.metric picks the Greek), and
                          conditions.move_mode picks what counts as a move: the
                          wall MOVING to a new strike ("node", default) or the
-                         net exposure flipping sides ("flip_positive" /
+                         PRICE crossing a flip level, a strike where the Greek's
+                         exposure changes sign ("flip_positive" /
                          "flip_negative" / "flip"), or either ("any").
                          Call List-Alert-Types for the live catalog + each type's
                          conditions.
@@ -105,8 +106,12 @@ Create a streaming alert that DMs the user on Discord (and optionally
                            strike; "node_positive"/"node_negative" only the
                            purple (biggest positive) or yellow (biggest
                            negative) wall shifts; "flip_positive"/
-                           "flip_negative"/"flip" the Greek's net exposure
-                           crosses zero (the gamma flip); "any" either.
+                           "flip_negative"/"flip" the PRICE crosses a flip
+                           level (going up the strikes, a strike whose net
+                           exposure has the other sign to the one below it)
+                           into positive / into negative / either way: the
+                           gamma flip, never the chain's total changing sign;
+                           "any" either.
                          • level_approach conditions.region_mode — "near"
                            (default) the price comes close to the level;
                            "flip_positive"/"flip_negative"/"flip" the price

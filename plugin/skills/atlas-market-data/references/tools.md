@@ -39,6 +39,7 @@ what is possible.
 | `max_spot` | number | no |  |
 | `from_time` | string | no |  |
 | `to_time` | string | no |  |
+| `theme` | string | no | `"dark"` |
 
 The tool's own description, in full:
 
@@ -282,6 +283,7 @@ histogram has material to aggregate without a second call.
 | `from_expiration` | string | no |  |
 | `to_expiration` | string | no |  |
 | `expiration_range` | string | no |  |
+| `theme` | string | no | `"dark"` |
 
 ## `Stock-Quote`
 
@@ -357,6 +359,7 @@ histogram has material to aggregate without a second call.
 | `charts` | string | yes |  |
 | `image_format` | string | no | `"png"` |
 | `platform` | string | no | `"other"` |
+| `theme` | string | no | `"dark"` |
 
 ## `Chart-Vision-Analysis`
 
@@ -475,6 +478,7 @@ histogram has material to aggregate without a second call.
 | `to_expiration` | string | no |  |
 | `expiration_range` | string | no |  |
 | `mark` | string | no |  |
+| `theme` | string | no | `"dark"` |
 
 ## `Net-Exposure-Charts`
 
@@ -494,6 +498,7 @@ histogram has material to aggregate without a second call.
 | `to_expiration` | string | no |  |
 | `expiration_range` | string | no |  |
 | `mark` | string | no |  |
+| `theme` | string | no | `"dark"` |
 
 ## `Earnings-Calendar`
 

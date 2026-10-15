@@ -3,7 +3,7 @@
 GENERATED from the live server. Do not edit by hand: it is rewritten from
 the same list the server hands to every client, so it cannot fall behind.
 
-161 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
+162 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
 ones your client shows (some add a prefix of their own, such as `mcp__atlas__`).
 
 Each tool says what it can do at its worst, and your client uses that to
@@ -12,7 +12,7 @@ decide when to ask you first:
 - 🟢 **reads** (95): looks something up and changes nothing.
 - 🟡 **adds** (16): makes something new of yours (a preview, a
   folder, a copy) and touches nothing else.
-- 🟠 **changes** (20): changes or removes something of yours.
+- 🟠 **changes** (21): changes or removes something of yours.
 - 🔴 **acts** (30): can send or change a real order, start a run,
   or change what other people see. Only on your say-so.
 
@@ -199,6 +199,7 @@ decide when to ask you first:
 | `Workflow-Discover` | 🟢 reads | Search the public workflow marketplace (Discover). |
 | `Workflow-Duplicate` | 🟡 adds | Duplicate a workflow into your library — YOUR OWN, or any shared one. |
 | `Workflow-Export` | 🟢 reads | Export a workflow's full flow graph + markdown rendering. |
+| `Workflow-Files` | 🟠 changes | The files one of the person's workflows keeps: what its calculations saved (Python code, tables, charts, notes). |
 | `Workflow-Folder-Create` | 🟡 adds | Create a workflow folder to organize your Workflows list. |
 | `Workflow-Folder-Disband` | 🟠 changes | Disband (delete) a folder. |
 | `Workflow-Folder-Discover` | 🟢 reads | Folders of workflows other people have shared. |
@@ -230,7 +231,7 @@ decide when to ask you first:
 | Tool | | What it does |
 |---|---|---|
 | `Get-Instructions` | 🟢 reads | Read the signed-in user's saved instructions (read-only). |
-| `Side-Panel-Widgets` | 🟠 changes | The widgets in the person's side panel on the website and the phone apps, under Recents: list them, add one, change one, remove one, or move one. |
+| `Side-Panel-Widgets` | 🟠 changes | The widgets in the person's side panel on the website and the phone apps, under Recents: list them, add one, change one, remove one, move one, or keep one at a place… |
 | `Subscription-Status` | 🟢 reads | Get the authenticated user's subscription tier, monthly usage, remaining requests, and limits. |
 
 ## Memory
