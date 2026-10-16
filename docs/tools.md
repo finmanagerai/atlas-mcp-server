@@ -3,16 +3,16 @@
 GENERATED from the live server. Do not edit by hand: it is rewritten from
 the same list the server hands to every client, so it cannot fall behind.
 
-162 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
+164 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
 ones your client shows (some add a prefix of their own, such as `mcp__atlas__`).
 
 Each tool says what it can do at its worst, and your client uses that to
 decide when to ask you first:
 
-- 🟢 **reads** (95): looks something up and changes nothing.
+- 🟢 **reads** (96): looks something up and changes nothing.
 - 🟡 **adds** (16): makes something new of yours (a preview, a
   folder, a copy) and touches nothing else.
-- 🟠 **changes** (21): changes or removes something of yours.
+- 🟠 **changes** (22): changes or removes something of yours.
 - 🔴 **acts** (30): can send or change a real order, start a run,
   or change what other people see. Only on your say-so.
 
@@ -230,6 +230,7 @@ decide when to ask you first:
 
 | Tool | | What it does |
 |---|---|---|
+| `Arrange-Tabs` | 🟠 changes | The order of the tabs in the person's website and phone apps, and the ones they put under More: list them, set one bar's, or put a bar back to how it came. |
 | `Get-Instructions` | 🟢 reads | Read the signed-in user's saved instructions (read-only). |
 | `Side-Panel-Widgets` | 🟠 changes | The widgets in the person's side panel on the website and the phone apps, under Recents: list them, add one, change one, remove one, move one, or keep one at a place… |
 | `Subscription-Status` | 🟢 reads | Get the authenticated user's subscription tier, monthly usage, remaining requests, and limits. |
@@ -287,3 +288,9 @@ decide when to ask you first:
 | `List-Tool-Safety` | 🟢 reads | List every Atlas tool by its exact name, with what it says about its own safety: whether it only reads, whether it can change or remove something, whether it reaches… |
 | `Phone-Button` | 🟢 reads | Was the button pressed on a notification you sent with Phone-Notify? |
 | `Phone-Notify` | 🟡 adds | Send a notification to the signed-in person's own phone (the MindVest Atlas app), from a script, a local project, the CLI or a chat. |
+
+## The owner's phone
+
+| Tool | | What it does |
+|---|---|---|
+| `Phone-Notify-Preview` | 🟢 reads | Show how a notification will look on the person's phone, on an iPhone and on Android, before it is sent with Phone-Notify. |
