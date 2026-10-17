@@ -232,7 +232,7 @@ decide when to ask you first:
 |---|---|---|
 | `Arrange-Tabs` | 🟠 changes | The order of the tabs in the person's website and phone apps, and the ones they put under More: list them, set one bar's, or put a bar back to how it came. |
 | `Get-Instructions` | 🟢 reads | Read the signed-in user's saved instructions (read-only). |
-| `Side-Panel-Widgets` | 🟠 changes | The widgets in the person's side panel on the website and the phone apps, under Recents: list them, add one, change one, remove one, move one, or keep one at a place… |
+| `Side-Panel-Widgets` | 🟠 changes | The widgets in the person's side panel on the website and the phone apps, under Recents: list them, add one, change one, remove one, or move one. |
 | `Subscription-Status` | 🟢 reads | Get the authenticated user's subscription tier, monthly usage, remaining requests, and limits. |
 
 ## Memory
