@@ -40,6 +40,12 @@ Takes nothing.
 | `trigger_source` | string | no | `"cron"` |
 | `run_once_at` | array | no |  |
 | `alert_id` | string | no |  |
+| `source_workflow_ids` | array | no |  |
+| `decided_by` | string | no |  |
+| `script` | string | no |  |
+| `tool_args` | object | no |  |
+| `script_code` | string | no |  |
+| `script_settings` | array | no |  |
 | `alert_ids` | array | no |  |
 | `alert_creator_id` | string | no |  |
 | `alert_creator_ids` | array | no |  |
@@ -91,7 +97,21 @@ Args — pass each as a flag; this is the FULL field set (nothing lives only in 
   ui_schema: dict of UI/display flags stored verbatim (purpose, notify_discord_dm, notify_phone, notify_widget, notification_format are the common ones; pass any others the form uses here). Merged with the purpose/notify flags below.
   auto_accept_updates: subscriber flag — true auto-applies the author's later edits; false holds the copy at its current revision.
   (A COPY's own size, budget and exit split, execution_overrides, are set with Workflow-Update on an imported copy, not on a fresh create: see "ON A COPY" there.)
-  trigger_source: 'cron' (schedule) | 'alert' (an alert fires it) | 'both' | 'manual' (nothing fires it; the user presses Run now).
+  trigger_source: 'cron' (schedule) | 'alert' (an alert fires it) | 'both' | 'manual' (nothing fires it; the user presses Run now) | 'workflow' (other workflows start it: see source_workflow_ids).
+  source_workflow_ids: with trigger_source 'workflow', the person's OWN workflows this one runs after, by id or exact name (at most 10; never itself; a copy they follow or a template cannot start anything). Each time one of them finishes a run, this one runs and is told what that run decided ("<name> ran: it decided ..."). A save that would make a loop (A starts B starts A) is refused. Several are fine, like several alerts.
+  decided_by: who decides each run. 'atlas' (default) = Atlas's own model reads the tools and decides. 'agent' = YOUR agent decides (the same as ui_schema.run_by "agent", still accepted; see below). 'script' = a Python script in the workflow's files decides, with no model at all: input data in, a decision out.
+  script_code: with decided_by 'script', the script itself (Python 3.12, at most 1 MB). It is saved as the workflow's main.py; with none, the workflow starts with a short starter script. Each run it runs on Atlas's own runner (numpy, pandas, scipy and more; NO internet; 5 minutes; 1 GB) and does what it says through the `atlas` module, which is built in:
+    import atlas
+    atlas.settings["broker"]   # its Settings, by name (also env ATLAS_BROKER)
+    atlas.input                  # the alert, the run, the trade card
+    atlas.call("Stock-Quote", symbol="SPY")   # ANY Atlas tool, as the owner
+    atlas.trade(symbol="SPY", asset_class="option", option_type="call", contracts=1, enter_side="buy_to_open")   # one trade card leg
+    atlas.notify("what this run says")
+  atlas.trade is how FOLLOWERS get a trade: it is placed the normal way (the card's fixed values, the checks, the cap, review before it places) and every follower gets the same trade at their own size. An order tool called with atlas.call acts for the OWNER only. atlas.notify is the run's message, sent on the workflow's own notification switches to the owner and the followers; a run that trades nothing and says nothing sends nothing. A decision.json {reasoning, act, triggers} in the folder still works. A script error or a timeout FAILS the run with the error; it never falls back to a model. Purposes trading, draft and analysis only. Each run uses one request.
+  script_settings: the script's Settings, like Pine Script inputs: [{name, type, value, personal?}], at most 30, name = small letters, digits and _ ("max_contracts"). type is broker | signal_group | workflow | workflow_folder | alert (the value is one of the person's own, by id or exact name) | ticker | number | text | boolean. A broker setting, and one marked personal, belongs to each person: a follower fills their own. The others are the author's and reach followers like the rest of the workflow.
+  script: the script's path in the folder, when it is not main.py.
+  THE LOOP FOR A SCRIPT: (1) Workflow-Create decided_by 'script' with script_code (and script_settings), (2) Workflow-Run with test=true, which runs the whole decision with today's data, lets atlas.call only read, places and sends nothing, and answers with what atlas.trade and atlas.notify recorded, the resolved settings, what the script printed and any trade that would not compile, (3) fix with Workflow-Update script_code and test again, (4) switch the workflow on.
+  tools / tool_args: optional for a script (it calls tools itself with atlas.call); any read-only tool listed is called first with its saved arguments and its answer is in atlas.input["tools"].
   run_once_at: ['YYYY-MM-DD HH:MM', ...] in `timezone` — specific dates and times to run at, once each (the dashboard's Once chip). Written into schedule as `once` lines for you; use it INSTEAD of schedule.
   schedule: when it runs, in `timezone` (used for cron/both); one line per time. A cron line ('30 9 * * 1-5') recurs; a `once YYYY-MM-DD HH:MM` line fires at that date and time and never again (list several lines for several dates/times). Use cron lines OR once lines, not both. Required to activate a cron workflow.
   timezone: tz name; defaults to 'US/Eastern'. Times are EASTERN unless you pass another zone.
@@ -144,6 +164,11 @@ VERIFY AFTER CREATING: exit 0 / success:true means the row was WRITTEN, not that
 | `note` | string | no | `""` |
 | `notify_phone` | boolean | no |  |
 | `notify_widget` | boolean | no |  |
+| `decided_by` | string | no |  |
+| `script` | string | no |  |
+| `tool_args` | object | no |  |
+| `script_code` | string | no |  |
+| `script_settings` | array | no |  |
 
 The tool's own description, in full:
 
@@ -153,7 +178,8 @@ SUGGESTING A CHANGE TO SOMEONE ELSE'S WORKFLOW: pass `suggest: true` to send the
 With `suggest`, ALWAYS send `note` — a sentence or two on WHY, in the user's own words where you have them, and your reasoning where you don't. The author reads it in Discord before they open anything, and a change that arrives with no reason behind it is one they have to guess at. A flip to status='active' fails if the workflow has no broker account. This runs the SAME logic as the dashboard form, so an AI edit forks / arms / fans out identically.
 SEND ONLY WHAT YOU ARE CHANGING, in ONE call. Anything you leave out keeps the value it already has, and that holds INSIDE nested objects too, not just at the top level. To change the reasoning, send `instruction` alone; do NOT restate tools, tool_params or output_schema 'to be safe'. Restating a field you did not mean to touch is the most common way an edit damages the rest of a workflow: your copy of it replaces what is stored, so anything your copy lost is gone.
 Nested objects (output_schema, ui_schema, tool_params, execution_overrides) MERGE: a key you name is changed, a key you omit is kept, a key set to null is REMOVED. LISTS are the exception: a list you send replaces the stored list whole, because there is no unambiguous way to say 'change item 2'. So when you touch output_schema.triggers or a bracket_take_profit_levels ladder, include every item you want to keep.
-The patch accepts EVERY workflow field: name, instruction, purpose (via ui_schema), tools, output_tools (what it CALLS once it has decided — see Workflow-Create), tool_params (the note on each tool: when you ADD a tool to tools or output_tools, send its note in the same patch, see Workflow-Create for what a note says; the answer lists the ones still empty under `tools_without_notes`), output_schema (OPTIONAL — no trade is ever forced; omit/clear it to {} for a no-trade workflow; output_schema.trades_mode 'auto' turns its ONE trigger entry into a template Atlas repeats across the tickers it picks, and 'manual' — the default — means the entries ARE the trades; plays_mode does the same for `plays`. Switching a section to auto means sending exactly ONE entry for it, with symbol null; two or more is a 400. A signal_creator's plays also take a per-play `score` (1-10; omit to let the run rate them), a top-level `plays_reason` (one sentence every play carries; omit to let the run write each one) and a top-level `plays_destinations` ('community' and/or group ids — several destinations is ONE play reaching everybody across them, not one play per group)), execution_overrides (a copy's own size, budget and exit split: see ON A COPY below), broker_account_id, trigger_source, schedule, timezone, alert_id, alert_max_runs_per_day, notify_discord_dm + notification_format (via ui_schema), auto_accept_updates, status, visibility.
+The patch accepts EVERY workflow field: name, instruction, purpose (via ui_schema), tools, output_tools (what it CALLS once it has decided — see Workflow-Create), tool_params (the note on each tool: when you ADD a tool to tools or output_tools, send its note in the same patch, see Workflow-Create for what a note says; the answer lists the ones still empty under `tools_without_notes`), output_schema (OPTIONAL — no trade is ever forced; omit/clear it to {} for a no-trade workflow; output_schema.trades_mode 'auto' turns its ONE trigger entry into a template Atlas repeats across the tickers it picks, and 'manual' — the default — means the entries ARE the trades; plays_mode does the same for `plays`. Switching a section to auto means sending exactly ONE entry for it, with symbol null; two or more is a 400. A signal_creator's plays also take a per-play `score` (1-10; omit to let the run rate them), a top-level `plays_reason` (one sentence every play carries; omit to let the run write each one) and a top-level `plays_destinations` ('community' and/or group ids — several destinations is ONE play reaching everybody across them, not one play per group)), execution_overrides (a copy's own size, budget and exit split: see ON A COPY below), broker_account_id, trigger_source, schedule, timezone, alert_id, alert_max_runs_per_day, notify_discord_dm + notification_format (via ui_schema), auto_accept_updates, status, visibility, source_workflow_ids (with trigger_source 'workflow': the person's own workflows this one runs after, by id or exact name; at most 10, never itself, no loops; a list replaces the stored list).
+decided_by / script_code / script_settings / script / tool_args (top-level arguments, or inside patch): who decides each run, 'atlas' | 'agent' | 'script'; the script's whole text (saved as its main.py, as the owner; a follower's copy runs its author's script and cannot have its own); its Settings (the list replaces the stored one; picker values by id or exact name); its path when not main.py; each input tool's saved arguments, merged into tool_params[tool].args. See Workflow-Create for the atlas module a script uses. Switch a workflow to decided_by 'script' only after Workflow-Run test=true came back clean.
 notify_phone (top-level argument): true sends each run's message, made short, to the person's phone, false keeps it off; unset, the phone follows notify_discord_dm.
 notify_widget (top-level argument): true keeps each run's latest message, cut to a few lines, for this workflow's side-panel widget on the website; false does not.
 ON A COPY of somebody else's workflow, these are the person's OWN and changing them never stops the copy following its author:
@@ -196,6 +222,8 @@ Takes nothing.
 |---|---|---|---|
 | `workflow_id` | string | yes |  |
 | `form_answers` | object | no |  |
+| `test` | boolean | no | `false` |
+| `test_id` | string | no | `""` |
 
 ## `Workflow-Review`
 

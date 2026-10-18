@@ -218,8 +218,8 @@
     {
       "name": "bracket_stop_loss_limit_price",
       "rule_path": "exit.stop_loss.limit_price",
-      "label": "Stop loss limit price (stocks only)",
-      "help": "Stocks only — turns the broker stop into a stop-limit order. IGNORED for option brackets: the worker always closes at market for safety on a stop-out.",
+      "label": "Stop loss limit price",
+      "help": "Optional. How the stop closes when you want a limit, not the default marketable close. Stocks with a broker bracket: turns the broker stop into a stop-limit order at this share price. Options (and stocks the worker manages): when the stop is reached, Atlas cancels its open take-profit orders and sends ONE day limit at this price (a contract premium for an option), with no allowance, rounded to the tick in your favour; if the market is already through it the order rests. Leave it empty for the default: a marketable limit at the bid less a small allowance. A stop measured on the STOCK price of an option has no premium to use, so it closes with the marketable limit.",
       "kind": "number",
       "placeholder": "0.00",
       "required": false,
@@ -470,8 +470,138 @@
       "help": "Optional ARRAY of other legs' `label` values. When THIS leg fires it ARMS those legs (one-triggers-other) — e.g. an entry leg that, once filled, activates a staged hedge leg.",
       "kind": "array",
       "required": false
+    },
+    {
+      "name": "spread_strategy",
+      "rule_path": "spread.strategy",
+      "label": "Spread strategy",
+      "help": "Makes this card a SPREAD: every leg goes to the broker as ONE multi-leg order at a net price, never a leg on its own. vertical (needs spread_side + spread_direction), iron_condor, butterfly (middle x2), iron_butterfly, straddle, strangle. A spread card uses the spread_* fields below and none of the single option's (option_type, strike, bracket_stop_loss_*, bracket_take_profit_limit_*).",
+      "kind": "string",
+      "options": [
+        "vertical",
+        "iron_condor",
+        "butterfly",
+        "iron_butterfly",
+        "straddle",
+        "strangle"
+      ],
+      "required": false
+    },
+    {
+      "name": "spread_side",
+      "rule_path": "spread.side",
+      "label": "Credit or debit",
+      "help": "A vertical spread: credit (sell the strike nearer the money, buy one further out) or debit (buy near the money, sell further toward the target). The other strategies are what they are: iron condor and iron butterfly credit; butterfly, straddle, strangle debit.",
+      "kind": "string",
+      "options": [
+        "credit",
+        "debit"
+      ],
+      "required": false,
+      "when": {
+        "field": "spread_strategy",
+        "equals": "vertical"
+      }
+    },
+    {
+      "name": "spread_direction",
+      "rule_path": "spread.direction",
+      "label": "Direction",
+      "help": "A vertical spread: bull (a put credit spread or a call debit spread) or bear (a call credit spread or a put debit spread).",
+      "kind": "string",
+      "options": [
+        "bull",
+        "bear"
+      ],
+      "required": false,
+      "when": {
+        "field": "spread_strategy",
+        "equals": "vertical"
+      }
+    },
+    {
+      "name": "spread_legs_spec",
+      "rule_path": "spread.sell_at|buy_at",
+      "label": "Where the strikes go",
+      "help": "An object {sell_at, buy_at}; each is {mode, value} or {mode: \"strike\", strikes: [...]}. The first handle (sell_at on a credit spread, condor and butterfly; buy_at on a debit vertical, straddle and strangle) is `from_price`: dollars from the stock's price (a condor/strangle puts one each side; 0 = at the price for a centre). The second is `further_out`: dollars further out from the first strikes (a butterfly's wings from its centre). Exact strikes: put strike then call strike (condor, strangle), or lower then upper (wings). The strikes FOLLOW THE PRICE until the trade is placed, then land on the nearest listed strikes. Omit for the defaults: 10 and 5 (a debit vertical 2 and 5; a centre at 0; a strangle 5).",
+      "kind": "array",
+      "required": false
+    },
+    {
+      "name": "spread_legs",
+      "rule_path": "spread.legs_pinned",
+      "label": "Exact legs",
+      "help": "Optional, instead of spread_legs_spec: every leg typed out, [{action: buy|sell, option_type: call|put, strike, ratio}]. Each strike must be listed. A sold call or put must be covered by a bought one: a naked short is refused.",
+      "kind": "array",
+      "required": false
+    },
+    {
+      "name": "spreads",
+      "rule_path": "execution.contracts",
+      "label": "How many",
+      "help": "Whole spreads (each leg goes for spreads x its ratio). Or give bracket_trade_budget instead: the budget over the most ONE spread can lose, floored, worked out at the fill.",
+      "kind": "integer",
+      "placeholder": "2",
+      "required": false
+    },
+    {
+      "name": "spread_take_profit_pct",
+      "rule_path": "exit.take_profit.pct",
+      "label": "Take profit (%)",
+      "help": "A credit spread: the % of the credit kept (50 closes when it can be bought back for half the credit; the default). A debit spread: the % gained on the debit. Sent as a limit at that net once the spread's natural price is there. \"none\" for no target. Or use spread_take_profit_price, or bracket_take_profit_levels (steps in whole spreads: [{pct, quantity}], the last closes the rest).",
+      "kind": "number",
+      "placeholder": "50",
+      "required": false
+    },
+    {
+      "name": "spread_take_profit_price",
+      "rule_path": "exit.take_profit.price",
+      "label": "Take profit (net price)",
+      "help": "The net the spread closes at (a credit spread: bought back for this; a debit spread: sold for this).",
+      "kind": "number",
+      "placeholder": "0.60",
+      "required": false
+    },
+    {
+      "name": "spread_stop",
+      "rule_path": "exit.stop_loss",
+      "label": "Stop",
+      "help": "An object. On the STOCK: {\"basis\": \"stock\", \"below\": 572, \"above\": 592} (either side optional; either crossing closes the whole trade). On the PREMIUM: {\"basis\": \"premium\", \"max_loss_pct\": 50} (stop once the loss reaches that % of the most it can lose: width less credit, or the debit paid) or {\"basis\": \"premium\", \"spread_price\": 3.10} (a credit spread whose cost to close rises to it, a debit spread whose value falls to it). Judged on the natural price. Default: premium, 50% of the most it can lose. \"none\" for no stop.",
+      "kind": "array",
+      "required": false
+    },
+    {
+      "name": "spread_stop_close_with",
+      "rule_path": "exit.stop_close_with",
+      "label": "Stop closes with",
+      "help": "market (default): every leg closed in one order as a marketable limit on the natural plus a small allowance, re-priced twice, then market. limit: one limit at the stop's own net, not chased (premium stops only).",
+      "kind": "string",
+      "options": [
+        "market",
+        "limit"
+      ],
+      "required": false
+    },
+    {
+      "name": "spread_close_at",
+      "rule_path": "spread.close_at",
+      "label": "Close at",
+      "help": "A time HH:MM (ET) on the expiry day to close whatever is left (default 15:45; \"none\" for no time). exit_at_time (an ISO date-time) wins when given.",
+      "kind": "string",
+      "placeholder": "15:45",
+      "required": false
     }
   ],
+  "spreads": {
+    "notes": [
+      "A trade card with `spread_strategy` is a SPREAD: vertical (credit/debit, bull/bear), iron_condor, butterfly, iron_butterfly, straddle or strangle.",
+      "Every leg goes to the broker as ONE multi-leg order at a NET price: the open, each target, the stop and a close-all. No leg is ever placed or closed alone.",
+      "The strikes are a distance from the stock's price (spread_legs_spec) or exact (spread_legs); they follow the price until placed, then land on the nearest listed strikes.",
+      "Size is whole spreads (`spreads`), or `bracket_trade_budget`: the budget over the most one spread can lose, floored, at the fill.",
+      "A limit (`enter_limit_price`) is the NET; Atlas watches the natural price (sold legs at the bid, bought at the ask) and sends at your net once it is there.",
+      "Defaults when a key is absent: take profit 50% of the credit (credit spreads), stop at 50% of the most it can lose, close at 15:45 ET on the expiry day. \"none\" turns one off."
+    ]
+  },
   "examples": {
     "option_bracket_long_call": {
       "description": "Buy 1 SPY 500C, close at market when SPY drops to 497 (stop) or rises to 505 (take profit). Both levels are UNDERLYING prices.",
@@ -510,6 +640,35 @@
         "exit_trigger_operator": "lte",
         "exit_trigger_value": 880
       }
+    },
+    "spread_iron_condor": {
+      "description": "Sell 2 SPY 0DTE iron condors 10 from the price, 5 wide, at a 1.20 net credit limit (Atlas watches the natural credit and sends it at 1.20); take profit at 50% of the credit; stop at 50% of the most it can lose; close at 15:45 ET.",
+      "flat": {
+        "symbol": "SPY",
+        "asset_class": "option",
+        "spread_strategy": "iron_condor",
+        "expiry": "0dte",
+        "spread_legs_spec": {
+          "sell_at": {
+            "mode": "from_price",
+            "value": 10
+          },
+          "buy_at": {
+            "mode": "further_out",
+            "value": 5
+          }
+        },
+        "spreads": 2,
+        "enter_order_type": "limit",
+        "enter_limit_price": 1.2,
+        "spread_take_profit_pct": 50,
+        "spread_stop": {
+          "basis": "premium",
+          "max_loss_pct": 50
+        },
+        "spread_stop_close_with": "market",
+        "spread_close_at": "15:45"
+      }
     }
   },
   "schedule": {
@@ -517,18 +676,21 @@
       "cron",
       "alert",
       "both",
-      "manual"
+      "manual",
+      "workflow"
     ],
     "schedule": "one line per time, in `timezone`: a 5-field cron line ('30 9 * * 1-5') recurs; 'once YYYY-MM-DD HH:MM' fires at that date and time and never again. Cron lines OR once lines, never both. Used when trigger_source is 'cron' or 'both'.",
     "run_once_at": "Workflow-Create / Workflow-Update patch shortcut: a list of 'YYYY-MM-DD HH:MM' moments, written as once lines for you.",
-    "manual": "trigger_source 'manual' = nothing fires it; the user presses Run now."
+    "manual": "trigger_source 'manual' = nothing fires it; the user presses Run now.",
+    "workflow": "trigger_source 'workflow' = other workflows start it: list them in source_workflow_ids (your own workflows, by id or exact name, at most 10). It runs each time one of them finishes a run, and is told what that run decided. No schedule and no alert."
   },
   "alert_wiring": {
     "trigger_source": [
       "cron",
       "alert",
       "both",
-      "manual"
+      "manual",
+      "workflow"
     ],
     "alert_id": "id of an existing alert to drive this workflow (when trigger_source includes 'alert')",
     "alert_max_runs_per_day": "optional positive integer: cap how many times the alert may run this workflow per day (resets each Eastern morning). Omit / null for unlimited."

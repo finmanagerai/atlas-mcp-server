@@ -24,6 +24,12 @@ what is possible.
 | `trigger_source` | string | no | `"cron"` |
 | `run_once_at` | array | no |  |
 | `alert_id` | string | no |  |
+| `source_workflow_ids` | array | no |  |
+| `decided_by` | string | no |  |
+| `script` | string | no |  |
+| `tool_args` | object | no |  |
+| `script_code` | string | no |  |
+| `script_settings` | array | no |  |
 | `alert_ids` | array | no |  |
 | `alert_creator_id` | string | no |  |
 | `alert_creator_ids` | array | no |  |
@@ -57,6 +63,11 @@ what is possible.
 | `note` | string | no | `""` |
 | `notify_phone` | boolean | no |  |
 | `notify_widget` | boolean | no |  |
+| `decided_by` | string | no |  |
+| `script` | string | no |  |
+| `tool_args` | object | no |  |
+| `script_code` | string | no |  |
+| `script_settings` | array | no |  |
 
 ## `Workflow-Agent-Waiting-Runs`
 

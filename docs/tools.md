@@ -3,13 +3,13 @@
 GENERATED from the live server. Do not edit by hand: it is rewritten from
 the same list the server hands to every client, so it cannot fall behind.
 
-164 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
+165 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
 ones your client shows (some add a prefix of their own, such as `mcp__atlas__`).
 
 Each tool says what it can do at its worst, and your client uses that to
 decide when to ask you first:
 
-- 🟢 **reads** (96): looks something up and changes nothing.
+- 🟢 **reads** (97): looks something up and changes nothing.
 - 🟡 **adds** (16): makes something new of yours (a preview, a
   folder, a copy) and touches nothing else.
 - 🟠 **changes** (22): changes or removes something of yours.
@@ -33,6 +33,7 @@ decide when to ask you first:
 | `Option-Expiration-Dates` | 🟢 reads | List available option expiration dates for a symbol. |
 | `Options-Chain` | 🟢 reads | Full options chain — many strikes and sides for one or more expirations. |
 | `Single-Option-Quote` | 🟢 reads | Fetch live option contract quote(s). |
+| `Spread-Quote` | 🟢 reads | A spread's legs and its price NOW: each leg's bid and ask, and the spread's natural net (the side each leg would really trade at: sold legs at the bid, bought legs at… |
 
 ## Greek Exposure
 

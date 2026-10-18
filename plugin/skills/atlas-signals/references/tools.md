@@ -50,6 +50,7 @@ Takes nothing.
 | `broker_account_id` | string | no | `""` |
 | `second_leg` | object | no |  |
 | `link_mode` | string | no | `""` |
+| `spread` | object | no |  |
 
 The tool's own description, in full:
 
@@ -252,6 +253,15 @@ Publish one trade idea, called a play, under the user's name: the stock
             stop_unit, entry_unit, entry_operator, reason, score). Omit for a
             play that stands alone.
         link_mode: "oco" or "oeo". Required with second_leg, refused without.
+        spread: A SPREAD play instead of one option: the spread card's own
+            fields (spread_strategy, spread_side, spread_direction, expiry,
+            spread_legs_spec or spread_legs, enter_order_type,
+            enter_limit_price as the NET, spread_take_profit_pct /
+            spread_take_profit_price / bracket_take_profit_levels, spread_stop,
+            spread_stop_close_with, spread_close_at). Every leg goes to each
+            taker's broker as ONE multi-leg order; `contracts` is the number of
+            spreads, `trade_budget` is sized by the most one spread can lose.
+            Leave strike, option_type, entries, targets and stop out.
 ````
 
 ## `Signal-Update`

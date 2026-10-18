@@ -126,3 +126,8 @@ Example (nothing to do):
 | `note` | string | no | `""` |
 | `notify_phone` | boolean | no |  |
 | `notify_widget` | boolean | no |  |
+| `decided_by` | string | no |  |
+| `script` | string | no |  |
+| `tool_args` | object | no |  |
+| `script_code` | string | no |  |
+| `script_settings` | array | no |  |
