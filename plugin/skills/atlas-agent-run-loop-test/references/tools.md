@@ -6,7 +6,7 @@ what is possible.
 
 ## `Workflow-Create`
 
-🟡 adds. Create a workflow (a recurring AI setup) on the caller's account, saved EXACTLY as supplied.
+🟡 adds. Create a workflow (a recurring AI setup), saved exactly as supplied and paused.
 
 | Field | Type | Needed | Default |
 |---|---|---|---|

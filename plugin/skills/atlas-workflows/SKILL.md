@@ -14,9 +14,14 @@ and a workflow with three fields set is a fine workflow.
 
 - `references/tools.md`: every field each workflow tool accepts, with
   `Workflow-Create`'s own field-by-field description in full.
-- `references/trade-card.json`: every field of a trade a workflow can place,
-  with the rules and worked examples. `Trigger-Workflow-Schema` answers with
-  the same thing live, plus the person's own alerts.
+- `references/trade-card-fields.md`: every field of a trade a workflow can
+  place, by group, with its allowed values, what it applies to, what happens
+  when it is left out, and worked examples (a stock bracket; an option with a
+  limit entry, a 50% target, a stop and a close time; a ladder sized by a
+  budget; an iron condor; a credit put vertical with a stop on the stock; a
+  debit call vertical; an OCO pair).
+- `references/trade-card.json`: the same, as `Trigger-Workflow-Schema`
+  answers it live (plus the person's own alerts).
 
 ## The order that works
 
@@ -58,7 +63,13 @@ Do not have the id? `Workflow-List` has it. Never ask the person to paste one.
 
 ## The trade a workflow places
 
-Each entry of `output_schema.triggers` is one trade. What it can carry:
+Each entry of `output_schema.triggers` is one trade, a **trade card**: the
+same fields the trigger tools take as parameters and a script passes to
+`atlas.trade`. Every card needs a what (`symbol`, `asset_class`, and an
+option's `option_type`, `strike`, `expiry`), a size (`contracts`, `quantity`,
+`spreads` or `bracket_trade_budget`) and an entry (`enter_side`,
+`enter_order_type`); on a workflow card `order_strategy` is required too
+(`"bracket"` for a stop and/or a target). What it can carry:
 
 - **What**: `symbol`, `asset_class` (`stock` or `option`), and for an option
   `option_type`, `strike`, `expiry`.

@@ -34,18 +34,66 @@ Takes nothing.
 
 ## `Preview-Trading-Trigger`
 
-🟡 adds. Save a trigger as a PREVIEW: the exact trigger row, validated and shaped like a live one, but NOT armed.
+🟡 adds. Check a trade and save it as an unarmed PREVIEW for the person to approve; nothing is sent.
 
 | Field | Type | Needed | Default |
 |---|---|---|---|
-| `rule` | object | yes |  |
+| `rule` | object | no |  |
 | `symbol` | string | no |  |
 | `account_id` | string | no |  |
 | `trade_budget` | number | no |  |
+| `legs` | array | no |  |
+| `link_mode` | string | no | `""` |
+| `asset_class` | string | no |  |
+| `option_type` | string | no |  |
+| `strike` | number | no |  |
+| `expiry` | string | no |  |
+| `contracts` | integer | no |  |
+| `quantity` | number | no |  |
+| `enter_side` | string | no |  |
+| `enter_order_type` | string | no |  |
+| `enter_limit_price` | number | no |  |
+| `enter_trigger_metric` | string | no |  |
+| `enter_trigger_operator` | string | no |  |
+| `enter_trigger_value` | number | no |  |
+| `order_strategy` | string | no |  |
+| `bracket_stop_loss_stop_price` | number | no |  |
+| `bracket_stop_loss_limit_price` | number | no |  |
+| `bracket_stop_loss_stop_pct` | number | no |  |
+| `bracket_stop_loss_trailing_pct` | number | no |  |
+| `bracket_take_profit_limit_price` | number | no |  |
+| `bracket_take_profit_limit_pct` | number | no |  |
+| `bracket_price_basis` | string | no |  |
+| `exit_order_type` | string | no |  |
+| `exit_limit_price` | number | no |  |
+| `enter_at_time` | string | no |  |
+| `exit_at_time` | string | no |  |
+| `exit_trigger_metric` | string | no |  |
+| `exit_trigger_operator` | string | no |  |
+| `exit_trigger_value` | number | no |  |
+| `oco_group` | string | no |  |
+| `bracket_take_profit_levels` | array | no |  |
+| `bracket_take_profit_loop` | boolean | no |  |
+| `bracket_trade_budget` | number | no |  |
+| `bracket_exit_split` | string | no |  |
+| `label` | string | no |  |
+| `cancels_labels` | array | no |  |
+| `activates_labels` | array | no |  |
+| `spread_strategy` | string | no |  |
+| `spread_side` | string | no |  |
+| `spread_direction` | string | no |  |
+| `spread_legs_spec` | object | no |  |
+| `spread_legs` | array | no |  |
+| `spreads` | integer | no |  |
+| `spread_take_profit_pct` | number | no |  |
+| `spread_take_profit_price` | number | no |  |
+| `spread_stop` | object | no |  |
+| `spread_stop_close_with` | string | no |  |
+| `spread_close_at` | string | no |  |
 
 ## `Create-Trading-Trigger`
 
-🔴 acts. Persist a price-trigger rule.
+🔴 acts. Arm a trade: Atlas watches it and places it at the broker by itself.
 
 | Field | Type | Needed | Default |
 |---|---|---|---|
@@ -56,17 +104,76 @@ Takes nothing.
 | `trade_budget` | number | no |  |
 | `legs` | array | no |  |
 | `link_mode` | string | no | `""` |
+| `asset_class` | string | no |  |
+| `option_type` | string | no |  |
+| `strike` | number | no |  |
+| `expiry` | string | no |  |
+| `contracts` | integer | no |  |
+| `quantity` | number | no |  |
+| `enter_side` | string | no |  |
+| `enter_order_type` | string | no |  |
+| `enter_limit_price` | number | no |  |
+| `enter_trigger_metric` | string | no |  |
+| `enter_trigger_operator` | string | no |  |
+| `enter_trigger_value` | number | no |  |
+| `order_strategy` | string | no |  |
+| `bracket_stop_loss_stop_price` | number | no |  |
+| `bracket_stop_loss_limit_price` | number | no |  |
+| `bracket_stop_loss_stop_pct` | number | no |  |
+| `bracket_stop_loss_trailing_pct` | number | no |  |
+| `bracket_take_profit_limit_price` | number | no |  |
+| `bracket_take_profit_limit_pct` | number | no |  |
+| `bracket_price_basis` | string | no |  |
+| `exit_order_type` | string | no |  |
+| `exit_limit_price` | number | no |  |
+| `enter_at_time` | string | no |  |
+| `exit_at_time` | string | no |  |
+| `exit_trigger_metric` | string | no |  |
+| `exit_trigger_operator` | string | no |  |
+| `exit_trigger_value` | number | no |  |
+| `oco_group` | string | no |  |
+| `bracket_take_profit_levels` | array | no |  |
+| `bracket_take_profit_loop` | boolean | no |  |
+| `bracket_trade_budget` | number | no |  |
+| `bracket_exit_split` | string | no |  |
+| `label` | string | no |  |
+| `cancels_labels` | array | no |  |
+| `activates_labels` | array | no |  |
+| `spread_strategy` | string | no |  |
+| `spread_side` | string | no |  |
+| `spread_direction` | string | no |  |
+| `spread_legs_spec` | object | no |  |
+| `spread_legs` | array | no |  |
+| `spreads` | integer | no |  |
+| `spread_take_profit_pct` | number | no |  |
+| `spread_take_profit_price` | number | no |  |
+| `spread_stop` | object | no |  |
+| `spread_stop_close_with` | string | no |  |
+| `spread_close_at` | string | no |  |
 
 The tool's own description, in full:
 
 ````text
-Persist a price-trigger rule. IMPORTANT: Do NOT call this tool directly — call Preview-Trading-Trigger first and let the user confirm by clicking 'Activate trigger' in the preview card. This tool is invoked by the widget on the user's behalf.
+Arm a trade: Atlas watches it and places it at the broker by itself. Call Preview-Trading-Trigger first and arm with its preview_id once the person says yes (the widget's 'Activate trigger' does this). Takes the same card fields and must-haves as Preview: (1) symbol + asset_class; (2) quantity / contracts / spreads or bracket_trade_budget; (3) enter_side + enter_order_type. account_id is required to arm. All fields: Trigger-Workflow-Schema.
+
+THE CARD'S FIELDS, BY GROUP (each one is a parameter of this tool, typed and described):
+  What to trade: asset_class, option_type, strike, expiry.
+  How much: contracts, quantity, bracket_trade_budget, spreads.
+  Entry: enter_side, enter_order_type, enter_limit_price, enter_trigger_metric, enter_trigger_operator, enter_trigger_value.
+  Exits: order_strategy, bracket_stop_loss_stop_price, bracket_stop_loss_limit_price, bracket_stop_loss_stop_pct, bracket_stop_loss_trailing_pct, bracket_take_profit_limit_price, bracket_take_profit_limit_pct, bracket_price_basis, exit_order_type, exit_limit_price, exit_trigger_metric, exit_trigger_operator, exit_trigger_value.
+  Take-profit ladder: bracket_take_profit_levels, bracket_take_profit_loop, bracket_exit_split.
+  Timing: enter_at_time, exit_at_time.
+  Linked trades: oco_group, label, cancels_labels, activates_labels.
+  Spreads: spread_strategy, spread_side, spread_direction, spread_legs_spec, spread_legs, spread_take_profit_pct, spread_take_profit_price, spread_stop, spread_stop_close_with, spread_close_at.
+  Exits are optional: no stop and no target is an entry only. A % stop or target is the option's premium (stop negative: -30); a $ level is the stock price unless bracket_price_basis is "contract". A stock bracket needs BOTH a stop price and a target price. order_strategy is worked out from the exits you set when left out.
+
+IMPORTANT: Do NOT call this tool directly for a new trade — call Preview-Trading-Trigger first and let the user confirm by clicking 'Activate trigger' in the preview card.
 
 ARMING A PREVIEW: pass preview_id (from Preview-Trading-Trigger). The saved preview row itself is armed in place — same id, no duplicate. rule and symbol may be omitted (the saved ones stand) or given to edit on the way; account_id is required if the preview was saved without one.
 
-SIZE BY MONEY: pass `trade_budget` (in DOLLARS) INSTEAD of a contract count or share quantity when the person said an amount — 'put $500 into it'. Atlas works out how many fit at the price the order actually pays, as close under the budget as whole units allow and never over, and re-sizes at the real fill. Never send both a budget and a count.
+SIZE BY MONEY: pass bracket_trade_budget (or `trade_budget`, the same, in DOLLARS) INSTEAD of a contract count or share quantity when the person said an amount — 'put $500 into it'. Atlas works out how many fit at the price the order actually pays, as close under the budget as whole units allow and never over, and re-sizes at the real fill. Never send both a budget and a count.
 
-LINKED TRIGGERS (OCO / OEO): pass `legs` INSTEAD of `rule` — a list of {rule, symbol?, account_id?, trade_budget?} — to create several triggers as one set. Two legs + link_mode 'oco': whichever fills first cancels the other. Two legs + link_mode 'oeo': the SECOND leg starts watching only once the FIRST fills (it is saved unarmed until then; List shows it as 'waiting'). For a bigger or mixed set leave link_mode out, give each leg's rule a `label`, and name the others under `cancels_labels` (cancel these when I fill) or `activates_labels` (start these when I fill). Every leg must be linked to the set: a leg nobody names and that names nobody is refused, because two unlinked triggers both fill and the size doubles. If any leg cannot be created, the ones already made are removed again, so you never end up with half a set. The reply's `link.legs` lists each leg's id, label, whether it is armed, and the ids it cancels or starts.
+LINKED TRIGGERS (OCO / OEO): pass `legs` INSTEAD of `rule` — a list of cards (each with its own symbol and the card fields, or {rule, symbol?, account_id?, trade_budget?}) — to create several triggers as one set. Two legs + link_mode 'oco': whichever fills first cancels the other. Two legs + link_mode 'oeo': the SECOND leg starts watching only once the FIRST fills (it is saved unarmed until then; List shows it as 'waiting'). For a bigger or mixed set leave link_mode out, give each leg's rule a `label`, and name the others under `cancels_labels` (cancel these when I fill) or `activates_labels` (start these when I fill). Every leg must be linked to the set: a leg nobody names and that names nobody is refused, because two unlinked triggers both fill and the size doubles. If any leg cannot be created, the ones already made are removed again, so you never end up with half a set. The reply's `link.legs` lists each leg's id, label, whether it is armed, and the ids it cancels or starts.
 
 A trigger you create here is SOLO — it has no subscribers. To move or adjust an EXISTING shared trade (one a workflow fanned out to subscribers), edit that trigger with Update-Trading-Trigger instead; a new trigger created here would only run for you and leave every subscriber on the old trade.
 
@@ -111,11 +218,11 @@ The background worker monitors live prices and executes orders automatically whe
 ━━ rule.exit for bracket (stocks AND options) ━━
   IMPORTANT — the price fields in this block mean DIFFERENT things for stocks vs options:
     * Stocks (native broker bracket): stop_price and limit_price       are SHARE PRICES the broker uses verbatim. limit_price on       stop_loss turns it into a stop-limit; limit_price on       take_profit is the sell-limit price.
-    * Options (worker-simulated OCO): stop_price, limit_price,       and take_profit_levels[].price are all UNDERLYING PRICE       LEVELS — the worker watches the underlying ticker (e.g.       SPY) and fires a MARKET close on the option leg the moment       the underlying crosses the level. They are NOT option       contract prices. stop_loss.limit_price is IGNORED for       options (always market) so a gap-through can never strand       the position.
+    * Options (worker-simulated OCO): stop_price, limit_price,       and take_profit_levels[].price are UNDERLYING PRICE LEVELS       unless exit.price_basis is 'contract' (then they are the       option's premium). When a stop is reached Atlas closes with a       marketable limit (the bid less a small allowance, re-priced       twice, then market); stop_loss.limit_price makes it one limit       at that premium instead. A target sells as a limit at its own       price (a stock-price target: at the live bid).
   Fields:
   stop_loss?: {stop_price:N, limit_price?:N} | {stop_pct:N} | {trailing_pct:N}
     trailing_pct = a TRAILING STOP that follows the price (stocks AND options): a DISTANCE in percent behind the best price since the entry — the SHARE price on a stock, the contract premium on an option — tightening only, never loosening. 10 = the stop sits 10% under the highest price seen since the fill (over the lowest, on a short). It IS the stop: give it alone, never beside stop_price / stop_pct. On a stock it makes the bracket worker-watched (Atlas holds the exit instead of the broker), so a stock with a trailing stop may have a stop and no target.
-  take_profit?: {limit_price:N}
+  take_profit?: {limit_price:N} | {limit_pct:N} (a % gain on the option premium)
   take_profit_levels?: [{price:N | pct:N, quantity:'40%'|5|'remaining', stop_after_pct?:N, stop_after_price?:N, close_limit_price?:N}, ...] — scaled exit: close a fraction/count at each level in sequence. Each level takes price (a $ level — UNDERLYING for options) OR pct (% move from the entry contract premium). quantity formats: '40%' (percent of original), 5 (absolute), 'remaining' (whatever is left). stop_after_pct / stop_after_price is the per-level TRAILING STOP, and it belongs on the level you are heading TOWARD: a level's stop move arms when the level BEFORE it fills. So 'move my stop once TP1 fills' is stop_after_pct on TP2 (take_profit_levels[1]), NOT on TP1. Anything on TP1 is dropped and the reply says so, because entry-to-TP1 is guarded by exit.stop_loss and nothing on TP1 could ever move it. Give stop_after_pct for a % trailing stop (measured from the ENTRY PREMIUM, sign kept: 0 = breakeven, +20 = 20% ABOVE entry premium = locked-in profit, -10 = 10% below) OR stop_after_price for a $ one — pick at most ONE per level. close_limit_price is the CONTRACT PREMIUM that level's sell is SUBMITTED at — the price on the order, not the target that fires it. Omit it and that level closes at MARKET. It is a plain limit: nothing re-prices or chases it, so a price the market never reaches simply does not fill and that level keeps waiting (the stop-loss, which is always market, a close time, or a ladder review still end the trade). Never invent one — set it only when the user asked for a specific close price. To EDIT a level's trailing stop, resend take_profit_levels with that level's stop_after_pct/stop_after_price changed. On a WORKFLOW trade template you may set the key to null to let Atlas decide it at run time (the decision step fills it); a plain manual trigger has no decision step, so give a concrete number there (a null is rejected). Omit both keys to keep the current stop. At least one of stop_loss, take_profit, or take_profit_levels is required.
   take_profit_loop?: true — only with take_profit_levels on a workflow-bound trigger: after each non-final level fills, the workflow re-runs and the AI re-decides the remaining ladder (adjust targets, move the stop, or exit the remainder now).
   Direction is derived per-threshold at fire time from the entry price the worker stamped on phase advance: a threshold below entry fires on a drop, above fires on a rise. You do NOT declare bullish / bearish anywhere.
@@ -151,7 +258,7 @@ SPREADS (vertical credit/debit, iron condor, butterfly, iron butterfly, straddle
 
 ## `Update-Trading-Trigger`
 
-🔴 acts. Edit one trading trigger in place.
+🔴 acts. Edit one trading trigger in place: pass trigger_id and ONLY the trade card fields you are changing (e.g. bracket_stop_loss_stop_price, bracket_take_profit_limit_pct, bracket_take_profit_levels, enter_limit_price, enter_trigger_value, contracts, exit_at_time); everything else stays as it is.
 
 | Field | Type | Needed | Default |
 |---|---|---|---|
@@ -160,6 +267,52 @@ SPREADS (vertical credit/debit, iron condor, butterfly, iron butterfly, straddle
 | `is_active` | boolean | no |  |
 | `symbol` | string | no |  |
 | `account_id` | string | no |  |
+| `asset_class` | string | no |  |
+| `option_type` | string | no |  |
+| `strike` | number | no |  |
+| `expiry` | string | no |  |
+| `contracts` | integer | no |  |
+| `quantity` | number | no |  |
+| `enter_side` | string | no |  |
+| `enter_order_type` | string | no |  |
+| `enter_limit_price` | number | no |  |
+| `enter_trigger_metric` | string | no |  |
+| `enter_trigger_operator` | string | no |  |
+| `enter_trigger_value` | number | no |  |
+| `order_strategy` | string | no |  |
+| `bracket_stop_loss_stop_price` | number | no |  |
+| `bracket_stop_loss_limit_price` | number | no |  |
+| `bracket_stop_loss_stop_pct` | number | no |  |
+| `bracket_stop_loss_trailing_pct` | number | no |  |
+| `bracket_take_profit_limit_price` | number | no |  |
+| `bracket_take_profit_limit_pct` | number | no |  |
+| `bracket_price_basis` | string | no |  |
+| `exit_order_type` | string | no |  |
+| `exit_limit_price` | number | no |  |
+| `enter_at_time` | string | no |  |
+| `exit_at_time` | string | no |  |
+| `exit_trigger_metric` | string | no |  |
+| `exit_trigger_operator` | string | no |  |
+| `exit_trigger_value` | number | no |  |
+| `oco_group` | string | no |  |
+| `bracket_take_profit_levels` | array | no |  |
+| `bracket_take_profit_loop` | boolean | no |  |
+| `bracket_trade_budget` | number | no |  |
+| `bracket_exit_split` | string | no |  |
+| `label` | string | no |  |
+| `cancels_labels` | array | no |  |
+| `activates_labels` | array | no |  |
+| `spread_strategy` | string | no |  |
+| `spread_side` | string | no |  |
+| `spread_direction` | string | no |  |
+| `spread_legs_spec` | object | no |  |
+| `spread_legs` | array | no |  |
+| `spreads` | integer | no |  |
+| `spread_take_profit_pct` | number | no |  |
+| `spread_take_profit_price` | number | no |  |
+| `spread_stop` | object | no |  |
+| `spread_stop_close_with` | string | no |  |
+| `spread_close_at` | string | no |  |
 
 ## `Delete-Trading-Trigger`
 

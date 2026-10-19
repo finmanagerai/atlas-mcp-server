@@ -13,8 +13,10 @@ orders, the log, the person's dashboard. Each run, Atlas runs the workflow's
 called `atlas`, which is already installed there.
 
 This page says what is possible. `references/tools.md` lists every field of
-the tools named here. `references/trade-card.json` lists every field of a
-trade.
+the tools named here. `references/trade-card-fields.md` lists every field of a
+trade (by group, with what each allows and worked examples written as
+`atlas.trade(...)` calls); `references/trade-card.json` is the same, as
+`Trigger-Workflow-Schema` answers it.
 
 ## The loop
 
@@ -184,11 +186,39 @@ every field before the script leans on one.
 ### Trades: `atlas.trade`
 
 One call is one trade, in the same fields as a trade card
-(`references/trade-card.json`, or `Trigger-Workflow-Schema`). After the run
-it goes through everything a trade card's trade does: the card's fixed values
-laid over it, the checks, the daily cap, the hold for review when the
-workflow has it on, then the broker. It shows in the workflow's Trades and
-Performance. At most 25 a run.
+(`references/trade-card-fields.md`, or `Trigger-Workflow-Schema`); every field
+is a named argument, and `help(atlas.trade)` lists them. After the run it goes
+through everything a trade card's trade does: the card's fixed values laid
+over it, the checks, the daily cap, the hold for review when the workflow has
+it on, then the broker. It shows in the workflow's Trades and Performance. At
+most 25 a run.
+
+Every trade needs three things (when the workflow has no trade card of its
+own; with one, the card fills what the call leaves out):
+
+1. **What**: `symbol`, `asset_class` (`"stock"` or `"option"`); an option adds
+   `option_type`, `strike`, `expiry`; a spread adds `spread_strategy` and
+   `expiry` (`"0dte"`, `"friday"` or a date), and a vertical `spread_side` and
+   `spread_direction`.
+2. **How much**: `quantity`, `contracts` or `spreads`, or
+   `bracket_trade_budget` in dollars. One of them.
+3. **How it enters**: `enter_side` (not on a spread) and `enter_order_type`
+   (`"market"`, or `"limit"` with `enter_limit_price`; a spread's limit is the
+   NET credit or debit). `enter_trigger_operator` + `enter_trigger_value` wait
+   for a stock price first.
+
+The exits: `bracket_stop_loss_stop_pct` (`-30`) or `_stop_price` or
+`_trailing_pct`; `bracket_take_profit_limit_pct` (`50`) or `_limit_price`, or
+`bracket_take_profit_levels`; `exit_at_time` (an ISO date-time with its
+offset); on a spread `spread_take_profit_pct`, `spread_stop`,
+`spread_close_at`. `order_strategy` is worked out from the exits when it is
+left out.
+
+**A wrong field stops the script right there**, before anything is handed in,
+with `atlas.AtlasError` naming each problem and what it allows, e.g.
+`'stop_loss_pct' is not a trade card field: use bracket_stop_loss_stop_pct` or
+`option_type must be one of call, put (got 'calls')`. A test shows it in
+`error` and `stderr`.
 
 ```python
 import atlas
@@ -442,7 +472,8 @@ Words a run can fail with:
 | `a run may call Atlas at most 200 times` | the tool-call budget |
 | `a run places at most 25 trades` | the trade budget |
 | `atlas.trade(broker="...") is not one of this workflow's Broker account settings.` | a broker not in the settings |
-| `trade 1 (SPY): ...` in `compile_errors` | a trade missing a field, or a stop on the wrong side |
+| `AtlasError: this trade card cannot be a trade: ...` | `atlas.trade` was given a field that does not exist, a value it does not allow, or (with no trade card on the workflow) not the three must-haves; each problem is named |
+| `trade 1 (SPY): ...` in `compile_errors` | a trade the compile refused, e.g. a stop on the wrong side of the entry |
 
 ## What to keep in mind
 

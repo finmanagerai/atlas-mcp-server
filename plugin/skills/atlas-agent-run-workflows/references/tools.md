@@ -6,7 +6,7 @@ what is possible.
 
 ## `Workflow-Create`
 
-🟡 adds. Create a workflow (a recurring AI setup) on the caller's account, saved EXACTLY as supplied.
+🟡 adds. Create a workflow (a recurring AI setup), saved exactly as supplied and paused.
 
 | Field | Type | Needed | Default |
 |---|---|---|---|
@@ -184,7 +184,7 @@ Example (nothing to do):
 
 ## `Trigger-Workflow-Schema`
 
-🟢 reads. Fetch the canonical schema for AI trigger workflows.
+🟢 reads. Every field of a TRADE CARD, the shape the trigger tools, Workflow-Create (output_schema.triggers) and a script's atlas.trade all take: type, allowed values, group, stock/option/spread, default; the three must-haves; the usual wrong names; worked examples (stock bracket, option limit + target + stop + close time, ladder by budget, iron condor, credit put vertical, debit call vertical, OCO pair).
 
 Takes nothing.
 

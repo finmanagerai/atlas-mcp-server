@@ -150,7 +150,10 @@
         "Create-Trading-Trigger",
         "Preview-Order",
         "Place-Order"
-      ]
+      ],
+      "forms": {
+        "trade-card.json": "trigger_workflow_schema"
+      }
     },
     "atlas-agent-run-workflows": {
       "tools": [

@@ -124,14 +124,14 @@ decide when to ask you first:
 
 | Tool | | What it does |
 |---|---|---|
-| `Create-Trading-Trigger` | 🔴 acts | Persist a price-trigger rule. |
+| `Create-Trading-Trigger` | 🔴 acts | Arm a trade: Atlas watches it and places it at the broker by itself. |
 | `Delete-Trading-Trigger` | 🟠 changes | Delete a trading trigger. |
 | `List-Fired-Triggers` | 🟢 reads | List the user's completed (fired) triggers from the archive. |
 | `List-Trading-Triggers` | 🟢 reads | List the user's trading triggers — watching (is_active=true), paused, and saved PREVIEWS (is_active=false with rule._preview). |
-| `Preview-Trading-Trigger` | 🟡 adds | Save a trigger as a PREVIEW: the exact trigger row, validated and shaped like a live one, but NOT armed. |
+| `Preview-Trading-Trigger` | 🟡 adds | Check a trade and save it as an unarmed PREVIEW for the person to approve; nothing is sent. |
 | `Reactivate-Trigger` | 🔴 acts | Move a fired trigger from the archive back to the active triggers table, resetting it to phase='enter' so it starts monitoring prices again from scratch. |
-| `Trigger-Workflow-Schema` | 🟢 reads | Fetch the canonical schema for AI trigger workflows. |
-| `Update-Trading-Trigger` | 🔴 acts | Edit one trading trigger in place. |
+| `Trigger-Workflow-Schema` | 🟢 reads | Every field of a TRADE CARD, the shape the trigger tools, Workflow-Create (output_schema.triggers) and a script's atlas.trade all take: type, allowed values, group… |
+| `Update-Trading-Trigger` | 🔴 acts | Edit one trading trigger in place: pass trigger_id and ONLY the trade card fields you are changing (e.g. bracket_stop_loss_stop_price, bracket_take_profit_limit_pct… |
 
 ## Trades in progress
 
@@ -196,7 +196,7 @@ decide when to ask you first:
 | `Workflow-Checks` | 🟠 changes | The checks of one of the person's script workflows (a workflow a script decides): what each check found, and running, pausing, resuming or deleting one. |
 | `Workflow-Collab-Find` | 🟢 reads | Find a person on Atlas to share a workflow with, by name or username. |
 | `Workflow-Collab-Remove` | 🟠 changes | Take somebody off your workflow, or leave one you were added to. |
-| `Workflow-Create` | 🟡 adds | Create a workflow (a recurring AI setup) on the caller's account, saved EXACTLY as supplied. |
+| `Workflow-Create` | 🟡 adds | Create a workflow (a recurring AI setup), saved exactly as supplied and paused. |
 | `Workflow-Delete` | 🟠 changes | Permanently delete a workflow owned by the caller. |
 | `Workflow-Discover` | 🟢 reads | Search the public workflow marketplace (Discover). |
 | `Workflow-Duplicate` | 🟡 adds | Duplicate a workflow into your library — YOUR OWN, or any shared one. |
