@@ -209,6 +209,38 @@
         "Workflow-Agent-Waiting-Runs",
         "Workflow-Agent-Hand-In-Run"
       ]
+    },
+    "atlas-script-workflows": {
+      "tools": [
+        "Workflow-Create",
+        "Workflow-Update",
+        "Workflow-Run",
+        "Workflow-Files",
+        "Workflow-Checks",
+        "Workflow-Logs",
+        "Workflow-Open",
+        "Trigger-Workflow-Schema",
+        "Broker-Connections",
+        "Search-Tools",
+        "List-Tool-Safety",
+        "List-Alerts",
+        "Stock-Quote",
+        "Price-Data-OHLCV",
+        "Option-Expiration-Dates",
+        "Options-Chain",
+        "Spread-Quote",
+        "Options-Flow",
+        "Greek-Exposure-Single-Expiration"
+      ],
+      "full": [
+        "Workflow-Create",
+        "Workflow-Run",
+        "Workflow-Files",
+        "Workflow-Checks"
+      ],
+      "forms": {
+        "trade-card.json": "trigger_workflow_schema"
+      }
     }
   },
   "editions": {
@@ -242,6 +274,33 @@
           "forms": {
             "alert-types.json": "list_alert_types"
           }
+        },
+        "atlas-script-workflows": {
+          "tools": [
+            "Workflow-Create",
+            "Workflow-Update",
+            "Workflow-Run",
+            "Workflow-Files",
+            "Workflow-Checks",
+            "Workflow-Logs",
+            "Workflow-Open",
+            "Search-Tools",
+            "List-Tool-Safety",
+            "List-Alerts",
+            "Stock-Quote",
+            "Price-Data-OHLCV",
+            "Option-Expiration-Dates",
+            "Options-Chain",
+            "Spread-Quote",
+            "Options-Flow",
+            "Greek-Exposure-Single-Expiration"
+          ],
+          "full": [
+            "Workflow-Create",
+            "Workflow-Run",
+            "Workflow-Files",
+            "Workflow-Checks"
+          ]
         }
       }
     }

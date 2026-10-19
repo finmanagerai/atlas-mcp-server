@@ -26,6 +26,8 @@ plan in their own broker account. This skill is the first look around.
      dealer exposure, earnings and filings. See the `atlas-market-data` skill.
    - **Build a workflow**: a plan Atlas runs for them on a schedule or when
      an alert goes off. See `atlas-workflows`.
+   - **Write a workflow as code**: a Python script decides each run, with
+     Atlas's data and the runner's libraries. See `atlas-script-workflows`.
    - **Set an alert**: be told when something happens in the market. See
      `atlas-alerts`.
    - **Post or take a play**: one trade idea, written down in full, shared

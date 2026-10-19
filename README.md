@@ -115,7 +115,7 @@ Ask: "Show me a quote for SPY." If a price comes back, you are connected.
 ## The plugin
 
 A plugin is the server plus **skills**: short guides that tell an assistant
-what is possible with Atlas and show it templates to start from. Nine come
+what is possible with Atlas and show it templates to start from. Ten come
 with it:
 
 | Skill | What it covers |
@@ -129,6 +129,7 @@ with it:
 | `atlas-agent-run-workflows` | A workflow your own assistant runs: it registers it, picks up the runs that are waiting, and hands in what it decided |
 | `atlas-agent-run-loop` | The loop that wakes your assistant by itself: the wake-up, a check that costs nothing when no run is waiting, and the stages of one run |
 | `atlas-agent-run-loop-test` | Proving that loop works with a workflow that cannot trade: the tools, the assistant waking by itself, and a run started by a schedule or an alert |
+| `atlas-script-workflows` | A workflow a Python script decides: the `atlas` module (any Atlas tool, trades in the trade card's fields, the run's message, Atlas AI), the dry run, the libraries on Atlas's runner, and checks |
 
 To have your own assistant wake itself on a timer, see
 [docs/agent-run-loop.md](docs/agent-run-loop.md).
@@ -137,7 +138,8 @@ To have your own assistant wake itself on a timer, see
 your account and plays, and builds and runs workflows and alerts. It does not
 place an order, set up a waiting trade, or post or take a play by hand: that
 skill is left out of it, and the server does not offer it those tools. That is
-done in Atlas itself and from the other apps.
+done in Atlas itself and from the other apps. Its script workflow skill
+leaves out the trades a script can place.
 
 Each skill says what is possible, not what you must do. The lists of fields
 inside them are written from the live server, so they match it.

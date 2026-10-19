@@ -4,6 +4,11 @@ All notable changes to the public Atlas MCP registry artifacts in this repositor
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## Unreleased
+
+### Added
+- `atlas-script-workflows`: a workflow decided by a Python script instead of a model. Creating one with its script, the dry run (`Workflow-Run` with `test`) and what it answers, fixing the script with `Workflow-Files`, giving it its alert or schedule, and reading its runs and checks. The `atlas` module with examples: reading prices, bars, chains, spreads and options flow with `atlas.call`; a stock, an option and an iron condor with `atlas.trade`; several broker accounts; `atlas.notify`; `atlas.ask`; settings. The libraries on Atlas's runner (written from the runner's own list), its limits, `checks.py`, and the errors a run can fail with. The ChatGPT and Codex archive has it without the trades.
+
 ## Plugin 1.3.1 — 2026-10-14
 
 ### Changed
