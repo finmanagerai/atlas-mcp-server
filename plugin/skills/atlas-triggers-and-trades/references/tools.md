@@ -82,12 +82,12 @@ Takes nothing.
 | `spread_strategy` | string | no |  |
 | `spread_side` | string | no |  |
 | `spread_direction` | string | no |  |
-| `spread_legs_spec` | object | no |  |
+| `spread_legs_spec` | string | no |  |
 | `spread_legs` | array | no |  |
 | `spreads` | integer | no |  |
 | `spread_take_profit_pct` | number | no |  |
 | `spread_take_profit_price` | number | no |  |
-| `spread_stop` | object | no |  |
+| `spread_stop` | string | no |  |
 | `spread_stop_close_with` | string | no |  |
 | `spread_close_at` | string | no |  |
 
@@ -142,12 +142,12 @@ Takes nothing.
 | `spread_strategy` | string | no |  |
 | `spread_side` | string | no |  |
 | `spread_direction` | string | no |  |
-| `spread_legs_spec` | object | no |  |
+| `spread_legs_spec` | string | no |  |
 | `spread_legs` | array | no |  |
 | `spreads` | integer | no |  |
 | `spread_take_profit_pct` | number | no |  |
 | `spread_take_profit_price` | number | no |  |
-| `spread_stop` | object | no |  |
+| `spread_stop` | string | no |  |
 | `spread_stop_close_with` | string | no |  |
 | `spread_close_at` | string | no |  |
 
@@ -305,12 +305,12 @@ SPREADS (vertical credit/debit, iron condor, butterfly, iron butterfly, straddle
 | `spread_strategy` | string | no |  |
 | `spread_side` | string | no |  |
 | `spread_direction` | string | no |  |
-| `spread_legs_spec` | object | no |  |
+| `spread_legs_spec` | string | no |  |
 | `spread_legs` | array | no |  |
 | `spreads` | integer | no |  |
 | `spread_take_profit_pct` | number | no |  |
 | `spread_take_profit_price` | number | no |  |
-| `spread_stop` | object | no |  |
+| `spread_stop` | string | no |  |
 | `spread_stop_close_with` | string | no |  |
 | `spread_close_at` | string | no |  |
 
