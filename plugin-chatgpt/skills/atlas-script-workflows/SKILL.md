@@ -33,17 +33,14 @@ dashboard.
   "script_code": "import atlas\n\nq = atlas.call(\"Stock-Quote\", symbol=\"SPY\")\natlas.notify(f\"SPY is at {q['price']}\")\n",
   "script_settings": [
     { "name": "move_pct", "type": "number", "value": 1 }
-  ],
-  "trigger_source": "manual",
-  "status": "active"
+  ]
 }
 ```
 
 - `purpose` is `analysis`: the run's result is its message and the files
   it writes.
-- **A test runs only on a workflow that is switched on.** `trigger_source:
-  "manual"` with `status: "active"` is on, and nothing starts it by itself
-  while it is being built: only Run now and a test do.
+- **It starts paused, and a paused workflow can be tested.** Nothing starts
+  it until it is switched on (step 4).
 - `script_settings` are the script's inputs, shown under the script on the
   workflow's page, like a chart script's inputs (see Settings below).
 - With no `script_code` the workflow starts with a short starter script.
@@ -81,9 +78,10 @@ text in `content` (it replaces the file). `Workflow-Update` with
 of the workflow: what earlier runs wrote, `checks.py`, `checks.json`. Then
 test again, until the test is clean.
 
-### 4. Give it its start
+### 4. Switch it on
 
-`Workflow-Update` with `patch` holding what should start it:
+When the person says so, `Workflow-Update` with `patch` holding
+`status: "active"` and what should start it:
 
 - an alert: `trigger_source: "alert"` and `alert_id` (or `alert_ids` for
   several; `List-Alerts`, `Create-Alert`);
@@ -92,8 +90,8 @@ test again, until the test is clean.
   09:35"` runs once);
 - another workflow: `trigger_source: "workflow"` and `source_workflow_ids`.
 
-`status: "paused"` stops it. A workflow left on `manual` runs only when the
-person presses Run now.
+`status: "paused"` stops it again. `trigger_source: "manual"` runs only when
+the person presses Run now.
 
 ### 5. Watch it
 
