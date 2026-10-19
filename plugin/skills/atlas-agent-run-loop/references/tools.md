@@ -131,3 +131,4 @@ Example (nothing to do):
 | `tool_args` | object | no |  |
 | `script_code` | string | no |  |
 | `script_settings` | array | no |  |
+| `hide_logic` | boolean | no |  |
