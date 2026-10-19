@@ -139,6 +139,26 @@
       "help": "Optional. Close at this moment whatever the position is doing."
     },
     {
+      "name": "tp_close_with",
+      "required": false,
+      "kind": "string",
+      "options": [
+        "market",
+        "limit"
+      ],
+      "help": "How the targets sell. Leave it out for SAME AS ENTRY (a limit entry takes profit with a limit at each target, a market entry at market). 'market' or 'limit' (a limit at the target) only when the user said."
+    },
+    {
+      "name": "stop_close_with",
+      "required": false,
+      "kind": "string",
+      "options": [
+        "market",
+        "limit"
+      ],
+      "help": "How the stop sells. Leave it out for SAME AS ENTRY. 'market', or 'limit' (a limit at the stop's own price), only when the user said."
+    },
+    {
       "name": "reason",
       "required": false,
       "kind": "string",

@@ -44,6 +44,8 @@ Takes nothing.
 | `exit_at` | string | no | `""` |
 | `reason` | string | no | `""` |
 | `score` | integer | no |  |
+| `tp_close_with` | string | no | `""` |
+| `stop_close_with` | string | no | `""` |
 | `called_at` | string | no | `""` |
 | `group_id` | string | no | `""` |
 | `trade_for_me` | boolean | no | `false` |
@@ -228,6 +230,11 @@ Publish one trade idea, called a play, under the user's name: the stock
             "15:30" for today, or "2026-08-12 15:30". New York time.
         exit_at: Close the position at this time whatever it is doing. Same
             format as enter_at.
+        tp_close_with / stop_close_with: How the targets / the stop SELL.
+            Leave them out for SAME AS ENTRY (a limit entry exits with limits
+            at the target and at the stop, a market entry at market). "market"
+            or "limit" (a limit at the target / the stop's own price) only
+            when the user said, e.g. "sell the stop at market".
         reason: Why you are calling it. Your followers read this.
         score: How strong the call is, 1 to 10. DEFAULTS TO 10, not 1 — a play
             called without a number is being called without reservation. SET IT
@@ -293,6 +300,8 @@ Publish one trade idea, called a play, under the user's name: the stock
 | `exit_at` | string | no | `""` |
 | `reason` | string | no | `""` |
 | `score` | integer | no |  |
+| `tp_close_with` | string | no | `""` |
+| `stop_close_with` | string | no | `""` |
 
 ## `Signal-Delete`
 
