@@ -206,7 +206,7 @@
       "name": "bracket_stop_loss_stop_price",
       "rule_path": "exit.stop_loss.stop_price",
       "label": "Stop loss trigger price (UNDERLYING)",
-      "help": "For options: UNDERLYING price level (unless bracket_price_basis is \"contract\") — when SPY reaches this, Atlas closes the option with a marketable limit (the bid less a small allowance, re-priced twice, then market). NOT the contract price. For stocks: broker-managed stop trigger on the share price. WHICH SIDE: a stop sits where the trade LOSES — BELOW the entry for long stock / a long CALL / a short put, ABOVE it for short stock / a long PUT / a short call. A long put profits as the underlying FALLS, so its stop is above. A stop on the wrong side is already true at entry and is REJECTED at compile.",
+      "help": "For options: UNDERLYING price level (unless bracket_price_basis is \"contract\") — when SPY reaches this, Atlas closes the option at MARKET (or one limit at bracket_stop_loss_limit_price, if set; a limit entry with no stop limit closes as a limit at the stop only on the contract basis). NOT the contract price. For stocks: broker-managed stop trigger on the share price. WHICH SIDE: a stop sits where the trade LOSES — BELOW the entry for long stock / a long CALL / a short put, ABOVE it for short stock / a long PUT / a short call. A long put profits as the underlying FALLS, so its stop is above. A stop on the wrong side is already true at entry and is REJECTED at compile.",
       "kind": "number",
       "placeholder": "0.00",
       "required": false,
@@ -219,7 +219,7 @@
       "name": "bracket_stop_loss_limit_price",
       "rule_path": "exit.stop_loss.limit_price",
       "label": "Stop loss limit price",
-      "help": "Optional. How the stop closes when you want a limit, not the default marketable close. Stocks with a broker bracket: turns the broker stop into a stop-limit order at this share price. Options (and stocks the worker manages): when the stop is reached, Atlas cancels its open take-profit orders and sends ONE day limit at this price (a contract premium for an option), with no allowance, rounded to the tick in your favour; if the market is already through it the order rests. Leave it empty for the default: a marketable limit at the bid less a small allowance. A stop measured on the STOCK price of an option has no premium to use, so it closes with the marketable limit.",
+      "help": "Optional. How the stop closes when you want a limit at your own price. Stocks with a broker bracket: turns the broker stop into a stop-limit order at this share price. Options (and stocks the worker manages): when the stop is reached, Atlas cancels its open take-profit orders and sends ONE day limit at this price (a contract premium for an option), with no allowance, rounded to the tick in your favour; if the market is already through it the order rests. Leave it empty and the stop follows the ENTRY: a limit entry closes the stop as a limit at the stop's own price (a premium on the contract basis, a share price for a stock), a market entry closes it at MARKET. A stop measured on the STOCK price of an option has no premium to use, so it closes at market.",
       "kind": "number",
       "placeholder": "0.00",
       "required": false,
@@ -258,7 +258,7 @@
       "name": "bracket_take_profit_limit_price",
       "rule_path": "exit.take_profit.limit_price",
       "label": "Take profit price (UNDERLYING for options, contract for stocks)",
-      "help": "For options: UNDERLYING price level (unless bracket_price_basis is \"contract\") — when SPY reaches this, Atlas sells the option at the live bid. NOT the contract price. For stocks: broker-managed sell limit on the share price. WHICH SIDE: a target sits where the trade WINS — ABOVE the entry for long stock / a long CALL / a short put, BELOW it for short stock / a long PUT / a short call. A target on the wrong side is already true at entry and is REJECTED at compile.",
+      "help": "For options: UNDERLYING price level (unless bracket_price_basis is \"contract\") — when SPY reaches this, Atlas sells the option at market, or as a limit when exit_order_type is limit or (exit_order_type left out) the entry was a limit. NOT the contract price. For stocks: broker-managed sell limit on the share price. WHICH SIDE: a target sits where the trade WINS — ABOVE the entry for long stock / a long CALL / a short put, BELOW it for short stock / a long PUT / a short call. A target on the wrong side is already true at entry and is REJECTED at compile.",
       "kind": "number",
       "placeholder": "0.00",
       "required": false,
@@ -299,7 +299,7 @@
       "name": "exit_order_type",
       "rule_path": "exit.order_type",
       "label": "Exit order type",
-      "help": "How the CLOSE order is placed when the exit fires — the TAKE-PROFIT / non-stop close for a bracket, or the exit watch for one_triggers_other. market fills immediately; limit rests at exit_limit_price. Default market. A stop-loss never uses this: it closes with a marketable limit, or with one limit at bracket_stop_loss_limit_price.",
+      "help": "How the TAKE-PROFIT close is sent (the card's \"Same as entry | Market | Limit\"; for one_triggers_other, how the exit watch's close is sent). \"market\": market, even after a limit entry. \"limit\": a limit at exit_limit_price, or with no exit_limit_price a limit AT THE TARGET. Left out = SAME AS ENTRY: a limit entry sells as a limit at the target, a market entry at market. A level's own close_limit_price always wins. The stop has its own choice (bracket_stop_loss_order_type); a time close is always market.",
       "kind": "string",
       "options": [
         "market",
@@ -308,13 +308,29 @@
       "required": false
     },
     {
+      "name": "bracket_stop_loss_order_type",
+      "rule_path": "exit.stop_loss.order_type",
+      "label": "Stop closes with",
+      "help": "How the STOP closes (the card's \"Same as entry | Market | Limit\"). \"market\": market, even after a limit entry. \"limit\": a Day limit at bracket_stop_loss_limit_price, or with no limit price at the stop's own price (a premium on the contract basis, the share price for a stock; a trailing stop at its trailed level), never chased: if the market is already through it, it rests. Left out = SAME AS ENTRY: a limit entry closes the stop as a limit at the stop's price, a market entry at market. A stop measured on the STOCK price of an option has no premium for a limit, so it closes at market. Needs a stop (bracket_stop_loss_stop_price / _stop_pct / _trailing_pct).",
+      "kind": "string",
+      "options": [
+        "market",
+        "limit"
+      ],
+      "required": false,
+      "when": {
+        "field": "order_strategy",
+        "equals": "bracket"
+      }
+    },
+    {
       "name": "exit_limit_price",
       "rule_path": "exit.limit_price",
       "label": "Exit limit price",
-      "help": "CONTRACT price the limit CLOSE rests at (option premium, or share price for stocks) — required when exit_order_type is limit. This is NOT an underlying threshold; it is the price the broker targets for the close.",
+      "help": "Optional CONTRACT price the limit CLOSE rests at (option premium, or share price for stocks). Left out with exit_order_type \"limit\", a take-profit sells as a limit AT ITS TARGET (a stock-price target on an option: at the live bid). Required only for a one_triggers_other exit watch set to limit. This is NOT an underlying threshold; it is the price on the close order.",
       "kind": "number",
       "placeholder": "0.00",
-      "required": true,
+      "required": false,
       "when": {
         "field": "exit_order_type",
         "equals": "limit"
@@ -332,7 +348,7 @@
       "name": "exit_at_time",
       "rule_path": "exit.at_time",
       "label": "Exit time",
-      "help": "Absolute date+time to FORCE-CLOSE at, ISO-8601 with an offset (e.g. \"2026-07-10T15:55:00-04:00\" or \"2026-07-10T19:55:00Z\"). Whichever comes first — this clock time OR the SL/TP (or exit watch) — closes ALL remaining (a marketable limit, chased to market). Leave None to ignore; AI may set it.",
+      "help": "Absolute date+time to FORCE-CLOSE at, ISO-8601 with an offset (e.g. \"2026-07-10T15:55:00-04:00\" or \"2026-07-10T19:55:00Z\"). Whichever comes first — this clock time OR the SL/TP (or exit watch) — closes ALL remaining at market. Leave None and there is NO time close: nothing closes the trade by the clock unless it is set here. AI may set it.",
       "kind": "string",
       "required": false
     },
@@ -548,7 +564,7 @@
       "name": "spread_take_profit_pct",
       "rule_path": "exit.take_profit.pct",
       "label": "Take profit (%)",
-      "help": "A credit spread: the % of the credit kept (50 closes when it can be bought back for half the credit; the default). A debit spread: the % gained on the debit. Sent as a limit at that net once the spread's natural price is there. \"none\" for no target. Or use spread_take_profit_price, or bracket_take_profit_levels (steps in whole spreads: [{pct, quantity}], the last closes the rest).",
+      "help": "A credit spread: the % of the credit kept (50 closes when it can be bought back for half the credit). A debit spread: the % gained on the debit. Closed once the spread's natural price is there: as a limit at that net when the entry was a limit, at market when it was market. Left out (or \"none\"): no target. Or use spread_take_profit_price, or bracket_take_profit_levels (steps in whole spreads: [{pct, quantity}], the last closes the rest).",
       "kind": "number",
       "placeholder": "50",
       "required": false
@@ -566,15 +582,27 @@
       "name": "spread_stop",
       "rule_path": "exit.stop_loss",
       "label": "Stop",
-      "help": "An object. On the STOCK: {\"basis\": \"stock\", \"below\": 572, \"above\": 592} (either side optional; either crossing closes the whole trade). On the PREMIUM: {\"basis\": \"premium\", \"max_loss_pct\": 50} (stop once the loss reaches that % of the most it can lose: width less credit, or the debit paid) or {\"basis\": \"premium\", \"spread_price\": 3.10} (a credit spread whose cost to close rises to it, a debit spread whose value falls to it). Judged on the natural price. Default: premium, 50% of the most it can lose. \"none\" for no stop.",
+      "help": "An object. On the STOCK: {\"basis\": \"stock\", \"below\": 572, \"above\": 592} (either side optional; either crossing closes the whole trade). On the PREMIUM: {\"basis\": \"premium\", \"max_loss_pct\": 50} (stop once the loss reaches that % of the most it can lose: width less credit, or the debit paid) or {\"basis\": \"premium\", \"spread_price\": 3.10} (a credit spread whose cost to close rises to it, a debit spread whose value falls to it). Judged on the natural price. Left out (or \"none\"): no stop.",
       "kind": "array",
+      "required": false
+    },
+    {
+      "name": "spread_take_profit_close_with",
+      "rule_path": "exit.take_profit_close_with",
+      "label": "Targets close with",
+      "help": "market: each target closes in one market order once the natural price is there. limit: one limit at the target's own net. Left out: as the entry (a limit net entry closes the targets as limits, a market entry at market).",
+      "kind": "string",
+      "options": [
+        "market",
+        "limit"
+      ],
       "required": false
     },
     {
       "name": "spread_stop_close_with",
       "rule_path": "exit.stop_close_with",
       "label": "Stop closes with",
-      "help": "market (default): every leg closed in one order as a marketable limit on the natural plus a small allowance, re-priced twice, then market. limit: one limit at the stop's own net, not chased (premium stops only).",
+      "help": "market: every leg closed in one market order. limit: one limit at the stop's own net, not chased (premium stops only). Left out: as the entry (a limit net entry closes the stop as a limit, a market entry at market).",
       "kind": "string",
       "options": [
         "market",
@@ -586,7 +614,7 @@
       "name": "spread_close_at",
       "rule_path": "spread.close_at",
       "label": "Close at",
-      "help": "A time HH:MM (ET) on the expiry day to close whatever is left (default 15:45; \"none\" for no time). exit_at_time (an ISO date-time) wins when given.",
+      "help": "A time HH:MM (ET) on the expiry day to close whatever is left, at market. Left out (or \"none\"): no close time, nothing is closed by the clock. exit_at_time (an ISO date-time) wins when given.",
       "kind": "string",
       "placeholder": "15:45",
       "required": false
@@ -599,7 +627,7 @@
       "The strikes are a distance from the stock's price (spread_legs_spec) or exact (spread_legs); they follow the price until placed, then land on the nearest listed strikes.",
       "Size is whole spreads (`spreads`), or `bracket_trade_budget`: the budget over the most one spread can lose, floored, at the fill.",
       "A limit (`enter_limit_price`) is the NET; Atlas watches the natural price (sold legs at the bid, bought at the ask) and sends at your net once it is there.",
-      "Defaults when a key is absent: take profit 50% of the credit (credit spreads), stop at 50% of the most it can lose, close at 15:45 ET on the expiry day. \"none\" turns one off."
+      "NO SILENT EXITS: a target, a stop or a close time the card leaves out does not exist (nothing closes the trade at a target, a stop or 15:45 unless the card says so). \"none\" says the same in words."
     ]
   },
   "examples": {
@@ -995,7 +1023,7 @@
       "name": "bracket_stop_loss_stop_price",
       "rule_path": "exit.stop_loss.stop_price",
       "label": "Stop loss trigger price (UNDERLYING)",
-      "help": "For options: UNDERLYING price level (unless bracket_price_basis is \"contract\") — when SPY reaches this, Atlas closes the option with a marketable limit (the bid less a small allowance, re-priced twice, then market). NOT the contract price. For stocks: broker-managed stop trigger on the share price. WHICH SIDE: a stop sits where the trade LOSES — BELOW the entry for long stock / a long CALL / a short put, ABOVE it for short stock / a long PUT / a short call. A long put profits as the underlying FALLS, so its stop is above. A stop on the wrong side is already true at entry and is REJECTED at compile.",
+      "help": "For options: UNDERLYING price level (unless bracket_price_basis is \"contract\") — when SPY reaches this, Atlas closes the option at MARKET (or one limit at bracket_stop_loss_limit_price, if set; a limit entry with no stop limit closes as a limit at the stop only on the contract basis). NOT the contract price. For stocks: broker-managed stop trigger on the share price. WHICH SIDE: a stop sits where the trade LOSES — BELOW the entry for long stock / a long CALL / a short put, ABOVE it for short stock / a long PUT / a short call. A long put profits as the underlying FALLS, so its stop is above. A stop on the wrong side is already true at entry and is REJECTED at compile.",
       "kind": "number",
       "placeholder": "0.00",
       "required": false,
@@ -1014,7 +1042,7 @@
       "name": "bracket_stop_loss_limit_price",
       "rule_path": "exit.stop_loss.limit_price",
       "label": "Stop loss limit price",
-      "help": "Optional. How the stop closes when you want a limit, not the default marketable close. Stocks with a broker bracket: turns the broker stop into a stop-limit order at this share price. Options (and stocks the worker manages): when the stop is reached, Atlas cancels its open take-profit orders and sends ONE day limit at this price (a contract premium for an option), with no allowance, rounded to the tick in your favour; if the market is already through it the order rests. Leave it empty for the default: a marketable limit at the bid less a small allowance. A stop measured on the STOCK price of an option has no premium to use, so it closes with the marketable limit.",
+      "help": "Optional. How the stop closes when you want a limit at your own price. Stocks with a broker bracket: turns the broker stop into a stop-limit order at this share price. Options (and stocks the worker manages): when the stop is reached, Atlas cancels its open take-profit orders and sends ONE day limit at this price (a contract premium for an option), with no allowance, rounded to the tick in your favour; if the market is already through it the order rests. Leave it empty and the stop follows the ENTRY: a limit entry closes the stop as a limit at the stop's own price (a premium on the contract basis, a share price for a stock), a market entry closes it at MARKET. A stop measured on the STOCK price of an option has no premium to use, so it closes at market.",
       "kind": "number",
       "placeholder": "0.00",
       "required": false,
@@ -1027,8 +1055,8 @@
         "stock",
         "option"
       ],
-      "default": "a marketable limit (the bid less a small allowance, re-priced twice, then market)",
-      "short": "How the stop closes: one limit at this price instead of the marketable close."
+      "default": "as the entry: a limit entry closes the stop as a limit at the stop's price, a market entry at market",
+      "short": "How the stop closes: one limit at this price."
     },
     {
       "name": "bracket_stop_loss_stop_pct",
@@ -1071,7 +1099,7 @@
       "name": "bracket_take_profit_limit_price",
       "rule_path": "exit.take_profit.limit_price",
       "label": "Take profit price (UNDERLYING for options, contract for stocks)",
-      "help": "For options: UNDERLYING price level (unless bracket_price_basis is \"contract\") — when SPY reaches this, Atlas sells the option at the live bid. NOT the contract price. For stocks: broker-managed sell limit on the share price. WHICH SIDE: a target sits where the trade WINS — ABOVE the entry for long stock / a long CALL / a short put, BELOW it for short stock / a long PUT / a short call. A target on the wrong side is already true at entry and is REJECTED at compile.",
+      "help": "For options: UNDERLYING price level (unless bracket_price_basis is \"contract\") — when SPY reaches this, Atlas sells the option at market, or as a limit when exit_order_type is limit or (exit_order_type left out) the entry was a limit. NOT the contract price. For stocks: broker-managed sell limit on the share price. WHICH SIDE: a target sits where the trade WINS — ABOVE the entry for long stock / a long CALL / a short put, BELOW it for short stock / a long PUT / a short call. A target on the wrong side is already true at entry and is REJECTED at compile.",
       "kind": "number",
       "placeholder": "0.00",
       "required": false,
@@ -1129,7 +1157,7 @@
       "name": "exit_order_type",
       "rule_path": "exit.order_type",
       "label": "Exit order type",
-      "help": "How the CLOSE order is placed when the exit fires — the TAKE-PROFIT / non-stop close for a bracket, or the exit watch for one_triggers_other. market fills immediately; limit rests at exit_limit_price. Default market. A stop-loss never uses this: it closes with a marketable limit, or with one limit at bracket_stop_loss_limit_price.",
+      "help": "How the TAKE-PROFIT close is sent (the card's \"Same as entry | Market | Limit\"; for one_triggers_other, how the exit watch's close is sent). \"market\": market, even after a limit entry. \"limit\": a limit at exit_limit_price, or with no exit_limit_price a limit AT THE TARGET. Left out = SAME AS ENTRY: a limit entry sells as a limit at the target, a market entry at market. A level's own close_limit_price always wins. The stop has its own choice (bracket_stop_loss_order_type); a time close is always market.",
       "kind": "string",
       "options": [
         "market",
@@ -1141,17 +1169,40 @@
         "stock",
         "option"
       ],
-      "default": "market",
-      "short": "How a take-profit / exit-watch close is sent: \"market\" or \"limit\" (with exit_limit_price)."
+      "default": "as the entry: a limit entry sells at the target as a limit, a market entry at market",
+      "short": "How the take-profit is sent: \"market\", or \"limit\" (at exit_limit_price, or with none at the target). The time close, close-all and an AI exit are always market."
+    },
+    {
+      "name": "bracket_stop_loss_order_type",
+      "rule_path": "exit.stop_loss.order_type",
+      "label": "Stop closes with",
+      "help": "How the STOP closes (the card's \"Same as entry | Market | Limit\"). \"market\": market, even after a limit entry. \"limit\": a Day limit at bracket_stop_loss_limit_price, or with no limit price at the stop's own price (a premium on the contract basis, the share price for a stock; a trailing stop at its trailed level), never chased: if the market is already through it, it rests. Left out = SAME AS ENTRY: a limit entry closes the stop as a limit at the stop's price, a market entry at market. A stop measured on the STOCK price of an option has no premium for a limit, so it closes at market. Needs a stop (bracket_stop_loss_stop_price / _stop_pct / _trailing_pct).",
+      "kind": "string",
+      "options": [
+        "market",
+        "limit"
+      ],
+      "required": false,
+      "when": {
+        "field": "order_strategy",
+        "equals": "bracket"
+      },
+      "group": "exits",
+      "applies_to": [
+        "stock",
+        "option"
+      ],
+      "default": "as the entry: a limit entry closes the stop as a limit at the stop's price, a market entry at market",
+      "short": "How the stop closes: \"market\", or \"limit\" (at bracket_stop_loss_limit_price, or with none at the stop's own price)."
     },
     {
       "name": "exit_limit_price",
       "rule_path": "exit.limit_price",
       "label": "Exit limit price",
-      "help": "CONTRACT price the limit CLOSE rests at (option premium, or share price for stocks) — required when exit_order_type is limit. This is NOT an underlying threshold; it is the price the broker targets for the close.",
+      "help": "Optional CONTRACT price the limit CLOSE rests at (option premium, or share price for stocks). Left out with exit_order_type \"limit\", a take-profit sells as a limit AT ITS TARGET (a stock-price target on an option: at the live bid). Required only for a one_triggers_other exit watch set to limit. This is NOT an underlying threshold; it is the price on the close order.",
       "kind": "number",
       "placeholder": "0.00",
-      "required": true,
+      "required": false,
       "when": {
         "field": "exit_order_type",
         "equals": "limit"
@@ -1161,7 +1212,7 @@
         "stock",
         "option"
       ],
-      "short": "The price on that close order (option premium or share price). Required when exit_order_type is \"limit\"."
+      "short": "The price on the take-profit's limit (option premium or share price). Optional: left out, a limit sells at the target. Required for an exit watch set to \"limit\"."
     },
     {
       "name": "enter_at_time",
@@ -1182,7 +1233,7 @@
       "name": "exit_at_time",
       "rule_path": "exit.at_time",
       "label": "Exit time",
-      "help": "Absolute date+time to FORCE-CLOSE at, ISO-8601 with an offset (e.g. \"2026-07-10T15:55:00-04:00\" or \"2026-07-10T19:55:00Z\"). Whichever comes first — this clock time OR the SL/TP (or exit watch) — closes ALL remaining (a marketable limit, chased to market). Leave None to ignore; AI may set it.",
+      "help": "Absolute date+time to FORCE-CLOSE at, ISO-8601 with an offset (e.g. \"2026-07-10T15:55:00-04:00\" or \"2026-07-10T19:55:00Z\"). Whichever comes first — this clock time OR the SL/TP (or exit watch) — closes ALL remaining at market. Leave None and there is NO time close: nothing closes the trade by the clock unless it is set here. AI may set it.",
       "kind": "string",
       "required": false,
       "group": "timing",
@@ -1191,7 +1242,8 @@
         "option",
         "spread"
       ],
-      "short": "Close whatever is left at this clock time (ISO-8601 WITH an offset), or at the stop/target, whichever comes first."
+      "default": "none: nothing closes it by the clock",
+      "short": "Close whatever is left at this clock time (ISO-8601 WITH an offset), at market, or at the stop/target, whichever comes first. Only when you set it."
     },
     {
       "name": "exit_trigger_metric",
@@ -1512,7 +1564,7 @@
       "name": "spread_take_profit_pct",
       "rule_path": "exit.take_profit.pct",
       "label": "Take profit (%)",
-      "help": "A credit spread: the % of the credit kept (50 closes when it can be bought back for half the credit; the default). A debit spread: the % gained on the debit. Sent as a limit at that net once the spread's natural price is there. \"none\" for no target. Or use spread_take_profit_price, or bracket_take_profit_levels (steps in whole spreads: [{pct, quantity}], the last closes the rest).",
+      "help": "A credit spread: the % of the credit kept (50 closes when it can be bought back for half the credit). A debit spread: the % gained on the debit. Closed once the spread's natural price is there: as a limit at that net when the entry was a limit, at market when it was market. Left out (or \"none\"): no target. Or use spread_take_profit_price, or bracket_take_profit_levels (steps in whole spreads: [{pct, quantity}], the last closes the rest).",
       "kind": "number",
       "placeholder": "50",
       "required": false,
@@ -1520,7 +1572,7 @@
       "applies_to": [
         "spread"
       ],
-      "default": "50 on a credit spread",
+      "default": "none: no target",
       "short": "Target: % of the credit kept (credit) or % gained (debit). \"none\" for no target."
     },
     {
@@ -1541,21 +1593,21 @@
       "name": "spread_stop",
       "rule_path": "exit.stop_loss",
       "label": "Stop",
-      "help": "An object. On the STOCK: {\"basis\": \"stock\", \"below\": 572, \"above\": 592} (either side optional; either crossing closes the whole trade). On the PREMIUM: {\"basis\": \"premium\", \"max_loss_pct\": 50} (stop once the loss reaches that % of the most it can lose: width less credit, or the debit paid) or {\"basis\": \"premium\", \"spread_price\": 3.10} (a credit spread whose cost to close rises to it, a debit spread whose value falls to it). Judged on the natural price. Default: premium, 50% of the most it can lose. \"none\" for no stop.",
+      "help": "An object. On the STOCK: {\"basis\": \"stock\", \"below\": 572, \"above\": 592} (either side optional; either crossing closes the whole trade). On the PREMIUM: {\"basis\": \"premium\", \"max_loss_pct\": 50} (stop once the loss reaches that % of the most it can lose: width less credit, or the debit paid) or {\"basis\": \"premium\", \"spread_price\": 3.10} (a credit spread whose cost to close rises to it, a debit spread whose value falls to it). Judged on the natural price. Left out (or \"none\"): no stop.",
       "kind": "object",
       "required": false,
       "group": "spreads",
       "applies_to": [
         "spread"
       ],
-      "default": "premium, 50% of the most it can lose",
+      "default": "none: no stop",
       "short": "{basis: \"stock\", below?, above?} or {basis: \"premium\", max_loss_pct | spread_price}, or \"none\"."
     },
     {
-      "name": "spread_stop_close_with",
-      "rule_path": "exit.stop_close_with",
-      "label": "Stop closes with",
-      "help": "market (default): every leg closed in one order as a marketable limit on the natural plus a small allowance, re-priced twice, then market. limit: one limit at the stop's own net, not chased (premium stops only).",
+      "name": "spread_take_profit_close_with",
+      "rule_path": "exit.take_profit_close_with",
+      "label": "Targets close with",
+      "help": "market: each target closes in one market order once the natural price is there. limit: one limit at the target's own net. Left out: as the entry (a limit net entry closes the targets as limits, a market entry at market).",
       "kind": "string",
       "options": [
         "market",
@@ -1566,14 +1618,32 @@
       "applies_to": [
         "spread"
       ],
-      "default": "market",
-      "short": "How the stop closes: \"market\" (marketable, chased) or \"limit\" (at the stop's own net)."
+      "default": "as the entry: a limit (net) entry closes the targets as limits at their nets, a market entry at market",
+      "short": "How the targets close: \"market\" or \"limit\" (at the target's own net)."
+    },
+    {
+      "name": "spread_stop_close_with",
+      "rule_path": "exit.stop_close_with",
+      "label": "Stop closes with",
+      "help": "market: every leg closed in one market order. limit: one limit at the stop's own net, not chased (premium stops only). Left out: as the entry (a limit net entry closes the stop as a limit, a market entry at market).",
+      "kind": "string",
+      "options": [
+        "market",
+        "limit"
+      ],
+      "required": false,
+      "group": "spreads",
+      "applies_to": [
+        "spread"
+      ],
+      "default": "as the entry: a limit (net) entry closes the stop as a limit at its net, a market entry at market",
+      "short": "How the stop closes: \"market\" or \"limit\" (at the stop's own net)."
     },
     {
       "name": "spread_close_at",
       "rule_path": "spread.close_at",
       "label": "Close at",
-      "help": "A time HH:MM (ET) on the expiry day to close whatever is left (default 15:45; \"none\" for no time). exit_at_time (an ISO date-time) wins when given.",
+      "help": "A time HH:MM (ET) on the expiry day to close whatever is left, at market. Left out (or \"none\"): no close time, nothing is closed by the clock. exit_at_time (an ISO date-time) wins when given.",
       "kind": "string",
       "placeholder": "15:45",
       "required": false,
@@ -1581,8 +1651,8 @@
       "applies_to": [
         "spread"
       ],
-      "default": "15:45 ET on the expiry day",
-      "short": "HH:MM ET on the expiry day, or \"none\"."
+      "default": "none: nothing closes it by the clock",
+      "short": "HH:MM ET on the expiry day: close whatever is left then, at market. Or \"none\"."
     }
   ],
   "common_mistakes": {

@@ -101,6 +101,7 @@ Example (nothing to do):
 | `symbol` | string | no |  |
 | `limit` | integer | no | `50` |
 | `platform` | string | no | `"other"` |
+| `workflow_id` | string | no |  |
 
 ## `Workflow-Review`
 

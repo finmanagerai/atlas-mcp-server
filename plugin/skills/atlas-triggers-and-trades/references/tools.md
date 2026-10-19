@@ -65,6 +65,7 @@ Takes nothing.
 | `bracket_take_profit_limit_pct` | number | no |  |
 | `bracket_price_basis` | string | no |  |
 | `exit_order_type` | string | no |  |
+| `bracket_stop_loss_order_type` | string | no |  |
 | `exit_limit_price` | number | no |  |
 | `enter_at_time` | string | no |  |
 | `exit_at_time` | string | no |  |
@@ -88,6 +89,7 @@ Takes nothing.
 | `spread_take_profit_pct` | number | no |  |
 | `spread_take_profit_price` | number | no |  |
 | `spread_stop` | string | no |  |
+| `spread_take_profit_close_with` | string | no |  |
 | `spread_stop_close_with` | string | no |  |
 | `spread_close_at` | string | no |  |
 
@@ -125,6 +127,7 @@ Takes nothing.
 | `bracket_take_profit_limit_pct` | number | no |  |
 | `bracket_price_basis` | string | no |  |
 | `exit_order_type` | string | no |  |
+| `bracket_stop_loss_order_type` | string | no |  |
 | `exit_limit_price` | number | no |  |
 | `enter_at_time` | string | no |  |
 | `exit_at_time` | string | no |  |
@@ -148,6 +151,7 @@ Takes nothing.
 | `spread_take_profit_pct` | number | no |  |
 | `spread_take_profit_price` | number | no |  |
 | `spread_stop` | string | no |  |
+| `spread_take_profit_close_with` | string | no |  |
 | `spread_stop_close_with` | string | no |  |
 | `spread_close_at` | string | no |  |
 
@@ -160,11 +164,11 @@ THE CARD'S FIELDS, BY GROUP (each one is a parameter of this tool, typed and des
   What to trade: asset_class, option_type, strike, expiry.
   How much: contracts, quantity, bracket_trade_budget, spreads.
   Entry: enter_side, enter_order_type, enter_limit_price, enter_trigger_metric, enter_trigger_operator, enter_trigger_value.
-  Exits: order_strategy, bracket_stop_loss_stop_price, bracket_stop_loss_limit_price, bracket_stop_loss_stop_pct, bracket_stop_loss_trailing_pct, bracket_take_profit_limit_price, bracket_take_profit_limit_pct, bracket_price_basis, exit_order_type, exit_limit_price, exit_trigger_metric, exit_trigger_operator, exit_trigger_value.
+  Exits: order_strategy, bracket_stop_loss_stop_price, bracket_stop_loss_limit_price, bracket_stop_loss_stop_pct, bracket_stop_loss_trailing_pct, bracket_take_profit_limit_price, bracket_take_profit_limit_pct, bracket_price_basis, exit_order_type, bracket_stop_loss_order_type, exit_limit_price, exit_trigger_metric, exit_trigger_operator, exit_trigger_value.
   Take-profit ladder: bracket_take_profit_levels, bracket_take_profit_loop, bracket_exit_split.
   Timing: enter_at_time, exit_at_time.
   Linked trades: oco_group, label, cancels_labels, activates_labels.
-  Spreads: spread_strategy, spread_side, spread_direction, spread_legs_spec, spread_legs, spread_take_profit_pct, spread_take_profit_price, spread_stop, spread_stop_close_with, spread_close_at.
+  Spreads: spread_strategy, spread_side, spread_direction, spread_legs_spec, spread_legs, spread_take_profit_pct, spread_take_profit_price, spread_stop, spread_take_profit_close_with, spread_stop_close_with, spread_close_at.
   Exits are optional: no stop and no target is an entry only. A % stop or target is the option's premium (stop negative: -30); a $ level is the stock price unless bracket_price_basis is "contract". A stock bracket needs BOTH a stop price and a target price. order_strategy is worked out from the exits you set when left out.
 
 IMPORTANT: Do NOT call this tool directly for a new trade — call Preview-Trading-Trigger first and let the user confirm by clicking 'Activate trigger' in the preview card. A LINKED SET (legs + link_mode) is the exception: its preview is a check that saves nothing, so after the person says yes this tool is called with the same legs, link_mode and account_id.
@@ -218,7 +222,7 @@ The background worker monitors live prices and executes orders automatically whe
 ━━ rule.exit for bracket (stocks AND options) ━━
   IMPORTANT — the price fields in this block mean DIFFERENT things for stocks vs options:
     * Stocks (native broker bracket): stop_price and limit_price       are SHARE PRICES the broker uses verbatim. limit_price on       stop_loss turns it into a stop-limit; limit_price on       take_profit is the sell-limit price.
-    * Options (worker-simulated OCO): stop_price, limit_price,       and take_profit_levels[].price are UNDERLYING PRICE LEVELS       unless exit.price_basis is 'contract' (then they are the       option's premium). When a stop is reached Atlas closes with a       marketable limit (the bid less a small allowance, re-priced       twice, then market); stop_loss.limit_price makes it one limit       at that premium instead. A target sells as a limit at its own       price (a stock-price target: at the live bid).
+    * Options (worker-simulated OCO): stop_price, limit_price,       and take_profit_levels[].price are UNDERLYING PRICE LEVELS       unless exit.price_basis is 'contract' (then they are the       option's premium). THE EXIT FOLLOWS THE ENTRY unless the card       says: a target sells as a limit at the target when the entry was       a limit, at MARKET when it was market (exit.order_type,       exit.limit_price or a level's close_limit_price win); a stop       closes at stop_loss.limit_price if set, else as a limit at the       stop's own price after a limit entry (premium basis only), else       MARKET. A time close, close-all and an AI exit are MARKET.
   Fields:
   stop_loss?: {stop_price:N, limit_price?:N} | {stop_pct:N} | {trailing_pct:N}
     trailing_pct = a TRAILING STOP that follows the price (stocks AND options): a DISTANCE in percent behind the best price since the entry — the SHARE price on a stock, the contract premium on an option — tightening only, never loosening. 10 = the stop sits 10% under the highest price seen since the fill (over the lowest, on a short). It IS the stop: give it alone, never beside stop_price / stop_pct. On a stock it makes the bracket worker-watched (Atlas holds the exit instead of the broker), so a stock with a trailing stop may have a stop and no target.
@@ -253,7 +257,7 @@ The background worker monitors live prices and executes orders automatically whe
   symbol: string — the WATCH ticker (the price being monitored, e.g. SPY). For multi-execution this is what the trigger fires on; the executions[] symbols are what gets bought/sold.
   account_id: string — REQUIRED. Triggers fire automatically in the background so the user MUST explicitly confirm which broker account receives the order before you call this tool. Call Broker-Connections to list accounts, present them to the user, and wait for their explicit choice. Never infer or auto-select the account — a wrong account fires a real automated trade in the wrong place.
 
-SPREADS (vertical credit/debit, iron condor, butterfly, iron butterfly, straddle, strangle): `rule` may be a SPREAD CARD, the same flat fields a workflow trade card uses (Trigger-Workflow-Schema lists them): {"spread_strategy": "iron_condor", "expiry": "0dte" | "friday" | "YYYY-MM-DD", "spread_legs_spec": {"sell_at": {"mode": "from_price", "value": 10}, "buy_at": {"mode": "further_out", "value": 5}}, "spreads": 2, "enter_order_type": "limit", "enter_limit_price": 1.20, "spread_take_profit_pct": 50, "spread_stop": {"basis": "premium", "max_loss_pct": 50}, "spread_close_at": "15:45"}. A vertical also says spread_side (credit | debit) and spread_direction (bull | bear). Every leg goes to the broker as ONE multi-leg order at a NET price, never a leg on its own: the open, each target, the stop and a close-all. The strikes follow the stock's price until the trade is placed, then land on the nearest listed strikes (or give exact ones: spread_legs_spec mode "strike", or spread_legs). A limit is the NET credit or debit: Atlas watches the natural price (sold legs at the bid, bought legs at the ask) and sends it at that net once it is there. Size is whole spreads, or trade_budget: the budget over the most one spread can lose. Absent keys take the defaults (50% of the credit, a stop at 50% of the most it can lose, close at 15:45 ET on the expiry day); "none" turns one off. Spread-Quote shows each leg's bid and ask and the natural net now.
+SPREADS (vertical credit/debit, iron condor, butterfly, iron butterfly, straddle, strangle): `rule` may be a SPREAD CARD, the same flat fields a workflow trade card uses (Trigger-Workflow-Schema lists them): {"spread_strategy": "iron_condor", "expiry": "0dte" | "friday" | "YYYY-MM-DD", "spread_legs_spec": {"sell_at": {"mode": "from_price", "value": 10}, "buy_at": {"mode": "further_out", "value": 5}}, "spreads": 2, "enter_order_type": "limit", "enter_limit_price": 1.20, "spread_take_profit_pct": 50, "spread_stop": {"basis": "premium", "max_loss_pct": 50}, "spread_close_at": "15:45"}. A vertical also says spread_side (credit | debit) and spread_direction (bull | bear). Every leg goes to the broker as ONE multi-leg order at a NET price, never a leg on its own: the open, each target, the stop and a close-all. The strikes follow the stock's price until the trade is placed, then land on the nearest listed strikes (or give exact ones: spread_legs_spec mode "strike", or spread_legs). A limit is the NET credit or debit: Atlas watches the natural price (sold legs at the bid, bought legs at the ask) and sends it at that net once it is there. Size is whole spreads, or trade_budget: the budget over the most one spread can lose. A target, a stop or a close time left out does NOT exist (no silent exits): put in each one the person asked for; "none" says none in words. Spread-Quote shows each leg's bid and ask and the natural net now.
 ````
 
 ## `Update-Trading-Trigger`
@@ -288,6 +292,7 @@ SPREADS (vertical credit/debit, iron condor, butterfly, iron butterfly, straddle
 | `bracket_take_profit_limit_pct` | number | no |  |
 | `bracket_price_basis` | string | no |  |
 | `exit_order_type` | string | no |  |
+| `bracket_stop_loss_order_type` | string | no |  |
 | `exit_limit_price` | number | no |  |
 | `enter_at_time` | string | no |  |
 | `exit_at_time` | string | no |  |
@@ -311,6 +316,7 @@ SPREADS (vertical credit/debit, iron condor, butterfly, iron butterfly, straddle
 | `spread_take_profit_pct` | number | no |  |
 | `spread_take_profit_price` | number | no |  |
 | `spread_stop` | string | no |  |
+| `spread_take_profit_close_with` | string | no |  |
 | `spread_stop_close_with` | string | no |  |
 | `spread_close_at` | string | no |  |
 
@@ -332,6 +338,7 @@ SPREADS (vertical credit/debit, iron condor, butterfly, iron butterfly, straddle
 | `symbol` | string | no |  |
 | `limit` | integer | no | `50` |
 | `platform` | string | no | `"other"` |
+| `workflow_id` | string | no |  |
 
 ## `List-Fired-Triggers`
 
