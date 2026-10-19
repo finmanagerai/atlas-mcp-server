@@ -59,7 +59,7 @@ what is possible.
 | Field | Type | Needed | Default |
 |---|---|---|---|
 | `workflow_id` | string | yes |  |
-| `patch` | object | yes |  |
+| `patch` | object | no |  |
 | `suggest` | boolean | no | `false` |
 | `note` | string | no | `""` |
 | `notify_phone` | boolean | no |  |
