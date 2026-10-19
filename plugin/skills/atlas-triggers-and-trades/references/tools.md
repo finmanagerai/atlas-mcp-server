@@ -167,7 +167,7 @@ THE CARD'S FIELDS, BY GROUP (each one is a parameter of this tool, typed and des
   Spreads: spread_strategy, spread_side, spread_direction, spread_legs_spec, spread_legs, spread_take_profit_pct, spread_take_profit_price, spread_stop, spread_stop_close_with, spread_close_at.
   Exits are optional: no stop and no target is an entry only. A % stop or target is the option's premium (stop negative: -30); a $ level is the stock price unless bracket_price_basis is "contract". A stock bracket needs BOTH a stop price and a target price. order_strategy is worked out from the exits you set when left out.
 
-IMPORTANT: Do NOT call this tool directly for a new trade — call Preview-Trading-Trigger first and let the user confirm by clicking 'Activate trigger' in the preview card.
+IMPORTANT: Do NOT call this tool directly for a new trade — call Preview-Trading-Trigger first and let the user confirm by clicking 'Activate trigger' in the preview card. A LINKED SET (legs + link_mode) is the exception: its preview is a check that saves nothing, so after the person says yes this tool is called with the same legs, link_mode and account_id.
 
 ARMING A PREVIEW: pass preview_id (from Preview-Trading-Trigger). The saved preview row itself is armed in place — same id, no duplicate. rule and symbol may be omitted (the saved ones stand) or given to edit on the way; account_id is required if the preview was saved without one.
 

@@ -71,8 +71,9 @@ Create a streaming alert that DMs the user on Discord (and optionally
         Fan-out: one alert can run MANY workflows and re-arm MANY
         triggers — on_fire.workflow_ids: ["<wf>", ...],
         on_fire.reactivate_trigger_ids: ["<trig>", ...] (the
-        legacy singular keys still work and are de-duped in). See
-        List-Alert-Types for shapes.
+        legacy singular keys still work and are de-duped in). A workflow
+        is named by its id or its exact name (the name is stored as its
+        id); a made-up word is refused. See List-Alert-Types for shapes.
 
         Args:
             name:        Free-text label (shown in the DM and on the dashboard).

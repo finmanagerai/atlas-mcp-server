@@ -3,14 +3,14 @@
 GENERATED from the live server. Do not edit by hand: it is rewritten from
 the same list the server hands to every client, so it cannot fall behind.
 
-166 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
+167 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
 ones your client shows (some add a prefix of their own, such as `mcp__atlas__`).
 
 Each tool says what it can do at its worst, and your client uses that to
 decide when to ask you first:
 
 - 🟢 **reads** (97): looks something up and changes nothing.
-- 🟡 **adds** (16): makes something new of yours (a preview, a
+- 🟡 **adds** (17): makes something new of yours (a preview, a
   folder, a copy) and touches nothing else.
 - 🟠 **changes** (23): changes or removes something of yours.
 - 🔴 **acts** (30): can send or change a real order, start a run,
@@ -226,6 +226,7 @@ decide when to ask you first:
 | `Workflow-Restore` | 🔴 acts | Turn a PAUSED workflow back on. |
 | `Workflow-Review` | 🔴 acts | A workflow set to "review before it places" holds each run until somebody approves it. |
 | `Workflow-Run` | 🔴 acts | Run one of the caller's workflows once, now, instead of waiting for its schedule or alert. |
+| `Workflow-Templates` | 🟡 adds | Atlas's ready-made templates, the website's Templates page: look here FIRST for a known setup ("something like a 0DTE GEX sniper"). action 'list' with `query` (a few… |
 | `Workflow-Update` | 🔴 acts | Update fields on an existing workflow owned by the caller. |
 
 ## Account
