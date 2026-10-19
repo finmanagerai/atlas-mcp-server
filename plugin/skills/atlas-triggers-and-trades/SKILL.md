@@ -51,6 +51,17 @@ when the person says to.
 parameters**: the same fields a workflow's trade and a script's `atlas.trade`
 take, so one shape works everywhere.
 
+**A trade like the one a script workflow makes.** Read the script
+(`Workflow-Files`, `action: "read"`, `path: "main.py"`) and send the fields
+its `atlas.trade(...)` call passes to `Preview-Trading-Trigger` exactly as
+they are: the names are the same, so nothing is translated (an iron condor's
+`spread_strategy`, `expiry`, `spread_legs_spec`, `spreads`,
+`enter_order_type`, `enter_limit_price`, `spread_take_profit_pct`,
+`spread_stop`, `spread_close_at`). The script workflow's own trade card is
+empty; never read the trade from there. The triggers a script has already made
+are in `List-Trading-Triggers` with its `workflow_id` (`made_by:
+"workflow_script"`, the exact fields in each row's `rule._flat`).
+
 Every trade needs three things:
 
 1. **What**: `symbol` and `asset_class` (`"stock"` or `"option"`). An option

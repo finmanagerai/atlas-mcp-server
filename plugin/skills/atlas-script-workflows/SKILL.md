@@ -86,6 +86,11 @@ text in `content` (it replaces the file). `Workflow-Update` with
 of the workflow: what earlier runs wrote, `checks.py`, `checks.json`. Then
 test again, until the test is clean.
 
+**A read answers with the file in `text`; a write takes it in `content`.** A
+write with no `content`, with an empty one, or with a name the tool does not
+take (`text`, `code`, ...) is refused and nothing is written; an empty file is
+written only with `allow_empty: true`. An empty `script_code` is refused too.
+
 ### 4. Switch it on
 
 When the person says so, `Workflow-Update` with `patch` holding
@@ -448,6 +453,44 @@ run.done()
 to `checks/history.jsonl`. `Workflow-Checks` lists them, runs them (all, or
 `only` some), and pauses, resumes or deletes one; a paused or deleted check
 never runs.
+
+## Reading, describing and copying a script workflow
+
+A script workflow's trades are in its CODE, not in a trade card. Its trade
+card (`output_schema`) is usually empty: each trade is an `atlas.trade(...)`
+call in `main.py`, and the trades it places show on the Triggers tab as
+"Workflow script". Reading the empty card and concluding it trades nothing,
+or that it was "set up by hand", is the mistake to avoid.
+
+- **What does it do, what does it trade?** Read the script:
+  `Workflow-Files` with `action: "read"`, `path: "main.py"` (and `checks.py`;
+  `action: "list"` shows every file). Its Settings are on the workflow
+  (`Workflow-Open`: `decided_by` is `"script"`, `ui_schema.script_settings`). Say what it does FROM THE
+  CODE: which tools it reads, its rule, and each `atlas.trade` call's fields.
+- **What has it traded?** `Workflow-Logs`: each run's `ai_decision.script`
+  holds `ok`, `error`, `stdout`, the `notify` messages, the `trades` it handed
+  in (what and how much), the `calls` it made and the `asks`. The triggers it
+  made: `List-Trading-Triggers` with `workflow_id` (each row's `made_by` is
+  `"workflow_script"`, and its `rule._flat` holds that trade's exact fields).
+- **Copy one of its trades as a one-off trigger**: take the fields one
+  `atlas.trade(...)` call passes and send exactly those, 1:1, to
+  `Preview-Trading-Trigger` (then `Create-Trading-Trigger` with its
+  `preview_id`). The names are the same, so nothing is translated: an iron
+  condor's `spread_strategy`, `expiry`, `spread_legs_spec`, `spreads`,
+  `enter_order_type`, `enter_limit_price`, `spread_take_profit_pct`,
+  `spread_stop`, `spread_close_at` go across as they are. A value the script
+  works out at run time (a strike from the price, an expiry from a list) is
+  worked out the same way now, with the same tools.
+- **Copy it as another script**: read `main.py`, change only what was asked
+  (the ticker, the size, a level), and create the new workflow with that code
+  (`Workflow-Create`, `decided_by: "script"`, `script_code`), then test it.
+- **Never invent a trade card for a script workflow**, and never move its
+  trades into `output_schema`: the script decides them.
+
+There is ONE set of trade fields (`references/trade-card-fields.md`):
+`atlas.trade(**fields)`, a workflow's trade card, and
+`Preview-Trading-Trigger` / `Create-Trading-Trigger` take the same names, so a
+script's trade and a trigger made from it cannot differ.
 
 ## When something goes wrong
 

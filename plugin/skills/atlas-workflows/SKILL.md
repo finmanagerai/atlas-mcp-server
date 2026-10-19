@@ -99,6 +99,15 @@ option's `option_type`, `strike`, `expiry`), a size (`contracts`, `quantity`,
 Leave a value out, or set it to null, where the run should decide it. Never
 invent a size, a budget or a stop the person did not ask for.
 
+**A script workflow has no trade card.** When `Workflow-Open` says
+`decided_by: "script"`, its trades are `atlas.trade(...)` calls in its
+`main.py`, and `output_schema` is usually empty. To say what it does or what
+it trades, read the script (`Workflow-Files`, `action: "read"`,
+`path: "main.py"`); to see what it traded, `Workflow-Logs` (each run's
+`ai_decision.script`) and `List-Trading-Triggers` with its `workflow_id`
+(`made_by: "workflow_script"`). Never write a trade card for one. The skill
+atlas-script-workflows has the rest, including copying a script's trade.
+
 ## Templates
 
 These are shapes to start from, not rules. Change anything.
