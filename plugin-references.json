@@ -244,6 +244,22 @@
       "forms": {
         "trade-card.json": "trigger_workflow_schema"
       }
+    },
+    "atlas-trackers": {
+      "tools": [
+        "Buddy-Tracker-Templates",
+        "Buddy-Tracker-Test",
+        "Buddy-Tracker-Save",
+        "Buddy-Tracker-List",
+        "Buddy-Tracker-Delete",
+        "Buddy-Hold-Entries",
+        "Buddy-Watch-List",
+        "Account-Activity"
+      ],
+      "full": [
+        "Buddy-Tracker-Test",
+        "Buddy-Tracker-Save"
+      ]
     }
   },
   "editions": {

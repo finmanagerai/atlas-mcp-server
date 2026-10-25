@@ -276,6 +276,7 @@ there:
 | pdfplumber | `pdfplumber` | 0.11.10 | text and tables out of PDF files |
 | ofxparse | `ofxparse` | 0.21 | bank and broker export files (OFX, QFX) |
 | beancount | `beancount` | 3.2.3 | double-entry accounting in text: lots and cost basis |
+| pytesseract | `pytesseract` | 0.3.13 | reading words and numbers out of a picture (atlas.read_text / read_numbers) |
 
 Also there, because the ones above use them: scikit-learn (`sklearn`), statsmodels (`statsmodels`), plotly (`plotly`), numba (`numba`).
 <!-- /runner-libraries -->
