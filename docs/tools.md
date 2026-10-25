@@ -3,17 +3,17 @@
 GENERATED from the live server. Do not edit by hand: it is rewritten from
 the same list the server hands to every client, so it cannot fall behind.
 
-167 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
+180 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
 ones your client shows (some add a prefix of their own, such as `mcp__atlas__`).
 
 Each tool says what it can do at its worst, and your client uses that to
 decide when to ask you first:
 
-- 🟢 **reads** (97): looks something up and changes nothing.
-- 🟡 **adds** (17): makes something new of yours (a preview, a
+- 🟢 **reads** (100): looks something up and changes nothing.
+- 🟡 **adds** (19): makes something new of yours (a preview, a
   folder, a copy) and touches nothing else.
-- 🟠 **changes** (23): changes or removes something of yours.
-- 🔴 **acts** (30): can send or change a real order, start a run,
+- 🟠 **changes** (29): changes or removes something of yours.
+- 🔴 **acts** (32): can send or change a real order, start a run,
   or change what other people see. Only on your say-so.
 
 ## Stocks
@@ -234,6 +234,16 @@ decide when to ask you first:
 | Tool | | What it does |
 |---|---|---|
 | `Arrange-Tabs` | 🟠 changes | The order of the tabs in the person's website and phone apps, and the ones they put under More: list them, set one bar's, or put a bar back to how it came. |
+| `Buddy-Level` | 🟠 changes | How much Atlas speaks up about watched positions: the level (protect, balanced or quiet), how often prices are checked (5 to 10 seconds), and tickers to stay quiet about. |
+| `Buddy-Loss-Limits` | 🟠 changes | Set, clear or read the signed-in person's own money guards, and resume what they paused: a daily loss limit ("stop me at $500 a day") and a drawdown cap per workflow (%… |
+| `Buddy-Tracker-Delete` | 🟠 changes | Delete one of the person's trackers: it stops running and its file is removed. |
+| `Buddy-Tracker-List` | 🟢 reads | The trackers the person keeps (the small checks Buddy runs for them): each one's name, what it watches, its tickers and bar size, how often it runs and whether it is… |
+| `Buddy-Tracker-Save` | 🟠 changes | Keep a tracker in the person's files so Buddy runs it by itself every 1 to 5 minutes while the market is open; when its check fires, the person is told in their chat and… |
+| `Buddy-Tracker-Test` | 🟢 reads | Test a tracker (a small Python check the chat writes for the person) on today's bars, and show what it would have caught: each bar of today's session is handed to its… |
+| `Buddy-Watch-Change` | 🔴 acts | Change the plan of something Atlas is watching ("be quieter on NVDA", "you can close it yourself next time"). |
+| `Buddy-Watch-List` | 🟢 reads | What Atlas is watching for the person, each with its plan, plus their level, check interval, muted tickers and anything paused today. |
+| `Buddy-Watch-Set` | 🔴 acts | Watch a position on a plan the person AGREED to, and write back to them in this chat when it matters (gave back, near the stop or a target, a fast drop, expiry). |
+| `Buddy-Watch-Stop` | 🟠 changes | Stop watching a position: Atlas stops writing about it. |
 | `Get-Instructions` | 🟢 reads | Read the signed-in user's saved instructions (read-only). |
 | `Side-Panel-Widgets` | 🟠 changes | The widgets in the person's side panel on the website and the phone apps, under Recents: list them, add one, change one, remove one, or move one. |
 | `Subscription-Status` | 🟢 reads | Get the authenticated user's subscription tier, monthly usage, remaining requests, and limits. |
@@ -288,6 +298,9 @@ decide when to ask you first:
 
 | Tool | | What it does |
 |---|---|---|
+| `Browser-Close` | 🟠 changes | Close a browser session (or all of the person's), which also lifts the pause on trading tools once none is open. |
+| `Browser-Open` | 🟡 adds | Open a browser session on a PUBLIC web page and read it. |
+| `Browser-Read` | 🟡 adds | Read a page in a browser session opened with Browser-Open: go to another public address (url), or read the page it is on again, boxing what you name (find). |
 | `List-Tool-Safety` | 🟢 reads | List every Atlas tool by its exact name, with what it says about its own safety: whether it only reads, whether it can change or remove something, whether it reaches… |
 | `Phone-Button` | 🟢 reads | Was the button pressed on a notification you sent with Phone-Notify? |
 | `Phone-Notify` | 🟡 adds | Send a notification to the signed-in person's own phone (the MindVest Atlas app), from a script, a local project, the CLI or a chat. |
