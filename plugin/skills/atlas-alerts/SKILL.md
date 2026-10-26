@@ -65,6 +65,13 @@ needs `symbol`.
 
 `on_fire` says what else happens, on top of the message:
 
+- `buddy`: `true` (or `{"text": "...", "title": "..."}`) writes the fire into
+  the person's Atlas chat and sends it to their phone within seconds. Use it
+  whenever they ask to be TOLD when a price or a contract gets somewhere.
+  A price alert can also watch a MOVE: `{"move_pct": -3, "window_min": 15}` is
+  "down 3% within 15 minutes".
+- `tracker`: `{"name": "<a saved tracker>"}` runs that tracker once, at the
+  fire, with the price.
 - `workflow_ids`: run these workflows. This is how a plan trades at the
   moment its level breaks. A workflow can also name the alert itself, with
   `alert_id` on the workflow.

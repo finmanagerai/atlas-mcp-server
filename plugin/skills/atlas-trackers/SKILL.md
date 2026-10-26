@@ -1,6 +1,6 @@
 ---
 name: atlas-trackers
-description: Build a tracker for the person on Atlas - a short Python check that runs by itself while the market is open (as often as every 10 seconds) and tells them, in its own title and words, on their phone and in their chat, when something they care about happens. Covers starting from a template (give back, near the stop, near a target, a fast drop, expiry, no plan, a daily loss, a workflow's drawdown, a number on a web page), reading positions, bars, Atlas tools and web pages (with OCR), keeping it to one workflow, signal group or trade, holding new entries when they allowed it, testing and saving. Use when the person asks to be told about, or protected from, something specific.
+description: Build a tracker for the person on Atlas - a short Python check that runs by itself (or once, when one of their real-time price alerts fires) while the market is open (as often as every 10 seconds) and tells them, in its own title and words, on their phone and in their chat, when something they care about happens. Covers starting from a template (give back, near the stop, near a target, a fast drop, expiry, no plan, a daily loss, a workflow's drawdown, a number on a web page), reading positions, bars, Atlas tools and web pages (with OCR), keeping it to one workflow, signal group or trade, holding new entries when they allowed it, testing and saving. Use when the person asks to be told about, or protected from, something specific.
 ---
 
 # Trackers
@@ -12,6 +12,28 @@ keep it, and say in one line what it does. Its file is in their Files under
 
 This page says what is possible. `references/tools.md` lists every field of
 the tools named here.
+
+## Real time first: a price is an alert, not a tracker
+
+A tracker runs on a clock. When what the person waits for is a PRICE (a stock
+or one option contract reaching a level, or moving a percent within some
+minutes), arm a real-time alert instead: price and contract_price alerts are
+judged on Atlas's live feed every few seconds while the market is open.
+
+- `Create-Alert` with `on_fire: {"buddy": true}` tells them in their chat and
+  on their phone within seconds of the fire (`{"buddy": {"text": "...",
+  "title": "..."}}` for their own words).
+- A level: `{"alert_type": "price", "symbol": "QQQ", "conditions": {"level":
+  600, "direction": "above"}}`. A move: `{"alert_type": "price", "symbol":
+  "NVDA", "conditions": {"move_pct": -3, "window_min": 15}}` (down 3% from the
+  high of the last 15 minutes). One contract: `contract_price` with `strike`,
+  `cp`, `expiration_date`, `level`, `direction`.
+- When the check needs more than the price, keep the tracker with
+  `on_alert: true` (it never runs on the clock) and put `on_fire:
+  {"tracker": {"name": "<it>"}}` on the alert: it runs once, at the fire, with
+  `inputs["alert"]` = `{symbol, price, title, text, numbers, at}`.
+- Keep a timed tracker for what has no price to wait on: a balance, a number
+  on a web page, a workflow's drawdown, a daily loss.
 
 ## The loop
 
