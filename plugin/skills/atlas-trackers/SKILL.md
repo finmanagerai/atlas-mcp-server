@@ -13,6 +13,28 @@ keep it, and say in one line what it does. Its file is in their Files under
 This page says what is possible. `references/tools.md` lists every field of
 the tools named here.
 
+## Tasks: a tracker with a job title
+
+A task is a tracker with a job title, a job (its prompt), a two-line
+description and its own limits, in `Tasks/<name>/` (task.md, check.py, its
+Activity in actions.jsonl).
+
+- **Ready-made roles** (`Task-Shelf`: Portfolio Manager, Market Analyst, Market
+  Watcher, Account Manager, Daily Loss Guard, and more) are written and tested
+  by Atlas. Adding one installs it switched on, with nothing to build.
+- **A custom task** (`Task-Create {role, job, description}`) builds and tests
+  itself, states its limits, and switches itself on.
+- **Every task gets better from the person, and only from them:**
+  - it learns their style from what they actually use (their workflows,
+    alerts, trades and watchlist, read with Atlas's tools);
+  - it reads Memory before it speaks, and keeps what it learns there (`by`:
+    the task);
+  - it listens when they ask for a change;
+  - now and then it asks one short question: "Anything you'd like me to do
+    differently?";
+  - it changes its prompt, limits or script only from what they say, through
+    `Task-Update` / `Task-Save-Code`, testing a changed script before it runs.
+
 ## Real time first: a price is an alert, not a tracker
 
 A tracker runs on a clock. When what the person waits for is a PRICE (a stock
