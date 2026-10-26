@@ -88,6 +88,7 @@ Takes nothing.
 | `spreads` | integer | no |  |
 | `spread_take_profit_pct` | number | no |  |
 | `spread_take_profit_price` | number | no |  |
+| `spread_take_profit_stock` | number | no |  |
 | `spread_stop` | string | no |  |
 | `spread_take_profit_close_with` | string | no |  |
 | `spread_stop_close_with` | string | no |  |
@@ -150,6 +151,7 @@ Takes nothing.
 | `spreads` | integer | no |  |
 | `spread_take_profit_pct` | number | no |  |
 | `spread_take_profit_price` | number | no |  |
+| `spread_take_profit_stock` | number | no |  |
 | `spread_stop` | string | no |  |
 | `spread_take_profit_close_with` | string | no |  |
 | `spread_stop_close_with` | string | no |  |
@@ -168,7 +170,7 @@ THE CARD'S FIELDS, BY GROUP (each one is a parameter of this tool, typed and des
   Take-profit ladder: bracket_take_profit_levels, bracket_take_profit_loop, bracket_exit_split.
   Timing: enter_at_time, exit_at_time.
   Linked trades: oco_group, label, cancels_labels, activates_labels.
-  Spreads: spread_strategy, spread_side, spread_direction, spread_legs_spec, spread_legs, spread_take_profit_pct, spread_take_profit_price, spread_stop, spread_take_profit_close_with, spread_stop_close_with, spread_close_at.
+  Spreads: spread_strategy, spread_side, spread_direction, spread_legs_spec, spread_legs, spread_take_profit_pct, spread_take_profit_price, spread_take_profit_stock, spread_stop, spread_take_profit_close_with, spread_stop_close_with, spread_close_at.
   Exits are optional: no stop and no target is an entry only. A % stop or target is the option's premium (stop negative: -30); a $ level is the stock price unless bracket_price_basis is "contract". A stock bracket needs BOTH a stop price and a target price. order_strategy is worked out from the exits you set when left out.
 
 IMPORTANT: Do NOT call this tool directly for a new trade — call Preview-Trading-Trigger first and let the user confirm by clicking 'Activate trigger' in the preview card. A LINKED SET (legs + link_mode) is the exception: its preview is a check that saves nothing, so after the person says yes this tool is called with the same legs, link_mode and account_id.
@@ -315,6 +317,7 @@ SPREADS (vertical credit/debit, iron condor, butterfly, iron butterfly, straddle
 | `spreads` | integer | no |  |
 | `spread_take_profit_pct` | number | no |  |
 | `spread_take_profit_price` | number | no |  |
+| `spread_take_profit_stock` | number | no |  |
 | `spread_stop` | string | no |  |
 | `spread_take_profit_close_with` | string | no |  |
 | `spread_stop_close_with` | string | no |  |

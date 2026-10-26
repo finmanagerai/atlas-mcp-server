@@ -190,7 +190,7 @@ Takes nothing.
 
 ## `List-Alerts`
 
-🟢 reads. List the caller's alerts.
+🟢 reads. List the caller's alerts, Active first, then Paused.
 
 | Field | Type | Needed | Default |
 |---|---|---|---|
@@ -199,7 +199,7 @@ Takes nothing.
 
 ## `Create-Alert`
 
-🔴 acts. Create a streaming alert that DMs the user on Discord (and optionally runs a workflow / arms a trigger / places an order) when a condition matches. ⚠️ FIRST call **List-Alert-Types** — it returns the live JSON catalog of every alert_type, its conditions, and a worked example.
+🔴 acts. Create a streaming alert that DMs the user on Discord (and optionally runs a workflow / arms a trigger / places an order) when a condition matches.
 
 | Field | Type | Needed | Default |
 |---|---|---|---|

@@ -264,7 +264,8 @@ Publish one trade idea, called a play, under the user's name: the stock
             fields (spread_strategy, spread_side, spread_direction, expiry,
             spread_legs_spec or spread_legs, enter_order_type,
             enter_limit_price as the NET, spread_take_profit_pct /
-            spread_take_profit_price / bracket_take_profit_levels, spread_stop,
+            spread_take_profit_price / spread_take_profit_stock (a vertical:
+            the stock price) / bracket_take_profit_levels, spread_stop,
             spread_stop_close_with, spread_take_profit_close_with,
             spread_close_at). Every leg goes to each
             taker's broker as ONE multi-leg order; `contracts` is the number of

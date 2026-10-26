@@ -56,7 +56,7 @@ Args:
 
 ## `Buddy-Tracker-Save`
 
-🟠 changes. Keep a tracker in the person's files so Buddy runs it by itself, as often as every 10 seconds, while the market is open; when its check fires, the person is told in their chat and on their phone in the tracker's own title and words.
+🟠 changes. Keep a tracker in the person's files so Buddy runs it by itself; when its check fires, the person is told in their chat and on their phone in the tracker's own title and words.
 
 | Field | Type | Needed | Default |
 |---|---|---|---|
@@ -72,16 +72,27 @@ Args:
 | `paused` | boolean | no |  |
 | `scope` | object | no |  |
 | `may_act` | boolean | no |  |
+| `on_alert` | boolean | no |  |
 
 The tool's own description, in full:
 
 ````text
-Keep a tracker in the person's files so Buddy runs it by itself, as
-often as every 10 seconds, while the market is open; when its check fires,
-the person is told in their chat and on their phone in the tracker's own
-title and words. Test it first with Buddy-Tracker-Test and show the person
-what it caught. Saving under a name already kept replaces that tracker. At
-most 20. Its file is in the person's Files under trackers/.
+Keep a tracker in the person's files so Buddy runs it by itself; when
+its check fires, the person is told in their chat and on their phone in
+the tracker's own title and words. Test it first with Buddy-Tracker-Test
+and show the person what it caught. Saving under a name already kept
+replaces that tracker. At most 20. Its file is in the person's Files under
+trackers/.
+
+REAL TIME FIRST: when what it waits for is a PRICE (a stock or a contract
+reaching a level, a % move), do not run it on a timer: arm a real-time
+alert (Create-Alert, price / contract_price, judged on the live feed) and
+either let the alert tell the person itself (on_fire.buddy) or, when the
+check needs more than the price, keep this tracker with on_alert: true and
+put on_fire.tracker {"name": "<this name>"} on the alert: it runs ONCE, at
+the fire, with inputs["alert"] = {symbol, price, title, text, numbers, at}.
+A timer (every_s, 10 s at the fastest, market hours) is only for a check
+with no price to wait on (a balance, a web page, a workflow's drawdown).
 
 Args:
     name: a short word, e.g. spy-vwap-calls (lower case, digits, - and _).
@@ -100,6 +111,8 @@ Args:
     about: one line saying what it watches, in the person's words.
     chat_id: the chat its messages go to (default: the person's most recent chat).
     paused: true to keep it without running it.
+    on_alert: true = it never runs on a timer; it runs when an alert naming it in
+        on_fire.tracker fires (inputs["alert"] holds that fire).
 ````
 
 ## `Buddy-Tracker-List`

@@ -25,7 +25,7 @@ Takes nothing.
 
 ## `Create-Alert`
 
-🔴 acts. Create a streaming alert that DMs the user on Discord (and optionally runs a workflow / arms a trigger / places an order) when a condition matches. ⚠️ FIRST call **List-Alert-Types** — it returns the live JSON catalog of every alert_type, its conditions, and a worked example.
+🔴 acts. Create a streaming alert that DMs the user on Discord (and optionally runs a workflow / arms a trigger / places an order) when a condition matches.
 
 | Field | Type | Needed | Default |
 |---|---|---|---|
@@ -50,6 +50,21 @@ Create a streaming alert that DMs the user on Discord (and optionally
         runs a workflow / arms a trigger / places an order) when a condition
         matches.
 
+        REAL-TIME WATCHING: price and contract_price alerts are judged on Atlas's
+        live feed every few seconds. When the person asks to be TOLD about a
+        price ("tell me when NVDA drops 3% in 15 minutes", "alert me when SPY
+        770C hits 1.20", "let me know if QQQ gets to 600"), this is the tool,
+        not a timed tracker: add on_fire.buddy: true and the fire is written
+        into their chat and sent to their phone within seconds (on_fire.buddy
+        may also be {"text": "their own words", "title": "a short headline"}).
+        A level is {"alert_type": "price", "conditions": {"level": 600,
+        "direction": "above"}}; a MOVE is {"alert_type": "price", "conditions":
+        {"move_pct": -3, "window_min": 15}} (signed: -3 = down 3% from the high
+        of the last 15 minutes; fires again only after a new move); one option
+        contract is contract_price with strike, expiration_date, cp, level,
+        direction. When the check needs more than the price, on_fire.tracker
+        {"name": "<tracker>"} wakes a saved tracker once at the fire.
+
         ⚠️ FIRST call **List-Alert-Types** — it returns the live JSON catalog of
         every alert_type, its conditions, and a worked example. That catalog
         (not this docstring) is the source of truth, so it stays correct as
@@ -60,7 +75,10 @@ Create a streaming alert that DMs the user on Discord (and optionally
 
         on_fire — optional action block run on fire, beyond the DM (each key
         optional): {"trigger": {...arm a trading trigger...},
-        "reactivate_trigger_id": "...", "order": {...place a LIVE order...}}.
+        "reactivate_trigger_id": "...", "order": {...place a LIVE order...},
+        "buddy": true | {"text", "title", "chat_id"} (tell them in the chat
+        and on the phone), "tracker": {"name": "..."} (run that saved
+        tracker once, with the fire)}.
         ⚠️ on_fire.order places a REAL broker order automatically — double-gated
         (needs "live": true AND the server ALERT_LIVE_ORDERS_ENABLED switch);
         otherwise skipped and the user is DM'd it was not armed. Prefer
@@ -140,7 +158,15 @@ Create a streaming alert that DMs the user on Discord (and optionally
             workflow_id: Optional — fires the given workflow's run on match
                          (the fire payload is passed as trigger_payload).
             cooldown_seconds: Minimum gap between fires (floor 30, default 60).
-            expires_at:  Optional ISO-8601 cutoff after which the alert disarms.
+            expires_at:  When the alert is DELETED (on or paused): a date
+                         ("2026-11-20" = that day's 4:00 PM New York close), a
+                         date and time ("2026-11-20T15:30", New York time, or
+                         with an offset), or "never". Left out, a price alert
+                         lives 3 weeks and a contract_price alert until its
+                         contract's expiry day closes; other kinds have none.
+                         Set it on every alert made for one task or one watch,
+                         and delete an alert as soon as it is no longer needed
+                         (Delete-Alert): alerts must not pile up.
             on_fire:     Optional action block (trigger / reactivate / live
                          order) — see notes above.
             is_active:   true (default) arms the alert now; false creates it
@@ -173,7 +199,10 @@ Patch an existing alert's fields without recreating.
         (name, symbol, alert_type, stream_type, conditions,
         notify_discord, workflow_id, cooldown_seconds, expires_at,
         is_active, notes). Any other key is rejected so a typo never
-        silently lands in the database. The merged row is re-validated, so
+        silently lands in the database. ``expires_at`` is when the alert is
+        DELETED (a date = that day's 4:00 PM New York close, a date and time,
+        or null / "never" to keep it); changing only that (or the note)
+        leaves a paused alert paused. The merged row is re-validated, so
         an update that would make the alert un-evaluatable (e.g. removing
         symbol from a flow alert) fails loudly. Set notes to "" to clear it.
 
@@ -205,7 +234,7 @@ Patch an existing alert's fields without recreating.
 
 ## `List-Alerts`
 
-🟢 reads. List the caller's alerts.
+🟢 reads. List the caller's alerts, Active first, then Paused.
 
 | Field | Type | Needed | Default |
 |---|---|---|---|
