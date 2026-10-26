@@ -27,6 +27,7 @@
     "Trade-Close",
     "Trade-Edit-Entry",
     "Trade-Edit-Exit",
+    "Trade-Sell-Part",
     "Trade-Take-Profit",
     "Update-Trading-Trigger"
   ]

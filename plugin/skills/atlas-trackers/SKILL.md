@@ -59,16 +59,16 @@ judged on Atlas's live feed every few seconds while the market is open.
 
 ## The loop
 
-1. `Buddy-Tracker-Templates` lists starting files, each with what it checks and
-   the numbers at its top to change. `Buddy-Tracker-Templates {name}` gives one
+1. `Task-Templates` lists starting files, each with what it checks and
+   the numbers at its top to change. `Task-Templates {name}` gives one
    file's whole code. Nothing about them is fixed: change the numbers, the
    check, the words, or start from the closest one and rewrite it.
-2. `Buddy-Tracker-Test {code}` runs it. A tracker on bars is stepped through
+2. `Task-Test {code}` runs it. A tracker on bars is stepped through
    today's bars and the answer lists what it would have sent; a tracker that
    uses `import atlas` (a tool, a web page) is run once, now.
 3. Show the person, in one line, what it would have sent. Then
-   `Buddy-Tracker-Save {name, code, ...}`. Saving again under the same name
-   replaces it. `Buddy-Tracker-List` and `Buddy-Tracker-Delete` do the rest.
+   `Task-Save-Code {name, code, ...}`. Saving again under the same name
+   replaces it. `Task-List` and `Task-Delete` do the rest.
 
 ## The file
 
@@ -150,11 +150,11 @@ happened and leave the choice to them.
 `do` holds NEW entries for the rest of the New York day: all of them, or one
 workflow's (`True` = the workflow of the trade it is about). It happens only
 for a tracker kept with `may_act: true`, set only after the person said yes.
-It never closes anything. `Buddy-Hold-Entries` lists or lifts a hold.
+It never closes anything. `Task-Hold-Entries` lists or lifts a hold.
 
 ## Saving
 
-`Buddy-Tracker-Save` takes `name`, `code`, and when wanted:
+`Task-Save-Code` takes `name`, `code`, and when wanted:
 `every_s` (10 to 3600), `symbols`, `timeframe`, `lookback`, `about`,
 `scope` (`{"type": "workflow" | "group" | "trigger", "ids": [...]}`: only
 those trades are handed in; default all of theirs), `may_act`, `paused`.

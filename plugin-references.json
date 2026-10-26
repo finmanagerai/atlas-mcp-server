@@ -247,18 +247,18 @@
     },
     "atlas-trackers": {
       "tools": [
-        "Buddy-Tracker-Templates",
-        "Buddy-Tracker-Test",
-        "Buddy-Tracker-Save",
-        "Buddy-Tracker-List",
-        "Buddy-Tracker-Delete",
-        "Buddy-Hold-Entries",
-        "Buddy-Watch-List",
+        "Task-Templates",
+        "Task-Test",
+        "Task-Save-Code",
+        "Task-List",
+        "Task-Delete",
+        "Task-Hold-Entries",
+        "Task-Watch-List",
         "Account-Activity"
       ],
       "full": [
-        "Buddy-Tracker-Test",
-        "Buddy-Tracker-Save"
+        "Task-Test",
+        "Task-Save-Code"
       ]
     }
   },
