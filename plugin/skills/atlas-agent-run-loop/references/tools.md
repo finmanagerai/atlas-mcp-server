@@ -102,6 +102,7 @@ Example (nothing to do):
 | `limit` | integer | no | `50` |
 | `platform` | string | no | `"other"` |
 | `workflow_id` | string | no |  |
+| `include_held` | boolean | no | `false` |
 
 ## `Workflow-Review`
 

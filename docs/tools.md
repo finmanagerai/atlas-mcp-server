@@ -312,7 +312,7 @@ decide when to ask you first:
 | `Task-Shelf` | 🟡 adds | Ready-made tasks a person can add: Profit and Loss Manager, Market Analyst, Market Watcher, Account Manager, and the shelf (Setup Expert, Earnings Watcher, Daily Loss… |
 | `Task-Templates` | 🟢 reads | Starting files for trackers (the small checks Buddy runs for the person): give back, near the stop, near a target, a fast drop, expiry, no plan, a daily loss, a… |
 | `Task-Test` | 🟢 reads | Test a tracker (a small Python check the chat writes for the person) on today's bars, and show what it would have caught: each bar of today's session is handed to its… |
-| `Task-Update` | 🔴 acts | Change a task: its title, its job (prompt), what wakes it, what it may use, its own limits, or its state (on / stopped / building). |
+| `Task-Update` | 🔴 acts | Change a task: its title, its job (prompt), what wakes it, what it may use, its own limits, what trades it leaves alone, or its state (on / stopped / building). |
 | `Task-Watch-Change` | 🔴 acts | Change the plan of something Atlas is watching ("be quieter on NVDA", "you can close it yourself next time"). |
 | `Task-Watch-List` | 🟢 reads | What Atlas is watching for the person, each with its plan, plus their level, check interval, muted tickers and anything paused today. |
 | `Task-Watch-Set` | 🔴 acts | Watch a position on a plan the person AGREED to, and write back to them in this chat when it matters (gave back, near the stop or a target, a fast drop, expiry). |
