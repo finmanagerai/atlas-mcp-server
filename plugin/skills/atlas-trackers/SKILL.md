@@ -34,6 +34,12 @@ Activity in actions.jsonl).
     differently?";
   - it changes its prompt, limits or script only from what they say, through
     `Task-Update` / `Task-Save-Code`, testing a changed script before it runs.
+- **A task on the person's own computer** (kept by Atlas Studio) is reached
+  with `Computer-Tasks`: list them on every computer that is on, show one's
+  files, stop, resume or delete one, and write its words (task.md, limits.md,
+  notes.md, skills/<name>.md; never its scripts). A changed task.md makes it
+  rewrite and test its own script on that computer before it runs again. A
+  new one is its task.md under a new name with `machine_id`.
 
 ## Real time first: a price is an alert, not a tracker
 

@@ -3,7 +3,7 @@
 GENERATED from the live server. Do not edit by hand: it is rewritten from
 the same list the server hands to every client, so it cannot fall behind.
 
-193 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
+194 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
 ones your client shows (some add a prefix of their own, such as `mcp__atlas__`).
 
 Each tool says what it can do at its worst, and your client uses that to
@@ -12,7 +12,7 @@ decide when to ask you first:
 - 🟢 **reads** (102): looks something up and changes nothing.
 - 🟡 **adds** (25): makes something new of yours (a preview, a
   folder, a copy) and touches nothing else.
-- 🟠 **changes** (31): changes or removes something of yours.
+- 🟠 **changes** (32): changes or removes something of yours.
 - 🔴 **acts** (35): can send or change a real order, start a run,
   or change what other people see. Only on your say-so.
 
@@ -295,6 +295,7 @@ decide when to ask you first:
 | `Browser-Read` | 🟡 adds | Read a page in a browser session opened with Browser-Open: go to another address (url), or read the page it is on again (after the person signed in, or after… |
 | `Browser-Sign-Ins` | 🟡 adds | The sites the person is kept signed in to in browser sessions, or forget one (or all). |
 | `Browser-Tab` | 🟡 adds | Tabs in one browser session, like a real browser: open a page in a new tab (new, with url), show another tab (switch, with tab), close one (close, with tab), or list… |
+| `Computer-Tasks` | 🟠 changes | The tasks that run on the person's own computers (in Atlas Studio), on every computer that is on: list them, read one's files, change what it is told, or stop, resume or… |
 | `Files` | 🟡 adds | The person's own files, all in one place, as Profile > Files shows them: one folder per workflow (named after the workflow), Trackers, and what the chat keeps (notes… |
 | `List-Tool-Safety` | 🟢 reads | List every Atlas tool by its exact name, with what it says about its own safety: whether it only reads, whether it can change or remove something, whether it reaches… |
 | `Phone-Button` | 🟢 reads | Was the button pressed on a notification you sent with Phone-Notify? |
