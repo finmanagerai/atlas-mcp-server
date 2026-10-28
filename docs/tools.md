@@ -3,7 +3,7 @@
 GENERATED from the live server. Do not edit by hand: it is rewritten from
 the same list the server hands to every client, so it cannot fall behind.
 
-194 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
+195 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
 ones your client shows (some add a prefix of their own, such as `mcp__atlas__`).
 
 Each tool says what it can do at its worst, and your client uses that to
@@ -12,7 +12,7 @@ decide when to ask you first:
 - 🟢 **reads** (102): looks something up and changes nothing.
 - 🟡 **adds** (25): makes something new of yours (a preview, a
   folder, a copy) and touches nothing else.
-- 🟠 **changes** (32): changes or removes something of yours.
+- 🟠 **changes** (33): changes or removes something of yours.
 - 🔴 **acts** (35): can send or change a real order, start a run,
   or change what other people see. Only on your say-so.
 
@@ -318,6 +318,7 @@ decide when to ask you first:
 | `Task-Watch-List` | 🟢 reads | What Atlas is watching for the person, each with its plan, plus their level, check interval, muted tickers and anything paused today. |
 | `Task-Watch-Set` | 🔴 acts | Watch a position on a plan the person AGREED to, and write back to them in this chat when it matters (gave back, near the stop or a target, a fast drop, expiry). |
 | `Task-Watch-Stop` | 🟠 changes | Stop watching a position: Atlas stops writing about it. |
+| `Virtual-Accounts` | 🟠 changes | The person's virtual accounts: simulated money to try Atlas with before a real broker. |
 
 ## The owner's phone
 
