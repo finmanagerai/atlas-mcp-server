@@ -3,16 +3,16 @@
 GENERATED from the live server. Do not edit by hand: it is rewritten from
 the same list the server hands to every client, so it cannot fall behind.
 
-195 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
+197 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
 ones your client shows (some add a prefix of their own, such as `mcp__atlas__`).
 
 Each tool says what it can do at its worst, and your client uses that to
 decide when to ask you first:
 
 - 🟢 **reads** (102): looks something up and changes nothing.
-- 🟡 **adds** (25): makes something new of yours (a preview, a
+- 🟡 **adds** (26): makes something new of yours (a preview, a
   folder, a copy) and touches nothing else.
-- 🟠 **changes** (33): changes or removes something of yours.
+- 🟠 **changes** (34): changes or removes something of yours.
 - 🔴 **acts** (35): can send or change a real order, start a run,
   or change what other people see. Only on your say-so.
 
@@ -301,16 +301,18 @@ decide when to ask you first:
 | `Phone-Button` | 🟢 reads | Was the button pressed on a notification you sent with Phone-Notify? |
 | `Phone-Notify` | 🟡 adds | Send a notification to the signed-in person's own phone (the MindVest Atlas app), from a script, a local project, the CLI or a chat. |
 | `Task-Activity` | 🟢 reads | A task's Activity history, newest last: each time it woke, what woke it, whether it told the person, what it did in its own words, the tools it used and which model… |
+| `Task-Ask` | 🟡 adds | Ask one of the person's tasks something and get its answer (owner, 2026-10-28: agents "can also talk to their own task agents ... for some details"). |
 | `Task-Check-In` | 🟠 changes | The morning and evening check-ins Atlas sends this person: on, quiet or off, each. |
-| `Task-Create` | 🔴 acts | Make a task: a background worker with a job title that does its job by itself and tells the person in its own name ("Profit and Loss Manager", "SPY 770C call watcher"). |
+| `Task-Create` | 🔴 acts | Make a task: a background worker with a job title that does its job by itself and tells the person in its own name ("Buy Options Risk Manager", "SPY 770C call watcher"). |
 | `Task-Delete` | 🟠 changes | Delete one of the person's trackers: it stops running and its file is removed. |
 | `Task-Hold-Entries` | 🟠 changes | Hold or let through the person's NEW entries for the rest of today (New York): the step a tracker's "No new entries" / "Pause it" button asks for, and what a tracker… |
+| `Task-Learn` | 🟠 changes | A task changes ITSELF from its own person's feedback (its Learning specialist): its job text or its check script, kept so it can be undone. |
 | `Task-Level` | 🟠 changes | How much Atlas speaks up about watched positions: the level (protect, balanced or quiet), how often prices are checked (5 to 10 seconds), and tickers to stay quiet about. |
 | `Task-List` | 🟢 reads | The trackers the person keeps (the small checks Buddy runs for them): each one's name, what it watches, its tickers and bar size, how often it runs and whether it is… |
 | `Task-Loss-Limits` | 🟠 changes | Set, clear or read the signed-in person's own money guards, and resume what they paused: a daily loss limit ("stop me at $500 a day") and a drawdown cap per workflow (%… |
 | `Task-Manage` | 🟠 changes | Everything Atlas does by itself for this person, as one list of tasks: the morning brief, the evening check-in, and each tracker. |
 | `Task-Save-Code` | 🟠 changes | Keep a tracker in the person's files so Buddy runs it by itself; when its check fires, the person is told in their chat and on their phone in the tracker's own title and… |
-| `Task-Shelf` | 🟡 adds | Ready-made tasks a person can add: Profit and Loss Manager, Market Analyst, Market Watcher, Account Manager, and the shelf (Setup Expert, Earnings Watcher, Daily Loss… |
+| `Task-Shelf` | 🟡 adds | Ready-made tasks a person can add: Buy Options Risk Manager, SPX & QQQ Levels Brief, Market Watcher, Account Manager, and the shelf (Setup Expert, Earnings Watcher… |
 | `Task-Templates` | 🟢 reads | Starting files for trackers (the small checks Buddy runs for the person): give back, near the stop, near a target, a fast drop, expiry, no plan, a daily loss, a… |
 | `Task-Test` | 🟢 reads | Test a tracker (a small Python check the chat writes for the person) on today's bars, and show what it would have caught: each bar of today's session is handed to its… |
 | `Task-Update` | 🔴 acts | Change a task: its title, its job (prompt), what wakes it, what it may use, its own limits, what trades it leaves alone, or its state (on / stopped / building). |
