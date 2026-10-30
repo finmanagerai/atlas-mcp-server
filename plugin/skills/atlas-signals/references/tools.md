@@ -303,6 +303,8 @@ Publish one trade idea, called a play, under the user's name: the stock
 | `score` | integer | no |  |
 | `tp_close_with` | string | no | `""` |
 | `stop_close_with` | string | no | `""` |
+| `trade_for_me` | boolean | no |  |
+| `broker_account_id` | string | no | `""` |
 
 ## `Signal-Delete`
 
@@ -390,7 +392,7 @@ Take a play: place it in YOUR OWN account, now. Places a real order.
 
 ## `Signal-My-Order`
 
-🔴 acts. Change or cancel YOUR OWN order on somebody else's play, while it is still waiting to enter.
+🔴 acts. Change or cancel YOUR OWN order on a play: somebody else's play you took, OR your own play (the author has the same surface).
 
 | Field | Type | Needed | Default |
 |---|---|---|---|

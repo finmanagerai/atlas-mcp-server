@@ -40,6 +40,7 @@ what is possible.
 | `purpose` | string | no |  |
 | `alert_max_runs_per_day` | integer | no |  |
 | `notification_format` | string | no |  |
+| `discord_message` | string | no |  |
 | `journal_enabled` | boolean | no |  |
 | `journal_instruction` | string | no |  |
 | `journal_allow_prompt_edit` | boolean | no |  |
@@ -70,6 +71,7 @@ what is possible.
 | `script_code` | string | no |  |
 | `script_settings` | array | no |  |
 | `hide_logic` | boolean | no |  |
+| `discord_message` | string | no |  |
 
 ## `Workflow-Run`
 
@@ -187,6 +189,7 @@ Example (nothing to do):
 | `is_active` | boolean | no | `true` |
 | `notes` | string | no |  |
 | `created_by_workflow_id` | string | no |  |
+| `discord_message` | string | no |  |
 
 ## `Delete-Alert`
 

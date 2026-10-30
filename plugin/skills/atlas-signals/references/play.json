@@ -1,9 +1,14 @@
 {
-  "version": "2026-08-12",
-  "summary": "A play is ONE trade a person is calling: what to buy, where to get in, where to get out, and how much. Every number carries a UNIT field saying what it is measured in — that is the part AI callers get wrong.",
+  "version": "2026-10-30",
+  "summary": "A play is ONE trade a person is calling (one option, shares, or a whole multi-leg spread, see spread_plays): what to buy, where to get in, where to get out, and how much. Every number carries a UNIT field saying what it is measured in — that is the part AI callers get wrong.",
   "the_one_rule": "NEVER send a number without checking its unit field. On an option, '770' can be a $770-per-contract premium ($77,000 for one contract) or the stock at $770. entry_unit decides which.",
   "how_to_pick_the_unit": "COMPARE THE NUMBER TO THE STRIKE. An option's own price is a small fraction of its strike, and the stock trades right around it. So on a 780 strike: 2.10 is the premium ('contract'), 773 is the stock ('price'), 50 is a percentage ('pct'). If the user says 'get in at 773' on a 780 call they mean the STOCK — pass entry_unit 'price'. If they say 'pay 2.10' they mean the premium — 'contract'. The same test decides tp_unit and stop_unit. A stop can never exceed 100% on anything you BUY: you cannot lose more than you paid, so a stop of 223 is a price, not a percentage. Atlas REFUSES a number that cannot be what it is labelled and names the label to use — read the error and fix the unit, do not resend the same call or drop the field.",
   "ask_do_not_guess": "If you cannot tell which unit a number is from what the user said, ASK THEM. This publishes a call under their name and can place a real order; a wrong unit is a different trade, not a typo.",
+  "who_edits_what": {
+    "author": "Everything a follower can, and the play itself. Signal-Update changes the contract, entry, targets, stop, size and whether they are in (trade_for_me, broker_account_id); followers still waiting are re-placed on the new terms. Signal-My-Order changes their own order like a follower's: a count or budget there is saved as the play's size (it re-places only the author's waiting order), an account moves their order, exit_split is how many of theirs come off at each target.",
+    "follower": "Only their own order, with Signal-My-Order: count or budget, account and exit_split before the entry fills; exit_split after. Never the contract, entry, targets or stop.",
+    "after_a_fill": "Once anybody has filled, the author can still move the stop and each target's value (every open position follows) and anybody can still change their own exit_split. The contract, entry, size, number of targets, their unit and the amounts are set; Atlas refuses them with a plain reason (filled_locked, filled_size, filled_exit_shape). Tell the user that reason; do not say the play cannot be edited."
+  },
   "fields": [
     {
       "name": "symbol",
@@ -175,8 +180,26 @@
       "required": false,
       "kind": "integer",
       "help": "1-10, the author's own conviction. DEFAULTS TO 10, not 1 — a play called without a number is being called without reservation. SET IT whenever the user rates the play ('this one's a 6', 'low conviction', 'I really like this one'), and change it with Signal-Update when they change their mind about a play that is already up. Never invent a rating they did not give. It is an opinion only: it never sizes, filters or places anything."
+    },
+    {
+      "name": "spread",
+      "required": "spread plays only",
+      "kind": "object",
+      "help": "A MULTI-LEG play (vertical, iron condor, butterfly, iron butterfly, straddle, strangle) instead of one option: an object of the spread trade card's own fields, the same names atlas.trade and Preview-Trading-Trigger take. See spread_plays below. Leave strike, option_type, entries, tps and stop out of a spread play."
+    },
+    {
+      "name": "second_leg",
+      "required": false,
+      "kind": "object",
+      "help": "The other trade of a LINKED pair (Signal-Post field), in this schema's own fields. Needs link_mode 'oco' (the first to fill cancels the other) or 'oeo' (the second starts once the first fills). Not with spread."
     }
   ],
+  "spread_plays": {
+    "what": "A spread is ONE play. Every taker gets every leg as ONE multi-leg order in their own account, sized from their own budget, with the author's exits. Followers copy the whole spread, never single legs.",
+    "fields": "spread_strategy (vertical, iron_condor, butterfly, iron_butterfly, straddle, strangle), spread_side / spread_direction (a vertical's credit/debit and bull/bear), expiry ('0dte', 'friday' or YYYY-MM-DD), spread_legs (fixed strikes: [{action buy|sell, option_type call|put, strike}]) OR spread_legs_spec (strikes that follow the price), enter_order_type market|limit, enter_limit_price (the NET), spread_take_profit_pct | spread_take_profit_price | spread_take_profit_stock | bracket_take_profit_levels, spread_stop ({basis: 'premium', max_loss_pct} or {basis: 'stock', below|above}), spread_stop_close_with, spread_take_profit_close_with, spread_close_at (HH:MM New York).",
+    "size": "contracts = the number of SPREADS, or trade_budget in dollars (sized by the most one spread can lose). One or the other.",
+    "from_a_script": "A script workflow posts the play its atlas.trade(**card) makes with atlas.call('Signal-Post', symbol=card['symbol'], group_id=..., trade_budget=card.get('bracket_trade_budget'), spread={the card's spread_* fields, expiry, enter_order_type, enter_limit_price}). Catch atlas.AtlasError: a test run calls only tools that read, so there it answers 'not called (a test run)' and posts nothing."
+  },
   "before_you_post": [
     "Did the user give an ENTRY price, or do they mean take it now?",
     "Did they say a SIZE? A count is contracts/quantity, an amount is trade_budget — one or the other, never both.",
@@ -257,6 +280,48 @@
         "stop": null
       },
       "note": "No entries = fill now at market. Confirm they really want no exits."
+    },
+    {
+      "user_said": "post my SPY iron condor to the group: sell the 766 put and 772 call, 3 wide, $2,000, out at 10% of the credit, stop at 50%, close 3:55",
+      "payload": {
+        "symbol": "SPY",
+        "group_id": "<the group's id>",
+        "trade_budget": 2000,
+        "spread": {
+          "spread_strategy": "iron_condor",
+          "expiry": "2026-11-02",
+          "spread_legs": [
+            {
+              "action": "sell",
+              "option_type": "put",
+              "strike": 766
+            },
+            {
+              "action": "buy",
+              "option_type": "put",
+              "strike": 763
+            },
+            {
+              "action": "sell",
+              "option_type": "call",
+              "strike": 772
+            },
+            {
+              "action": "buy",
+              "option_type": "call",
+              "strike": 775
+            }
+          ],
+          "enter_order_type": "market",
+          "spread_take_profit_pct": 10,
+          "spread_stop": {
+            "basis": "premium",
+            "max_loss_pct": 50
+          },
+          "spread_close_at": "15:55"
+        }
+      },
+      "note": "Four legs, one play. Followers each get one 4-leg order sized from their own budget."
     }
   ]
 }

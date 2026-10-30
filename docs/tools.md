@@ -159,7 +159,7 @@ decide when to ask you first:
 | `Signal-Group-Update` | 🔴 acts | Rename a signal group you own, make it public or private, or tag it. visibility "Atlas-public" puts the group under Discover for every Atlas member to follow and read… |
 | `Signal-Groups` | 🟢 reads | List the places you can post a play to, and the groups you follow. |
 | `Signal-List` | 🟢 reads | Read the plays on the community board, or the private ones. |
-| `Signal-My-Order` | 🔴 acts | Change or cancel YOUR OWN order on somebody else's play, while it is still waiting to enter. |
+| `Signal-My-Order` | 🔴 acts | Change or cancel YOUR OWN order on a play: somebody else's play you took, OR your own play (the author has the same surface). |
 | `Signal-Pending` | 🟢 reads | The plays sent to you that are waiting for your answer: from the groups you pay for or follow with "manual" chosen. |
 | `Signal-Post` | 🔴 acts | Publish one trade idea, called a play, under the user's name: the stock or option contract, the entry price, the profit targets and the stop. |
 | `Signal-Schema` | 🟢 reads | READ THIS BEFORE POSTING OR TAKING A PLAY. |
@@ -303,7 +303,7 @@ decide when to ask you first:
 | `Task-Activity` | 🟢 reads | A task's Activity history, newest last: each time it woke, what woke it, whether it told the person, what it did in its own words, the tools it used and which model… |
 | `Task-Ask` | 🟡 adds | Ask one of the person's tasks something and get its answer (owner, 2026-10-28: agents "can also talk to their own task agents ... for some details"). |
 | `Task-Check-In` | 🟠 changes | The morning and evening check-ins Atlas sends this person: on, quiet or off, each. |
-| `Task-Create` | 🔴 acts | Make a task: a background worker with a job title that does its job by itself and tells the person in its own name ("Buy Options Risk Manager", "SPY 770C call watcher"). |
+| `Task-Create` | 🔴 acts | Make a task: a background worker with a job title that does its job by itself and tells the person in its own name ("Risk Manager", "SPY 770C call watcher"). |
 | `Task-Delete` | 🟠 changes | Delete one of the person's trackers: it stops running and its file is removed. |
 | `Task-Hold-Entries` | 🟠 changes | Hold or let through the person's NEW entries for the rest of today (New York): the step a tracker's "No new entries" / "Pause it" button asks for, and what a tracker… |
 | `Task-Learn` | 🟠 changes | A task changes ITSELF from its own person's feedback (its Learning specialist): its job text or its check script, kept so it can be undone. |
@@ -312,7 +312,7 @@ decide when to ask you first:
 | `Task-Loss-Limits` | 🟠 changes | Set, clear or read the signed-in person's own money guards, and resume what they paused: a daily loss limit ("stop me at $500 a day") and a drawdown cap per workflow (%… |
 | `Task-Manage` | 🟠 changes | Everything Atlas does by itself for this person, as one list of tasks: the morning brief, the evening check-in, and each tracker. |
 | `Task-Save-Code` | 🟠 changes | Keep a tracker in the person's files so Buddy runs it by itself; when its check fires, the person is told in their chat and on their phone in the tracker's own title and… |
-| `Task-Shelf` | 🟡 adds | Ready-made tasks a person can add: Buy Options Risk Manager, SPX & QQQ Levels Brief, Market Watcher, Account Manager, and the shelf (Setup Expert, Earnings Watcher… |
+| `Task-Shelf` | 🟡 adds | Ready-made tasks a person can add: Risk Manager, SPY & QQQ Levels Brief, Market Watcher, Account Manager, and the shelf (Setup Expert, Earnings Watcher, Daily Loss… |
 | `Task-Templates` | 🟢 reads | Starting files for trackers (the small checks Buddy runs for the person): give back, near the stop, near a target, a fast drop, expiry, no plan, a daily loss, a… |
 | `Task-Test` | 🟢 reads | Test a tracker (a small Python check the chat writes for the person) on today's bars, and show what it would have caught: each bar of today's session is handed to its… |
 | `Task-Update` | 🔴 acts | Change a task: its title, its job (prompt), what wakes it, what it may use, its own limits, what trades it leaves alone, or its state (on / stopped / building). |

@@ -42,6 +42,7 @@ Takes nothing.
 | `is_active` | boolean | no | `true` |
 | `notes` | string | no |  |
 | `created_by_workflow_id` | string | no |  |
+| `discord_message` | string | no |  |
 
 The tool's own description, in full:
 
@@ -179,11 +180,25 @@ Create a streaming alert that DMs the user on Discord (and optionally
             created_by_workflow_id: Internal — the alert_creator workflow that
                          authored this alert (set automatically by Manage-Alerts).
                          Leave unset for a stand-alone alert.
+
+            discord_message: Optional — the person's OWN Discord message for
+                         the fire instead of Atlas's normal one. Stored as
+                         on_fire.discord (Update-Alert changes it there;
+                         "atlas" puts the normal message back). Your own words as a string = plain
+                         text; or {"content": "text", "embed": {"title",
+                         "description", "color" (int or "#RRGGBB"), "fields":
+                         [{"name", "value", "inline"}], "footer", "url",
+                         "image", "thumbnail", "author"}}. Placeholders
+                         {name} {symbol} {message} (what fired) {note} {id}.
+                         An embed with no description gets {message}.
+                         Discord's limits apply (title 256, description 4096,
+                         25 fields, field 256/1024, 6000 in all, text 2000);
+                         @everyone/@here and other pings never ping.
 ````
 
 ## `Update-Alert`
 
-🔴 acts. Patch an existing alert's fields without recreating. ``updates`` accepts the same keys Create-Alert exposes (name, symbol, alert_type, stream_type, conditions, notify_discord, workflow_id, cooldown_seconds, expires_at, is_active, notes).
+🔴 acts. Patch an existing alert's fields without recreating. ``updates`` accepts the same keys Create-Alert exposes (name, symbol, alert_type, stream_type, conditions, notify_discord, workflow_id, cooldown_seconds, expires_at, is_active, notes; the person's own Discord message is on_fire.discord, replaced whole when sent, "atlas" or null for the normal one).
 
 | Field | Type | Needed | Default |
 |---|---|---|---|
@@ -198,7 +213,9 @@ Patch an existing alert's fields without recreating.
         ``updates`` accepts the same keys Create-Alert exposes
         (name, symbol, alert_type, stream_type, conditions,
         notify_discord, workflow_id, cooldown_seconds, expires_at,
-        is_active, notes). Any other key is rejected so a typo never
+        is_active, notes; the person's own Discord message is
+        on_fire.discord, replaced whole when sent, "atlas" or null for the
+        normal one). Any other key is rejected so a typo never
         silently lands in the database. ``expires_at`` is when the alert is
         DELETED (a date = that day's 4:00 PM New York close, a date and time,
         or null / "never" to keep it); changing only that (or the note)

@@ -134,3 +134,4 @@ Example (nothing to do):
 | `script_code` | string | no |  |
 | `script_settings` | array | no |  |
 | `hide_logic` | boolean | no |  |
+| `discord_message` | string | no |  |
