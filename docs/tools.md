@@ -3,13 +3,13 @@
 GENERATED from the live server. Do not edit by hand: it is rewritten from
 the same list the server hands to every client, so it cannot fall behind.
 
-197 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
+199 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
 ones your client shows (some add a prefix of their own, such as `mcp__atlas__`).
 
 Each tool says what it can do at its worst, and your client uses that to
 decide when to ask you first:
 
-- 🟢 **reads** (102): looks something up and changes nothing.
+- 🟢 **reads** (104): looks something up and changes nothing.
 - 🟡 **adds** (26): makes something new of yours (a preview, a
   folder, a copy) and touches nothing else.
 - 🟠 **changes** (34): changes or removes something of yours.
@@ -87,6 +87,7 @@ decide when to ask you first:
 |---|---|---|
 | `Earnings-Calendar` | 🟢 reads | Get the earnings calendar for a date range, optionally filtered by a single symbol. |
 | `Earnings-Dates` | 🟢 reads | Earnings dates for a symbol; limit caps how many rows are returned. |
+| `Economic-Calendar` | 🟢 reads | The dates of the US events that move the whole market: FOMC meetings, the CPI report and the jobs report. |
 | `IPO-Calendar` | 🟢 reads | Get the IPO calendar for a date range. |
 
 ## Ownership
@@ -250,6 +251,7 @@ decide when to ask you first:
 | `Memory-Restore` | 🟡 adds | Bring back a memory that was forgotten. |
 | `Memory-Update` | 🟠 changes | Change one memory: its words, its importance (1 to 10), where it is kept (short / long / permanent), its kind, its key, its project, or pin it so nothing automatic ever… |
 | `Memory-Write` | 🟠 changes | Keep something durable about the signed-in person: a correction they made, a preference, a fact about them or their trading. |
+| `Sessions-Search` | 🟢 reads | Find what was said in the person's past conversations on their own computers: "what did we decide last week on my laptop", "continue what I was doing at home". |
 
 ## Search
 
@@ -312,7 +314,7 @@ decide when to ask you first:
 | `Task-Loss-Limits` | 🟠 changes | Set, clear or read the signed-in person's own money guards, and resume what they paused: a daily loss limit ("stop me at $500 a day") and a drawdown cap per workflow (%… |
 | `Task-Manage` | 🟠 changes | Everything Atlas does by itself for this person, as one list of tasks: the morning brief, the evening check-in, and each tracker. |
 | `Task-Save-Code` | 🟠 changes | Keep a tracker in the person's files so Buddy runs it by itself; when its check fires, the person is told in their chat and on their phone in the tracker's own title and… |
-| `Task-Shelf` | 🟡 adds | Ready-made tasks a person can add: Risk Manager, SPY & QQQ Levels Brief, Market Watcher, Account Manager, and the shelf (Setup Expert, Earnings Watcher, Daily Loss… |
+| `Task-Shelf` | 🟡 adds | Ready-made tasks a person can add: Risk Manager, Market Analyst, Market Watcher, Account Manager, and the shelf (Setup Expert, Earnings Watcher, Daily Loss Guard, Signal… |
 | `Task-Templates` | 🟢 reads | Starting files for trackers (the small checks Buddy runs for the person): give back, near the stop, near a target, a fast drop, expiry, no plan, a daily loss, a… |
 | `Task-Test` | 🟢 reads | Test a tracker (a small Python check the chat writes for the person) on today's bars, and show what it would have caught: each bar of today's session is handed to its… |
 | `Task-Update` | 🔴 acts | Change a task: its title, its job (prompt), what wakes it, what it may use, its own limits, what trades it leaves alone, or its state (on / stopped / building). |
