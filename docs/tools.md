@@ -291,37 +291,37 @@ decide when to ask you first:
 
 | Tool | | What it does |
 |---|---|---|
+| `Agent-Activity` | 🟢 reads | An agent's Activity history, newest last: each time it woke, what woke it, whether it told the person, what it did in its own words, the tools it used and which model… |
+| `Agent-Ask` | 🟡 adds | Ask one of the person's agents something and get its answer (owner, 2026-10-28: agents "can also talk to their own agents ... for some details"). |
+| `Agent-Check-In` | 🟠 changes | The morning and evening check-ins Atlas sends this person: on, quiet or off, each. |
+| `Agent-Create` | 🔴 acts | Make an agent: a background worker with a job title that does its job by itself and tells the person in its own name ("Risk Manager", "SPY 770C call watcher"). |
+| `Agent-Delete` | 🟠 changes | Delete one of the person's trackers: it stops running and its file is removed. |
+| `Agent-Hold-Entries` | 🟠 changes | Hold or let through the person's NEW entries for the rest of today (New York): the step a tracker's "No new entries" / "Pause it" button asks for, and what a tracker… |
+| `Agent-Learn` | 🟠 changes | An agent changes ITSELF from its own person's feedback (its Learning specialist): its job text or its check script, kept so it can be undone. |
+| `Agent-Level` | 🟠 changes | How much Atlas speaks up about watched positions: the level (protect, balanced or quiet), how often prices are checked (5 to 10 seconds), and tickers to stay quiet about. |
+| `Agent-List` | 🟢 reads | The trackers the person keeps (the small checks Buddy runs for them): each one's name, what it watches, its tickers and bar size, how often it runs and whether it is… |
+| `Agent-Loss-Limits` | 🟠 changes | Set, clear or read the signed-in person's own money guards, and resume what they paused: a daily loss limit ("stop me at $500 a day") and a drawdown cap per workflow (%… |
+| `Agent-Manage` | 🟠 changes | Everything Atlas does by itself for this person, as one list of agents: the morning brief, the evening check-in, and each tracker. |
+| `Agent-Save-Code` | 🟠 changes | Keep a tracker in the person's files so Buddy runs it by itself; when its check fires, the person is told in their chat and on their phone in the tracker's own title and… |
+| `Agent-Shelf` | 🟡 adds | Ready-made agents a person can add: Risk Manager, Market Analyst, Market Watcher, Account Manager, and the shelf (Setup Expert, Earnings Watcher, Daily Loss Guard… |
+| `Agent-Templates` | 🟢 reads | Starting files for trackers (the small checks Buddy runs for the person): give back, near the stop, near a target, a fast drop, expiry, no plan, a daily loss, a… |
+| `Agent-Test` | 🟢 reads | Test a tracker (a small Python check the chat writes for the person) on today's bars, and show what it would have caught: each bar of today's session is handed to its… |
+| `Agent-Update` | 🔴 acts | Change an agent: its title, its job (prompt), what wakes it, what it may use, its own limits, what trades it leaves alone, or its state (on / stopped / building). |
+| `Agent-Watch-Change` | 🔴 acts | Change the plan of something Atlas is watching ("be quieter on NVDA", "you can close it yourself next time"). |
+| `Agent-Watch-List` | 🟢 reads | What Atlas is watching for the person, each with its plan, plus their level, check interval, muted tickers and anything paused today. |
+| `Agent-Watch-Set` | 🔴 acts | Watch a position on a plan the person AGREED to, and write back to them in this chat when it matters (gave back, near the stop or a target, a fast drop, expiry). |
+| `Agent-Watch-Stop` | 🟠 changes | Stop watching a position: Atlas stops writing about it. |
 | `Browser-Act` | 🟡 adds | Do one thing on the page a browser session is on, then read it again, as a person with a mouse and keys would: click, right_click, double_click, hover, drag (one thing… |
 | `Browser-Close` | 🟡 adds | Close a browser session (or all of the person's), which also lifts the pause on trading tools once none is open. |
 | `Browser-Open` | 🟡 adds | Open a browser session on a web page and read it. |
 | `Browser-Read` | 🟡 adds | Read a page in a browser session opened with Browser-Open: go to another address (url), or read the page it is on again (after the person signed in, or after… |
 | `Browser-Sign-Ins` | 🟡 adds | The sites the person is kept signed in to in browser sessions, or forget one (or all). |
 | `Browser-Tab` | 🟡 adds | Tabs in one browser session, like a real browser: open a page in a new tab (new, with url), show another tab (switch, with tab), close one (close, with tab), or list… |
-| `Computer-Tasks` | 🟠 changes | The tasks that run on the person's own computers (in Atlas Studio), on every computer that is on: list them, read one's files, change what it is told, or stop, resume or… |
+| `Computer-Agents` | 🟠 changes | The agents that run on the person's own computers (in Atlas Studio), on every computer that is on: list them, read one's files, change what it is told, or stop, resume… |
 | `Files` | 🟡 adds | The person's own files, all in one place, as Profile > Files shows them: one folder per workflow (named after the workflow), Trackers, and what the chat keeps (notes… |
 | `List-Tool-Safety` | 🟢 reads | List every Atlas tool by its exact name, with what it says about its own safety: whether it only reads, whether it can change or remove something, whether it reaches… |
 | `Phone-Button` | 🟢 reads | Was the button pressed on a notification you sent with Phone-Notify? |
 | `Phone-Notify` | 🟡 adds | Send a notification to the signed-in person's own phone (the MindVest Atlas app), from a script, a local project, the CLI or a chat. |
-| `Task-Activity` | 🟢 reads | A task's Activity history, newest last: each time it woke, what woke it, whether it told the person, what it did in its own words, the tools it used and which model… |
-| `Task-Ask` | 🟡 adds | Ask one of the person's tasks something and get its answer (owner, 2026-10-28: agents "can also talk to their own task agents ... for some details"). |
-| `Task-Check-In` | 🟠 changes | The morning and evening check-ins Atlas sends this person: on, quiet or off, each. |
-| `Task-Create` | 🔴 acts | Make a task: a background worker with a job title that does its job by itself and tells the person in its own name ("Risk Manager", "SPY 770C call watcher"). |
-| `Task-Delete` | 🟠 changes | Delete one of the person's trackers: it stops running and its file is removed. |
-| `Task-Hold-Entries` | 🟠 changes | Hold or let through the person's NEW entries for the rest of today (New York): the step a tracker's "No new entries" / "Pause it" button asks for, and what a tracker… |
-| `Task-Learn` | 🟠 changes | A task changes ITSELF from its own person's feedback (its Learning specialist): its job text or its check script, kept so it can be undone. |
-| `Task-Level` | 🟠 changes | How much Atlas speaks up about watched positions: the level (protect, balanced or quiet), how often prices are checked (5 to 10 seconds), and tickers to stay quiet about. |
-| `Task-List` | 🟢 reads | The trackers the person keeps (the small checks Buddy runs for them): each one's name, what it watches, its tickers and bar size, how often it runs and whether it is… |
-| `Task-Loss-Limits` | 🟠 changes | Set, clear or read the signed-in person's own money guards, and resume what they paused: a daily loss limit ("stop me at $500 a day") and a drawdown cap per workflow (%… |
-| `Task-Manage` | 🟠 changes | Everything Atlas does by itself for this person, as one list of tasks: the morning brief, the evening check-in, and each tracker. |
-| `Task-Save-Code` | 🟠 changes | Keep a tracker in the person's files so Buddy runs it by itself; when its check fires, the person is told in their chat and on their phone in the tracker's own title and… |
-| `Task-Shelf` | 🟡 adds | Ready-made tasks a person can add: Risk Manager, Market Analyst, Market Watcher, Account Manager, and the shelf (Setup Expert, Earnings Watcher, Daily Loss Guard, Signal… |
-| `Task-Templates` | 🟢 reads | Starting files for trackers (the small checks Buddy runs for the person): give back, near the stop, near a target, a fast drop, expiry, no plan, a daily loss, a… |
-| `Task-Test` | 🟢 reads | Test a tracker (a small Python check the chat writes for the person) on today's bars, and show what it would have caught: each bar of today's session is handed to its… |
-| `Task-Update` | 🔴 acts | Change a task: its title, its job (prompt), what wakes it, what it may use, its own limits, what trades it leaves alone, or its state (on / stopped / building). |
-| `Task-Watch-Change` | 🔴 acts | Change the plan of something Atlas is watching ("be quieter on NVDA", "you can close it yourself next time"). |
-| `Task-Watch-List` | 🟢 reads | What Atlas is watching for the person, each with its plan, plus their level, check interval, muted tickers and anything paused today. |
-| `Task-Watch-Set` | 🔴 acts | Watch a position on a plan the person AGREED to, and write back to them in this chat when it matters (gave back, near the stop or a target, a fast drop, expiry). |
-| `Task-Watch-Stop` | 🟠 changes | Stop watching a position: Atlas stops writing about it. |
 | `Virtual-Accounts` | 🟠 changes | The person's virtual accounts: simulated money to try Atlas with before a real broker. |
 
 ## The owner's phone

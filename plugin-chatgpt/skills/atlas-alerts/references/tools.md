@@ -165,7 +165,7 @@ Create a streaming alert that DMs the user on Discord (and optionally
                          with an offset), or "never". Left out, a price alert
                          lives 3 weeks and a contract_price alert until its
                          contract's expiry day closes; other kinds have none.
-                         Set it on every alert made for one task or one watch,
+                         Set it on every alert made for one agent or one watch,
                          and delete an alert as soon as it is no longer needed
                          (Delete-Alert): alerts must not pile up.
             on_fire:     Optional action block (trigger / reactivate / live

@@ -84,13 +84,13 @@ Takes nothing.
 | `spread_strategy` | string | no |  |
 | `spread_side` | string | no |  |
 | `spread_direction` | string | no |  |
-| `spread_legs_spec` | string | no |  |
+| `spread_legs_spec` | object | no |  |
 | `spread_legs` | array | no |  |
 | `spreads` | integer | no |  |
 | `spread_take_profit_pct` | number | no |  |
 | `spread_take_profit_price` | number | no |  |
 | `spread_take_profit_stock` | number | no |  |
-| `spread_stop` | string | no |  |
+| `spread_stop` | object | no |  |
 | `spread_take_profit_close_with` | string | no |  |
 | `spread_stop_close_with` | string | no |  |
 | `spread_close_at` | string | no |  |
@@ -148,13 +148,13 @@ Takes nothing.
 | `spread_strategy` | string | no |  |
 | `spread_side` | string | no |  |
 | `spread_direction` | string | no |  |
-| `spread_legs_spec` | string | no |  |
+| `spread_legs_spec` | object | no |  |
 | `spread_legs` | array | no |  |
 | `spreads` | integer | no |  |
 | `spread_take_profit_pct` | number | no |  |
 | `spread_take_profit_price` | number | no |  |
 | `spread_take_profit_stock` | number | no |  |
-| `spread_stop` | string | no |  |
+| `spread_stop` | object | no |  |
 | `spread_take_profit_close_with` | string | no |  |
 | `spread_stop_close_with` | string | no |  |
 | `spread_close_at` | string | no |  |
@@ -263,7 +263,7 @@ The background worker monitors live prices and executes orders automatically whe
 
 SPREADS (vertical credit/debit, iron condor, butterfly, iron butterfly, straddle, strangle): `rule` may be a SPREAD CARD, the same flat fields a workflow trade card uses (Trigger-Workflow-Schema lists them): {"spread_strategy": "iron_condor", "expiry": "0dte" | "friday" | "YYYY-MM-DD", "spread_legs_spec": {"sell_at": {"mode": "from_price", "value": 10}, "buy_at": {"mode": "further_out", "value": 5}}, "spreads": 2, "enter_order_type": "limit", "enter_limit_price": 1.20, "spread_take_profit_pct": 50, "spread_stop": {"basis": "premium", "max_loss_pct": 50}, "spread_close_at": "15:45"}. A vertical also says spread_side (credit | debit) and spread_direction (bull | bear). Every leg goes to the broker as ONE multi-leg order at a NET price, never a leg on its own: the open, each target, the stop and a close-all. The strikes follow the stock's price until the trade is placed, then land on the nearest listed strikes (or give exact ones: spread_legs_spec mode "strike", or spread_legs). A limit is the NET credit or debit: Atlas watches the natural price (sold legs at the bid, bought legs at the ask) and sends it at that net once it is there. Size is whole spreads, or trade_budget: the budget over the most one spread can lose. A target, a stop or a close time left out does NOT exist (no silent exits): put in each one the person asked for; "none" says none in words. Spread-Quote shows each leg's bid and ask and the natural net now.
 
-A POSITION ALREADY HELD (opened in the broker's own app, or anywhere outside Atlas): a trigger can run its exits, so nothing has to watch it by hand. List-Trading-Triggers with include_held=true lists every position held, each with a held_id, the card it is (`card`: single, or spread for legs held together), its `fixed` fields and its `released` ones. Send the SAME card with held_position: <held_id> and only the released fields (the exits: take profit, stop, ladder, trailing stop, close time, how each closes; and contracts/spreads, at most what is held). Everything else is locked to the position: the order is already placed. Preview saves it unarmed (preview_id); Create arms it (held_position, or that preview_id). Its exits are then edited like any trade's. One option or legs held together; not shares, and only in an account Atlas can trade in. A workflow or a task does the same with these two tools (a script: atlas.call("List-Trading-Triggers", include_held=True), then atlas.call("Create-Trading-Trigger", held_position=..., <exits>)), so one trigger per position runs it and no agent has to watch it.
+A POSITION ALREADY HELD (opened in the broker's own app, or anywhere outside Atlas): a trigger can run its exits, so nothing has to watch it by hand. List-Trading-Triggers with include_held=true lists every position held, each with a held_id, the card it is (`card`: single, or spread for legs held together), its `fixed` fields and its `released` ones. Send the SAME card with held_position: <held_id> and only the released fields (the exits: take profit, stop, ladder, trailing stop, close time, how each closes; and contracts/spreads, at most what is held). Everything else is locked to the position: the order is already placed. Preview saves it unarmed (preview_id); Create arms it (held_position, or that preview_id). Its exits are then edited like any trade's. One option or legs held together; not shares, and only in an account Atlas can trade in. A workflow or an agent does the same with these two tools (a script: atlas.call("List-Trading-Triggers", include_held=True), then atlas.call("Create-Trading-Trigger", held_position=..., <exits>)), so one trigger per position runs it and no agent has to watch it.
 ````
 
 ## `Update-Trading-Trigger`
@@ -316,13 +316,13 @@ A POSITION ALREADY HELD (opened in the broker's own app, or anywhere outside Atl
 | `spread_strategy` | string | no |  |
 | `spread_side` | string | no |  |
 | `spread_direction` | string | no |  |
-| `spread_legs_spec` | string | no |  |
+| `spread_legs_spec` | object | no |  |
 | `spread_legs` | array | no |  |
 | `spreads` | integer | no |  |
 | `spread_take_profit_pct` | number | no |  |
 | `spread_take_profit_price` | number | no |  |
 | `spread_take_profit_stock` | number | no |  |
-| `spread_stop` | string | no |  |
+| `spread_stop` | object | no |  |
 | `spread_take_profit_close_with` | string | no |  |
 | `spread_stop_close_with` | string | no |  |
 | `spread_close_at` | string | no |  |
