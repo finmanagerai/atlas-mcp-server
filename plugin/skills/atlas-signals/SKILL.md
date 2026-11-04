@@ -43,6 +43,7 @@ who chose automatic taking get an order placed for them, and with
 | Where | `group_id` | Empty for the community board |
 | In it yourself | `trade_for_me`, `broker_account_id` | Places the author's own order |
 | Two trades, one idea | `second_leg`, `link_mode` | `"oco"`: whichever fills first cancels the other. `"oeo"`: the second starts only once the first fills |
+| A spread (several legs, one trade) | `spread` | Vertical, iron condor, butterfly, iron butterfly, straddle or strangle as ONE play: every taker gets every leg as one order. Leave `strike`, `option_type`, `entries`, `tps` and `stop` out; the fields are in Signal-Schema's `spread_plays` |
 
 ### The one thing that goes wrong: units
 
