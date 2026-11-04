@@ -3,14 +3,14 @@
 GENERATED from the live server. Do not edit by hand: it is rewritten from
 the same list the server hands to every client, so it cannot fall behind.
 
-199 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
+200 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
 ones your client shows (some add a prefix of their own, such as `mcp__atlas__`).
 
 Each tool says what it can do at its worst, and your client uses that to
 decide when to ask you first:
 
 - 🟢 **reads** (104): looks something up and changes nothing.
-- 🟡 **adds** (26): makes something new of yours (a preview, a
+- 🟡 **adds** (27): makes something new of yours (a preview, a
   folder, a copy) and touches nothing else.
 - 🟠 **changes** (34): changes or removes something of yours.
 - 🔴 **acts** (35): can send or change a real order, start a run,
@@ -239,6 +239,7 @@ decide when to ask you first:
 | `Get-Instructions` | 🟢 reads | Read the signed-in user's saved instructions (read-only). |
 | `Side-Panel-Widgets` | 🟠 changes | The widgets in the person's side panel on the website and the phone apps, under Recents: list them, add one, change one, remove one, or move one. |
 | `Subscription-Status` | 🟢 reads | Get the authenticated user's subscription tier, monthly usage, remaining requests, and limits. |
+| `Support-Report` | 🟡 adds | Tell the Atlas team about a problem the person hit, so they can fix it. |
 
 ## Memory
 
@@ -303,7 +304,7 @@ decide when to ask you first:
 | `Agent-Task-Loss-Limits` | 🟠 changes | Set, clear or read the signed-in person's own money guards, and resume what they paused: a daily loss limit ("stop me at $500 a day") and a drawdown cap per workflow (%… |
 | `Agent-Task-Manage` | 🟠 changes | Everything Atlas does by itself for this person, as one list of tasks: the morning brief, the evening check-in, and each tracker. |
 | `Agent-Task-Save-Code` | 🟠 changes | Keep a tracker in the person's files so Buddy runs it by itself; when its check fires, the person is told in their chat and on their phone in the tracker's own title and… |
-| `Agent-Task-Shelf` | 🟡 adds | Ready-made tasks a person can add: Risk Manager, Market Analyst, Market Watcher, Account Manager, and the shelf (Setup Expert, Earnings Watcher, Daily Loss Guard, Signal… |
+| `Agent-Task-Shelf` | 🟡 adds | Ready-made tasks a person can add: Risk Manager, Market Analyst, and Account Manager: the only three offered. list shows them and which the person has; add makes one for… |
 | `Agent-Task-Templates` | 🟢 reads | Starting files for trackers (the small checks Buddy runs for the person): give back, near the stop, near a target, a fast drop, expiry, no plan, a daily loss, a… |
 | `Agent-Task-Test` | 🟢 reads | Test a tracker (a small Python check the chat writes for the person) on today's bars, and show what it would have caught: each bar of today's session is handed to its… |
 | `Agent-Task-Update` | 🔴 acts | Change a task: its title, its job (prompt), what wakes it, what it may use, its own limits, what trades it leaves alone, or its state (on / stopped / building). |

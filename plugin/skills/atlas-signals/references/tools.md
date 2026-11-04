@@ -305,6 +305,7 @@ Publish one trade idea, called a play, under the user's name: the stock
 | `stop_close_with` | string | no | `""` |
 | `trade_for_me` | boolean | no |  |
 | `broker_account_id` | string | no | `""` |
+| `spread` | object | no |  |
 
 ## `Signal-Delete`
 

@@ -173,7 +173,7 @@
       "name": "called_at",
       "required": false,
       "kind": "date-time",
-      "help": "When the call was MADE, if that is not now. ISO-8601 with an offset. Omit for a play being called this moment, which is the usual case and the default. Set it when writing down a call that was made earlier — read off a chart, or relayed from somewhere else — so the record says when it happened rather than when it was typed."
+      "help": "NOT KEPT YET: a play is stamped with the moment it is posted (and the contract's price then). Signal-Post refuses this field rather than drop it; say when a call was made earlier in reason."
     },
     {
       "name": "score",
