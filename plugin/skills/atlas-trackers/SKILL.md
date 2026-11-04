@@ -13,29 +13,29 @@ keep it, and say in one line what it does. Its file is in their Files under
 This page says what is possible. `references/tools.md` lists every field of
 the tools named here.
 
-## Agents: a tracker with a job title
+## Tasks: a tracker with a job title
 
-An agent is a tracker with a job title, a job (its prompt), a two-line
-description and its own limits, in `Agents/<name>/` (task.md, check.py, its
+A task is a tracker with a job title, a job (its prompt), a two-line
+description and its own limits, in `Tasks/<name>/` (task.md, check.py, its
 Activity in actions.jsonl).
 
-- **Ready-made roles** (`Agent-Shelf`: Portfolio Manager, Market Analyst, Market
+- **Ready-made roles** (`Task-Shelf`: Portfolio Manager, Market Analyst, Market
   Watcher, Account Manager, Daily Loss Guard, and more) are written and tested
   by Atlas. Adding one installs it switched on, with nothing to build.
-- **A custom agent** (`Agent-Create {role, job, description}`) builds and tests
+- **A custom task** (`Task-Create {role, job, description}`) builds and tests
   itself, states its limits, and switches itself on.
-- **Every agent gets better from the person, and only from them:**
+- **Every task gets better from the person, and only from them:**
   - it learns their style from what they actually use (their workflows,
     alerts, trades and watchlist, read with Atlas's tools);
   - it reads Memory before it speaks, and keeps what it learns there (`by`:
-    the agent);
+    the task);
   - it listens when they ask for a change;
   - now and then it asks one short question: "Anything you'd like me to do
     differently?";
   - it changes its prompt, limits or script only from what they say, through
-    `Agent-Update` / `Agent-Save-Code`, testing a changed script before it runs.
-- **An agent on the person's own computer** (kept by Atlas Studio) is reached
-  with `Computer-Agents`: list them on every computer that is on, show one's
+    `Task-Update` / `Task-Save-Code`, testing a changed script before it runs.
+- **A task on the person's own computer** (kept by Atlas Studio) is reached
+  with `Computer-Tasks`: list them on every computer that is on, show one's
   files, stop, resume or delete one, and write its words (task.md, limits.md,
   notes.md, skills/<name>.md; never its scripts). A changed task.md makes it
   rewrite and test its own script on that computer before it runs again. A
@@ -65,16 +65,16 @@ judged on Atlas's live feed every few seconds while the market is open.
 
 ## The loop
 
-1. `Agent-Templates` lists starting files, each with what it checks and
-   the numbers at its top to change. `Agent-Templates {name}` gives one
+1. `Task-Templates` lists starting files, each with what it checks and
+   the numbers at its top to change. `Task-Templates {name}` gives one
    file's whole code. Nothing about them is fixed: change the numbers, the
    check, the words, or start from the closest one and rewrite it.
-2. `Agent-Test {code}` runs it. A tracker on bars is stepped through
+2. `Task-Test {code}` runs it. A tracker on bars is stepped through
    today's bars and the answer lists what it would have sent; a tracker that
    uses `import atlas` (a tool, a web page) is run once, now.
 3. Show the person, in one line, what it would have sent. Then
-   `Agent-Save-Code {name, code, ...}`. Saving again under the same name
-   replaces it. `Agent-List` and `Agent-Delete` do the rest.
+   `Task-Save-Code {name, code, ...}`. Saving again under the same name
+   replaces it. `Task-List` and `Task-Delete` do the rest.
 
 ## The file
 
@@ -156,11 +156,11 @@ happened and leave the choice to them.
 `do` holds NEW entries for the rest of the New York day: all of them, or one
 workflow's (`True` = the workflow of the trade it is about). It happens only
 for a tracker kept with `may_act: true`, set only after the person said yes.
-It never closes anything. `Agent-Hold-Entries` lists or lifts a hold.
+It never closes anything. `Task-Hold-Entries` lists or lifts a hold.
 
 ## Saving
 
-`Agent-Save-Code` takes `name`, `code`, and when wanted:
+`Task-Save-Code` takes `name`, `code`, and when wanted:
 `every_s` (10 to 3600), `symbols`, `timeframe`, `lookback`, `about`,
 `scope` (`{"type": "workflow" | "group" | "trigger", "ids": [...]}`: only
 those trades are handed in; default all of theirs), `may_act`, `paused`.
