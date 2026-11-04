@@ -33,13 +33,13 @@ Never offer another ready-made agent, and never the morning brief as one.
 
 ## Make one in a sentence
 
-1. `Task-Shelf {"action": "list"}` once: what they already have. Never add one
+1. `Agent-Task-Shelf {"action": "list"}` once: what they already have. Never add one
    twice. (Newer servers name it `Agent-Task-Shelf`; both work.)
 2. Say in one line who it is and what it will do for them; on their yes,
-   `Task-Shelf {"action": "add", "role": "Risk Manager"}`. It is ready-made and
+   `Agent-Task-Shelf {"action": "add", "role": "Risk Manager"}`. It is ready-made and
    tested: on at once, it says hello itself. Do not build it.
 3. Only when they ask for something none of the three does: a custom agent with
-   `Task-Create` (read its description; role = a specific job title, job = their
+   `Agent-Task-Create` (read its description; role = a specific job title, job = their
    words). It builds and tests itself. The `atlas-trackers` skill has the rest.
 
 Deleting one (`Task-Manage {"action": "delete"}`, only when asked) also removes
