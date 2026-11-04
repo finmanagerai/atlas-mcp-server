@@ -19,10 +19,10 @@ A task is a tracker with a job title, a job (its prompt), a two-line
 description and its own limits, in `Tasks/<name>/` (task.md, check.py, its
 Activity in actions.jsonl).
 
-- **Ready-made roles** (`Task-Shelf`: Portfolio Manager, Market Analyst, Market
+- **Ready-made roles** (`Agent-Task-Shelf`: Portfolio Manager, Market Analyst, Market
   Watcher, Account Manager, Daily Loss Guard, and more) are written and tested
   by Atlas. Adding one installs it switched on, with nothing to build.
-- **A custom task** (`Task-Create {role, job, description}`) builds and tests
+- **A custom task** (`Agent-Task-Create {role, job, description}`) builds and tests
   itself, states its limits, and switches itself on.
 - **Every task gets better from the person, and only from them:**
   - it learns their style from what they actually use (their workflows,
@@ -33,7 +33,7 @@ Activity in actions.jsonl).
   - now and then it asks one short question: "Anything you'd like me to do
     differently?";
   - it changes its prompt, limits or script only from what they say, through
-    `Task-Update` / `Task-Save-Code`, testing a changed script before it runs.
+    `Agent-Task-Update` / `Agent-Task-Save-Code`, testing a changed script before it runs.
 - **A task on the person's own computer** (kept by Atlas Studio) is reached
   with `Computer-Tasks`: list them on every computer that is on, show one's
   files, stop, resume or delete one, and write its words (task.md, limits.md,
@@ -65,16 +65,16 @@ judged on Atlas's live feed every few seconds while the market is open.
 
 ## The loop
 
-1. `Task-Templates` lists starting files, each with what it checks and
-   the numbers at its top to change. `Task-Templates {name}` gives one
+1. `Agent-Task-Templates` lists starting files, each with what it checks and
+   the numbers at its top to change. `Agent-Task-Templates {name}` gives one
    file's whole code. Nothing about them is fixed: change the numbers, the
    check, the words, or start from the closest one and rewrite it.
-2. `Task-Test {code}` runs it. A tracker on bars is stepped through
+2. `Agent-Task-Test {code}` runs it. A tracker on bars is stepped through
    today's bars and the answer lists what it would have sent; a tracker that
    uses `import atlas` (a tool, a web page) is run once, now.
 3. Show the person, in one line, what it would have sent. Then
-   `Task-Save-Code {name, code, ...}`. Saving again under the same name
-   replaces it. `Task-List` and `Task-Delete` do the rest.
+   `Agent-Task-Save-Code {name, code, ...}`. Saving again under the same name
+   replaces it. `Agent-Task-List` and `Agent-Task-Delete` do the rest.
 
 ## The file
 
@@ -156,11 +156,11 @@ happened and leave the choice to them.
 `do` holds NEW entries for the rest of the New York day: all of them, or one
 workflow's (`True` = the workflow of the trade it is about). It happens only
 for a tracker kept with `may_act: true`, set only after the person said yes.
-It never closes anything. `Task-Hold-Entries` lists or lifts a hold.
+It never closes anything. `Agent-Task-Hold-Entries` lists or lifts a hold.
 
 ## Saving
 
-`Task-Save-Code` takes `name`, `code`, and when wanted:
+`Agent-Task-Save-Code` takes `name`, `code`, and when wanted:
 `every_s` (10 to 3600), `symbols`, `timeframe`, `lookback`, `about`,
 `scope` (`{"type": "workflow" | "group" | "trigger", "ids": [...]}`: only
 those trades are handed in; default all of theirs), `may_act`, `paused`.

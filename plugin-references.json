@@ -247,18 +247,18 @@
     },
     "atlas-trackers": {
       "tools": [
-        "Task-Templates",
-        "Task-Test",
-        "Task-Save-Code",
-        "Task-List",
-        "Task-Delete",
-        "Task-Hold-Entries",
-        "Task-Watch-List",
+        "Agent-Task-Templates",
+        "Agent-Task-Test",
+        "Agent-Task-Save-Code",
+        "Agent-Task-List",
+        "Agent-Task-Delete",
+        "Agent-Task-Hold-Entries",
+        "Agent-Task-Watch-List",
         "Account-Activity"
       ],
       "full": [
-        "Task-Test",
-        "Task-Save-Code"
+        "Agent-Task-Test",
+        "Agent-Task-Save-Code"
       ]
     }
   },
