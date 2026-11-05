@@ -3,16 +3,16 @@
 GENERATED from the live server. Do not edit by hand: it is rewritten from
 the same list the server hands to every client, so it cannot fall behind.
 
-200 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
+202 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
 ones your client shows (some add a prefix of their own, such as `mcp__atlas__`).
 
 Each tool says what it can do at its worst, and your client uses that to
 decide when to ask you first:
 
-- 🟢 **reads** (104): looks something up and changes nothing.
+- 🟢 **reads** (105): looks something up and changes nothing.
 - 🟡 **adds** (27): makes something new of yours (a preview, a
   folder, a copy) and touches nothing else.
-- 🟠 **changes** (34): changes or removes something of yours.
+- 🟠 **changes** (35): changes or removes something of yours.
 - 🔴 **acts** (35): can send or change a real order, start a run,
   or change what other people see. Only on your say-so.
 
@@ -245,6 +245,8 @@ decide when to ask you first:
 
 | Tool | | What it does |
 |---|---|---|
+| `Chat-Continue` | 🟠 changes | Send words into ONE of the person's existing chats, as if they had typed them there, so it carries on with its work: a chat on the Atlas website, or a project chat on… |
+| `Chat-Recent` | 🟢 reads | The person's chats that were active in the last few hours, everywhere: on the Atlas website and, while they have Memory sharing switched on (Profile, Memory), the… |
 | `Memory-Check-Already-Remembered` | 🟢 reads | Check whether something is already remembered, before you write it. |
 | `Memory-Forget` | 🟠 changes | Forget one memory because it is wrong or out of date. |
 | `Memory-List` | 🟢 reads | Everything Atlas remembers about the signed-in person, by tier (short term: hours; long term: weeks; permanent: kept), with how full each tier is, who stored each… |
