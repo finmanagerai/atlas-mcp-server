@@ -267,13 +267,18 @@ Publish one trade idea, called a play, under the user's name: the stock
             spread_take_profit_price / spread_take_profit_stock (a vertical:
             the stock price) / bracket_take_profit_levels, spread_stop,
             spread_stop_close_with, spread_take_profit_close_with,
-            spread_close_at). Each step of bracket_take_profit_levels may move
-            the stop when the step before it fills: stop_after_pct (a % of the
-            most it can lose; 0 = break-even) or stop_after_price (a spread
-            net). Every leg goes to each
-            taker's broker as ONE multi-leg order; `contracts` is the number of
-            spreads, `trade_budget` is sized by the most one spread can lose.
-            Leave strike, option_type, entries, targets and stop out.
+            spread_close_at, spread_budget_basis). Each step of
+            bracket_take_profit_levels may move the stop when the step before
+            it fills: stop_after_pct (a % of the most it can lose; 0 =
+            break-even) or stop_after_price (a spread net). Every leg goes to
+            each taker's broker as ONE multi-leg order; `contracts` is the
+            number of spreads. `trade_budget` is the most the trade can lose,
+            or, with spread_budget_basis "net", the credit it collects (or the
+            debit it pays): $2,000 on a 2.00 credit is 10 spreads. "net" sizes
+            the play's own size only (yours, and a taker who follows it with
+            no size of their own); a taker's own budget is always the most
+            they can lose. Leave strike, option_type, entries, targets and
+            stop out.
 ````
 
 ## `Signal-Update`

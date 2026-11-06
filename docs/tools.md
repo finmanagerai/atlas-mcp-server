@@ -216,7 +216,7 @@ decide when to ask you first:
 | `Workflow-History` | 🟠 changes | A workflow's earlier versions, and going back to one. |
 | `Workflow-Import` | 🟡 adds | Clone a workflow into the caller's account — their OWN, or any public/unlisted one. |
 | `Workflow-Journal` | 🟠 changes | Read or change a workflow's JOURNAL. |
-| `Workflow-List` | 🟢 reads | List the caller's workflows (id, name, status, schedule, visibility) for programmatic discovery. |
+| `Workflow-List` | 🟢 reads | Find the caller's workflows: id, name, status, and parent_id for a copy that follows an author. |
 | `Workflow-Logs` | 🟢 reads | Return recent run logs for a workflow the caller owns. |
 | `Workflow-Open` | 🟢 reads | Show the caller's workflows. |
 | `Workflow-Operate` | 🔴 acts | Pause or turn on a workflow that somebody else owns and has made you an operator of. |

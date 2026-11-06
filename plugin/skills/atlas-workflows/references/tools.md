@@ -215,9 +215,15 @@ Args:
 
 ## `Workflow-List`
 
-🟢 reads. List the caller's workflows (id, name, status, schedule, visibility) for programmatic discovery.
+🟢 reads. Find the caller's workflows: id, name, status, and parent_id for a copy that follows an author.
 
-Takes nothing.
+| Field | Type | Needed | Default |
+|---|---|---|---|
+| `name` | string | no | `""` |
+| `status` | string | no | `""` |
+| `offset` | integer | no | `0` |
+| `limit` | integer | no | `50` |
+| `detail` | boolean | no | `false` |
 
 ## `Workflow-Open`
 

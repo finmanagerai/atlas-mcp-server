@@ -179,7 +179,7 @@ VERIFY AFTER CREATING: exit 0 / success:true means the row was WRITTEN, not that
 The tool's own description, in full:
 
 ````text
-Run one of the caller's workflows once, now, instead of waiting for its schedule or alert. This is a real run: the workflow follows its saved instruction exactly as a scheduled run does, so a trading workflow with a broker account attached may place the order its trade card describes, and the run counts against the user's plan like any other. Use it only when the user asks to run the workflow now. Returns whether the run was started; read the result with Workflow-Logs a little later.
+Run one of the caller's workflows once, now, instead of waiting for its schedule or alert. This is a real run: the workflow follows its saved instruction exactly as a scheduled run does, so a trading workflow with a broker account attached may place the order its trade card describes, and the run counts against the user's plan like any other. Use it only when the user asks to run the workflow now. Returns whether the run was started; read the result with Workflow-Logs a little later. A paused workflow does not run: the answer says so (code workflow_paused) and nothing is started; use test=true to try it while paused, or switch it on first when the person says so.
 Args:
   workflow_id: required UUID of the workflow to run.
   form_answers: optional answers to the questions the workflow asks before a manual run, keyed by question id.
