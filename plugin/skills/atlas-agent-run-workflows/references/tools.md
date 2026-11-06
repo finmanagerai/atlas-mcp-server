@@ -72,6 +72,7 @@ what is possible.
 | `script_settings` | array | no |  |
 | `hide_logic` | boolean | no |  |
 | `discord_message` | string | no |  |
+| `trade_filters` | object | no |  |
 
 ## `Workflow-Agent-Waiting-Runs`
 

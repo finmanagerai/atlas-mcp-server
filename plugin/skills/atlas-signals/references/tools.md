@@ -267,7 +267,10 @@ Publish one trade idea, called a play, under the user's name: the stock
             spread_take_profit_price / spread_take_profit_stock (a vertical:
             the stock price) / bracket_take_profit_levels, spread_stop,
             spread_stop_close_with, spread_take_profit_close_with,
-            spread_close_at). Every leg goes to each
+            spread_close_at). Each step of bracket_take_profit_levels may move
+            the stop when the step before it fills: stop_after_pct (a % of the
+            most it can lose; 0 = break-even) or stop_after_price (a spread
+            net). Every leg goes to each
             taker's broker as ONE multi-leg order; `contracts` is the number of
             spreads, `trade_budget` is sized by the most one spread can lose.
             Leave strike, option_type, entries, targets and stop out.
@@ -488,6 +491,8 @@ Follow a public signal group (or stop following it), and set how its
 | `exit_split` | string | no | `""` |
 | `notify_board_dm` | boolean | no |  |
 | `budget_account_id` | string | no | `""` |
+| `dm_trades` | boolean | no |  |
+| `trade_filters` | object | no |  |
 
 ## `Signal-Group-Create`
 

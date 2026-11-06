@@ -555,16 +555,28 @@
       "name": "spreads",
       "rule_path": "execution.contracts",
       "label": "How many",
-      "help": "Whole spreads (each leg goes for spreads x its ratio). Or give bracket_trade_budget instead: the budget over the most ONE spread can lose, floored, worked out at the fill.",
+      "help": "Whole spreads (each leg goes for spreads x its ratio). Or give bracket_trade_budget instead: whole spreads the budget covers, floored (never over), worked out at the fill. By default the budget is the most the trade can lose (budget / the most ONE spread can lose); with spread_budget_basis \"net\" it is the credit collected (a credit spread) or the debit paid (a debit spread): budget / (the net x 100).",
       "kind": "integer",
       "placeholder": "2",
+      "required": false
+    },
+    {
+      "name": "spread_budget_basis",
+      "rule_path": "_budget_basis",
+      "label": "What the budget measures",
+      "help": "Only with bracket_trade_budget. max_loss (or left out): the budget is the most the trade can lose, \"Budget $2,000: 5 spreads at max loss $379 each\". net: the credit it collects on a credit spread (iron condor, iron butterfly, credit vertical) or the debit it pays on a debit spread (butterfly, straddle, strangle, debit vertical), \"Budget $2,000 of credit: 10 spreads at 2.00 each\". Either way the count is the budget over one spread's amount, floored.",
+      "kind": "string",
+      "options": [
+        "max_loss",
+        "net"
+      ],
       "required": false
     },
     {
       "name": "spread_take_profit_pct",
       "rule_path": "exit.take_profit.pct",
       "label": "Take profit (%)",
-      "help": "A credit spread: the % of the credit kept (50 closes when it can be bought back for half the credit). A debit spread: the % gained on the debit. Closed once the spread's natural price is there: as a limit at that net when the entry was a limit, at market when it was market. Left out (or \"none\"): no target. Or use spread_take_profit_price, spread_take_profit_stock, or bracket_take_profit_levels (steps in whole spreads: [{pct, quantity}], [{price, quantity}] or [{stock, quantity}], one unit for every step, the last closes the rest).",
+      "help": "A credit spread: the % of the credit kept (50 closes when it can be bought back for half the credit). A debit spread: the % gained on the debit. Closed once the spread's natural price is there: as a limit at that net when the entry was a limit, at market when it was market. Left out (or \"none\"): no target. Or use spread_take_profit_price, spread_take_profit_stock, or bracket_take_profit_levels (steps in whole spreads: [{pct, quantity}], [{price, quantity}] or [{stock, quantity}], one unit for every step, the last closes the rest). Each step after the first may also MOVE THE STOP when the step before it fills: stop_after_pct (a % of the most it can lose; 0 = break-even) or stop_after_price (a spread net), on the premium; left out, the stop stays where it is.",
       "kind": "number",
       "placeholder": "50",
       "required": false
@@ -1357,7 +1369,7 @@
         "option",
         "spread"
       ],
-      "short": "Several targets: [{pct | price, quantity, stop_after_pct?, stop_after_price?, close_limit_price?}]. Instead of a single target."
+      "short": "Several targets: [{pct | price, quantity, stop_after_pct?, stop_after_price?, close_limit_price?}]. On a spread: stop_after_pct is % of max loss (0 = break-even), stop_after_price a net."
     },
     {
       "name": "bracket_take_profit_loop",
@@ -1560,7 +1572,7 @@
       "name": "spreads",
       "rule_path": "execution.contracts",
       "label": "How many",
-      "help": "Whole spreads (each leg goes for spreads x its ratio). Or give bracket_trade_budget instead: the budget over the most ONE spread can lose, floored, worked out at the fill.",
+      "help": "Whole spreads (each leg goes for spreads x its ratio). Or give bracket_trade_budget instead: whole spreads the budget covers, floored (never over), worked out at the fill. By default the budget is the most the trade can lose (budget / the most ONE spread can lose); with spread_budget_basis \"net\" it is the credit collected (a credit spread) or the debit paid (a debit spread): budget / (the net x 100).",
       "kind": "integer",
       "placeholder": "2",
       "required": false,
@@ -1571,10 +1583,28 @@
       "short": "How many whole spreads. Or give bracket_trade_budget instead."
     },
     {
+      "name": "spread_budget_basis",
+      "rule_path": "_budget_basis",
+      "label": "What the budget measures",
+      "help": "Only with bracket_trade_budget. max_loss (or left out): the budget is the most the trade can lose, \"Budget $2,000: 5 spreads at max loss $379 each\". net: the credit it collects on a credit spread (iron condor, iron butterfly, credit vertical) or the debit it pays on a debit spread (butterfly, straddle, strangle, debit vertical), \"Budget $2,000 of credit: 10 spreads at 2.00 each\". Either way the count is the budget over one spread's amount, floored.",
+      "kind": "string",
+      "options": [
+        "max_loss",
+        "net"
+      ],
+      "required": false,
+      "group": "size",
+      "applies_to": [
+        "spread"
+      ],
+      "default": "max_loss: the budget is the most the trade can lose",
+      "short": "With bracket_trade_budget only: \"max_loss\" (the most it can lose) or \"net\" (the credit it collects / the debit it pays)."
+    },
+    {
       "name": "spread_take_profit_pct",
       "rule_path": "exit.take_profit.pct",
       "label": "Take profit (%)",
-      "help": "A credit spread: the % of the credit kept (50 closes when it can be bought back for half the credit). A debit spread: the % gained on the debit. Closed once the spread's natural price is there: as a limit at that net when the entry was a limit, at market when it was market. Left out (or \"none\"): no target. Or use spread_take_profit_price, spread_take_profit_stock, or bracket_take_profit_levels (steps in whole spreads: [{pct, quantity}], [{price, quantity}] or [{stock, quantity}], one unit for every step, the last closes the rest).",
+      "help": "A credit spread: the % of the credit kept (50 closes when it can be bought back for half the credit). A debit spread: the % gained on the debit. Closed once the spread's natural price is there: as a limit at that net when the entry was a limit, at market when it was market. Left out (or \"none\"): no target. Or use spread_take_profit_price, spread_take_profit_stock, or bracket_take_profit_levels (steps in whole spreads: [{pct, quantity}], [{price, quantity}] or [{stock, quantity}], one unit for every step, the last closes the rest). Each step after the first may also MOVE THE STOP when the step before it fills: stop_after_pct (a % of the most it can lose; 0 = break-even) or stop_after_price (a spread net), on the premium; left out, the stop stays where it is.",
       "kind": "number",
       "placeholder": "50",
       "required": false,

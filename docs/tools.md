@@ -3,13 +3,13 @@
 GENERATED from the live server. Do not edit by hand: it is rewritten from
 the same list the server hands to every client, so it cannot fall behind.
 
-202 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
+203 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
 ones your client shows (some add a prefix of their own, such as `mcp__atlas__`).
 
 Each tool says what it can do at its worst, and your client uses that to
 decide when to ask you first:
 
-- 🟢 **reads** (105): looks something up and changes nothing.
+- 🟢 **reads** (106): looks something up and changes nothing.
 - 🟡 **adds** (27): makes something new of yours (a preview, a
   folder, a copy) and touches nothing else.
 - 🟠 **changes** (35): changes or removes something of yours.
@@ -323,6 +323,7 @@ decide when to ask you first:
 | `Computer-Tasks` | 🟠 changes | The tasks that run on the person's own computers (in Atlas Studio), on every computer that is on: list them, read one's files, change what it is told, or stop, resume or… |
 | `Files` | 🟡 adds | The person's own files, all in one place, as Profile > Files shows them: one folder per workflow (named after the workflow), Trackers, and what the chat keeps (notes… |
 | `List-Tool-Safety` | 🟢 reads | List every Atlas tool by its exact name, with what it says about its own safety: whether it only reads, whether it can change or remove something, whether it reaches… |
+| `Notify-Delivery` | 🟢 reads | Was a Discord DM delivered? |
 | `Phone-Button` | 🟢 reads | Was the button pressed on a notification you sent with Phone-Notify? |
 | `Phone-Notify` | 🟡 adds | Send a notification to the signed-in person's own phone (the MindVest Atlas app), from a script, a local project, the CLI or a chat. |
 | `Virtual-Accounts` | 🟠 changes | The person's virtual accounts: simulated money to try Atlas with before a real broker. |
