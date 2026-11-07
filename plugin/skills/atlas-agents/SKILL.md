@@ -13,7 +13,8 @@ the one you need.
 - **Workflow** = a TRADE PLAN. It runs on an alert or a schedule and places,
   sends or reviews plays ("buy SPY calls when the wall flips", "every 9:35 check
   QQQ and send a play to my group"). See the `atlas-workflows` skill
-  (`Workflow-Create`, `Workflow-Templates`; a play: `Signal-Schema`).
+  (`Workflow-Create`, `Workflow-Templates`; a workflow that sends plays
+  writes them in its `output_schema.plays`).
 - **Agent** = a STANDING WORKER WITH A JOB TITLE. It watches, tells and looks
   after things over time ("watch my positions and tell me at +25%", "tell me
   when a workflow breaks", "read SPX for me each morning"). It is never the

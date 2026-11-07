@@ -39,3 +39,18 @@ and point them there.
   shows; do not guess at what happened after.
 - Somebody else's play is their call, not advice from Atlas. Say what it is
   and what its record shows; the decision is the person's.
+
+## Size, the circuit breaker and filters (new on Nov 7, 2026)
+
+These are set by the person in Atlas, on the dashboard, in **Trade settings**
+for a group they follow. From here, explain them and point there; do not
+promise to change them.
+
+| The person asks | What to tell them |
+|---|---|
+| "Put $250 into each play" / "3 contracts" | Trade settings: the **Contracts** row. A count, or **Size this trade by an amount of money** and **Most to put into this trade**: Atlas buys as many as fit under it, never more. |
+| "Put in less after losses, more after wins" | With money on, the **Auto sizing** row: start from the amount or a % of the account (never over the amount); after N losses in a row put in less by % or $, after N wins more; one step, then back after the opposite result; never under one contract. |
+| "Stop taking plays for the day if I lose $200" | **Auto sizing** page, **Circuit breaker**: pause when the day's loss (or profit) reaches a % of the account or $; then **Back tomorrow** (next trading day, 9:30 AM ET), **For a week** or **Until I turn it on**. Automatic taking of that group stops, they are told once, and it comes back by itself. Open trades keep their stops. Back on early: switch **Take every play automatically** on again. |
+| "Only SPY", "nothing over $3 a contract", "not on FOMC days" | **Advanced filters** at the bottom of Trade settings: 28 filters (kinds, bid/ask spread, rating, open interest, volume, cost per contract, expiry, entry slip, late entry, earnings, big news days, trades a day, open trades, IV, delta, strike, symbols, time window, days, stock move, gap, day direction, VIX, theta, buying power, pause after a loss, stock price). A filter only skips a play, never changes it; market filters are judged when the play would go in and skip only when the number can be read; a skipped play sends one notice naming the filter; a play taken by hand is never filtered. |
+
+Every step, with pictures: https://www.mind-vest.io/atlas/setup-guide/whats-new-nov-7
