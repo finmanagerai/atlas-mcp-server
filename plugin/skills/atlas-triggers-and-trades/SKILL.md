@@ -69,7 +69,11 @@ Every trade needs three things:
    (YYYY-MM-DD). A spread adds `spread_strategy` and `expiry`.
 2. **How much**: `quantity` (shares), `contracts` (options) or `spreads`, **or**
    `bracket_trade_budget` in dollars (the count is worked out at the fill).
-   One of them, never two.
+   One of them, never two. A trigger alone takes only the start of auto
+   sizing, beside a budget and only when asked: `auto_size: {"start":
+   "account", "account_pct": 40}` (40% of the account at entry, never over
+   the budget). Steps after wins or losses and the daily breaker count a
+   workflow's trades, so they go on a workflow card (`atlas-workflows`).
 3. **How it enters**: `enter_side` (`buy` / `sell`, or `buy_to_open` /
    `sell_to_open` on an option; not on a spread) and `enter_order_type`
    (`"market"`, or `"limit"` with `enter_limit_price`). To wait for a stock

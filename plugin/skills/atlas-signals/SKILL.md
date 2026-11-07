@@ -116,6 +116,40 @@ is a different trade.
 - `Signal-Pending` and `Signal-Answer` are for plays waiting on the person's
   yes or no.
 
+## Sizing, the breaker and filters for a follower
+
+| The person says | Do |
+|---|---|
+| "Post it, $500 of it" | `Signal-Post` `trade_budget: 500` (never with `contracts`/`quantity`). A spread: `trade_budget` sizes by what one spread can lose |
+| "Size my own order from my account" (author) | `Signal-Post` `auto_size` beside `trade_budget`: `{"start": "account", "account_pct": 40}`. It sizes the poster's own order only |
+| "Never more than $300 a play for me" | `Signal-Trade-Settings` `max_per_trade: 300` (with `group_id` for one group) |
+| "Stop taking this group's plays if I lose $200 today" | `Signal-Trade-Settings` `group_id`, `pause_loss: {"amount": 200, "unit": "usd", "resume": "tomorrow"}` (`pause_profit` the same; `{}` turns one off) |
+| "Turn it back on" | `Signal-Trade-Settings` `group_id`, `accept_mode: "auto"` |
+| "Only puts, rated 7+, tight spreads" | `Signal-Trade-Settings` `group_id` (`"community"` for the board), `trade_filters: {"kinds": ["puts"], "min_score": 7, "max_spread_pct": 10}` |
+
+- A breaker trip switches that group to taking by hand (`accept_mode
+  manual`) until it comes back (`resume` `"tomorrow"`, `"week"` or
+  `"manual"`); Atlas tells the person once, in their own zone.
+- `trade_filters` only SKIP a trade, never change it. The whole set replaces
+  what was saved, `{}` clears it. Never on an author's own row; the author is
+  never filtered. A play taken by hand is never filtered (the website shows
+  what it breaks and offers "Take anyway"). A skipped play sends ONE notice
+  naming the filter.
+- The keys: `kinds` (calls/puts/shares/spreads), `max_spread_pct`,
+  `min_score` (1-10), `min_open_interest`, `min_volume`,
+  `max_contract_cost` / `min_contract_cost` ($), `expiry {from_days, to_days,
+  mode: only|block}`, `max_entry_slip_pct`, `max_age_minutes`,
+  `earnings_days`, `skip_news_days: true` (FOMC, CPI, jobs days), `max_trades_per_day`,
+  `max_open_trades`, `iv {min, max}` (%), `delta {min, max}`, `strike {from,
+  to, mode}`, `symbols []`, `window {from, to}` (the person's zone), `days`
+  (mon..fri), `max_day_move_pct`, `max_gap_pct`, `day_direction`
+  (with|against), `vix {min, max}`, `max_theta` ($/day),
+  `max_buying_power_pct`, `loss_pause_minutes`, `stock_price {min, max}`.
+- Open interest, expiry, strike, IV, delta and theta are options only (a
+  spread: each leg, net delta and theta). Market filters are checked at the
+  entry and skip only when the number is readable; `max_contract_cost` skips
+  a play whose price cannot be known.
+
 ## Groups and following
 
 - `Signal-Discover` finds public groups. `Signal-Follow` follows one or stops,
@@ -123,7 +157,8 @@ is a different trade.
   nothing is placed, each play is taken by hand) or `auto` (each new play is
   placed for the person, sized from their budget).
 - `Signal-Trade-Settings` reads and saves the person's defaults: which
-  account, and the budget for one trade.
+  account, the budget for one trade (`max_per_trade`), and per group the
+  breaker and `trade_filters` (above).
 - `Signal-Group-Create`, `Signal-Group-Update` and `Signal-Group-Performance`
   are for a group the person runs.
 

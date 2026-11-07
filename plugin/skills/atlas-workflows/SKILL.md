@@ -99,6 +99,41 @@ option's `option_type`, `strike`, `expiry`), a size (`contracts`, `quantity`,
 Leave a value out, or set it to null, where the run should decide it. Never
 invent a size, a budget or a stop the person did not ask for.
 
+## Sizing by money, auto sizing and the circuit breaker
+
+Only what the person asked for; never invent a size, a budget or a step.
+
+| The person says | Do |
+|---|---|
+| "Up to $500 a trade" | Card `bracket_trade_budget: 500`, and leave `contracts` / `quantity` out |
+| "Start at 40% of my account, never over $1,000, after 2 losses put in 25% less" | `bracket_trade_budget: 1000`, `bracket_auto_size: {"start": "account", "account_pct": 40, "down_after": 2, "down_by": 25, "down_unit": "pct"}` |
+| "Stop for the day if I lose $300" | `bracket_auto_size.pause_loss: {"amount": 300, "unit": "usd", "resume": "tomorrow"}` |
+| "Stop when I am up 2%, for a week" | `bracket_auto_size.pause_profit: {"amount": 2, "unit": "pct", "resume": "week"}` |
+| "Turn it back on" (after a pause) | `Workflow-Update` `patch: {"status": "active"}` |
+
+- `bracket_auto_size` goes only beside `bracket_trade_budget` (Workflow-Create
+  / Workflow-Update). `start` is `"amount"` (the amount typed) or `"account"`
+  (`account_pct`, 1-100, of the account's value at entry, never over the
+  amount typed). `down_after` / `up_after` N losses / wins in a row, then
+  `down_by` / `up_by` in `down_unit` / `up_unit` (`"pct"` or `"usd"`): one
+  step, back to the start after the opposite result, never under one
+  contract. Worked out when the order enters.
+- The breaker: `pause_loss` / `pause_profit` `{amount, unit: "usd"|"pct",
+  resume: "tomorrow"|"week"|"manual"}` (`manual`, the default, waits to be
+  turned back on). When today's closed P&L (Eastern day) reaches it the
+  workflow pauses; open trades keep their stops and targets. With followers,
+  it stays on for them and only the owner's own entries are skipped. Atlas
+  tells the person once, in their own zone ("until tomorrow's open (8:30 AM
+  CT)"), and again when it comes back.
+- **On a copy of somebody's workflow** the person's own size lives in
+  `Workflow-Update` `execution_overrides`: `{"budget_cents": 50000}` ($500,
+  in cents) and beside it their own `auto_size` (same object). Their own
+  conditions go in top-level `trade_filters` (the `atlas-signals` skill lists
+  them); `{}` clears, and they only skip a trade, never change it. Neither
+  stops the copy following its author.
+- Schedule lines must be at least 2 minutes apart; a closer one is refused at
+  save.
+
 **A script workflow has no trade card.** When `Workflow-Open` says
 `decided_by: "script"`, its trades are `atlas.trade(...)` calls in its
 `main.py`, and `output_schema` is usually empty. To say what it does or what
