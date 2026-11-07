@@ -518,6 +518,7 @@ Follow a public signal group (or stop following it), and set how its
 | `take_all_at_tp` | integer | no |  |
 | `auto_size` | object | no |  |
 | `resume_own_orders` | boolean | no |  |
+| `account_mode` | string | no | `""` |
 
 ## `Signal-Group-Create`
 
