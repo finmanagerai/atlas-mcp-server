@@ -445,6 +445,14 @@
       "required": false
     },
     {
+      "name": "bracket_auto_size",
+      "rule_path": "_auto_size",
+      "label": "Auto sizing",
+      "help": "Only beside bracket_trade_budget (refused without one). An object that moves the budget of the NEXT trade at its entry, and can pause the workflow for the day: {\"start\": \"amount\" (the budget typed) | \"account\" (account_pct % of the account's value, never more than the budget), \"account_pct\": 1-100, \"down_after\": N losses in a row, \"down_by\": amount, \"down_unit\": \"pct\" (of the start, up to 100) | \"usd\", \"up_after\": N wins in a row, \"up_by\": amount, \"up_unit\": \"pct\" (up to 500) | \"usd\", \"pause_loss\": {\"amount\", \"unit\": \"usd\" | \"pct\" (of the account), \"resume\": \"tomorrow\" | \"week\" | \"manual\"}, \"pause_profit\": {\"amount\", \"unit\", \"resume\"}}. One step from the start, never compounding; the next opposite result goes back to the start; a $0 trade counts as neither; never under one contract/share when the start buys one. Wins and losses are this person's closed trades of this workflow. A pause counts today's closed trades of the workflow; resume says how long: \"tomorrow\" (back at the next trading day's open), \"week\" (back at the open a week later), \"manual\" or left out (until it is turned back on). Open trades keep their stops. An object that changes nothing is refused. A trigger on its own (no workflow) takes only start/account_pct. The AUTHOR's setting: a decision step never writes it (it is pinned from the card).",
+      "kind": "object",
+      "required": false
+    },
+    {
       "name": "bracket_exit_split",
       "rule_path": "exit.take_profit_levels[].quantity",
       "label": "How the exits split",
@@ -1405,6 +1413,21 @@
         "spread"
       ],
       "short": "The most to spend on this trade, in dollars; the count is worked out at the fill. Never with contracts / quantity / spreads."
+    },
+    {
+      "name": "bracket_auto_size",
+      "rule_path": "_auto_size",
+      "label": "Auto sizing",
+      "help": "Only beside bracket_trade_budget (refused without one). An object that moves the budget of the NEXT trade at its entry, and can pause the workflow for the day: {\"start\": \"amount\" (the budget typed) | \"account\" (account_pct % of the account's value, never more than the budget), \"account_pct\": 1-100, \"down_after\": N losses in a row, \"down_by\": amount, \"down_unit\": \"pct\" (of the start, up to 100) | \"usd\", \"up_after\": N wins in a row, \"up_by\": amount, \"up_unit\": \"pct\" (up to 500) | \"usd\", \"pause_loss\": {\"amount\", \"unit\": \"usd\" | \"pct\" (of the account), \"resume\": \"tomorrow\" | \"week\" | \"manual\"}, \"pause_profit\": {\"amount\", \"unit\", \"resume\"}}. One step from the start, never compounding; the next opposite result goes back to the start; a $0 trade counts as neither; never under one contract/share when the start buys one. Wins and losses are this person's closed trades of this workflow. A pause counts today's closed trades of the workflow; resume says how long: \"tomorrow\" (back at the next trading day's open), \"week\" (back at the open a week later), \"manual\" or left out (until it is turned back on). Open trades keep their stops. An object that changes nothing is refused. A trigger on its own (no workflow) takes only start/account_pct. The AUTHOR's setting: a decision step never writes it (it is pinned from the card).",
+      "kind": "object",
+      "required": false,
+      "group": "size",
+      "applies_to": [
+        "stock",
+        "option"
+      ],
+      "default": "off: the budget as typed",
+      "short": "With bracket_trade_budget only: a % of the account, a step down after N losses / up after N wins, a pause at a day's loss or profit. See help for the keys."
     },
     {
       "name": "bracket_exit_split",

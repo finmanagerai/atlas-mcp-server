@@ -53,6 +53,7 @@ Takes nothing.
 | `second_leg` | object | no |  |
 | `link_mode` | string | no | `""` |
 | `spread` | object | no |  |
+| `auto_size` | object | no |  |
 
 The tool's own description, in full:
 
@@ -177,6 +178,14 @@ Publish one trade idea, called a play, under the user's name: the stock
             thing and only one survives. Use whichever the user actually said:
             "two contracts" is a count, "about $500 worth" / "500 dollars into
             it" is a budget. Sizes the CALLER only, exactly like the count.
+        auto_size: ONLY beside trade_budget, and only when the user asked:
+            how YOUR budget moves with YOUR closed plays of this group, worked
+            out when your order enters. {"start": "amount" | "account",
+            "account_pct": 1-100, "down_after": N losses in a row, "down_by",
+            "down_unit": "pct"|"usd", "up_after": N wins in a row, "up_by",
+            "up_unit"}. Sizes the caller's own order only; a taker is sized
+            by their own settings. A follower's pause at a day's loss/profit
+            is Signal-Trade-Settings pause_loss / pause_profit.
         entry: The price to get in at. Leave empty for "take it now, at market".
         entry_unit: WHICH price `entry` is, and this matters — the same number
             means two different trades:
@@ -498,6 +507,8 @@ Follow a public signal group (or stop following it), and set how its
 | `budget_account_id` | string | no | `""` |
 | `dm_trades` | boolean | no |  |
 | `trade_filters` | object | no |  |
+| `pause_loss` | object | no |  |
+| `pause_profit` | object | no |  |
 
 ## `Signal-Group-Create`
 

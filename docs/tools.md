@@ -3,7 +3,7 @@
 GENERATED from the live server. Do not edit by hand: it is rewritten from
 the same list the server hands to every client, so it cannot fall behind.
 
-203 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
+204 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
 ones your client shows (some add a prefix of their own, such as `mcp__atlas__`).
 
 Each tool says what it can do at its worst, and your client uses that to
@@ -12,7 +12,7 @@ decide when to ask you first:
 - 🟢 **reads** (106): looks something up and changes nothing.
 - 🟡 **adds** (27): makes something new of yours (a preview, a
   folder, a copy) and touches nothing else.
-- 🟠 **changes** (35): changes or removes something of yours.
+- 🟠 **changes** (36): changes or removes something of yours.
 - 🔴 **acts** (35): can send or change a real order, start a run,
   or change what other people see. Only on your say-so.
 
@@ -216,7 +216,7 @@ decide when to ask you first:
 | `Workflow-History` | 🟠 changes | A workflow's earlier versions, and going back to one. |
 | `Workflow-Import` | 🟡 adds | Clone a workflow into the caller's account — their OWN, or any public/unlisted one. |
 | `Workflow-Journal` | 🟠 changes | Read or change a workflow's JOURNAL. |
-| `Workflow-List` | 🟢 reads | Find the caller's workflows: id, name, status, and parent_id for a copy that follows an author. |
+| `Workflow-List` | 🟢 reads | Find the caller's workflows. |
 | `Workflow-Logs` | 🟢 reads | Return recent run logs for a workflow the caller owns. |
 | `Workflow-Open` | 🟢 reads | Show the caller's workflows. |
 | `Workflow-Operate` | 🔴 acts | Pause or turn on a workflow that somebody else owns and has made you an operator of. |
@@ -247,6 +247,7 @@ decide when to ask you first:
 |---|---|---|
 | `Chat-Continue` | 🟠 changes | Send words into ONE of the person's existing chats, as if they had typed them there, so it carries on with its work: a chat on the Atlas website, or a project chat on… |
 | `Chat-Recent` | 🟢 reads | The person's chats that were active in the last few hours, everywhere: on the Atlas website and, while they have Memory sharing switched on (Profile, Memory), the… |
+| `Computer-Session` | 🟠 changes | Open a working session on one of the person's own computers (Atlas Studio) and hand it a job, the way a lead hands a colleague a brief: a NEW conversation there whose… |
 | `Memory-Check-Already-Remembered` | 🟢 reads | Check whether something is already remembered, before you write it. |
 | `Memory-Forget` | 🟠 changes | Forget one memory because it is wrong or out of date. |
 | `Memory-List` | 🟢 reads | Everything Atlas remembers about the signed-in person, by tier (short term: hours; long term: weeks; permanent: kept), with how full each tier is, who stored each… |

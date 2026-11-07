@@ -42,6 +42,7 @@ Takes nothing.
 | `symbol` | string | no |  |
 | `account_id` | string | no |  |
 | `trade_budget` | number | no |  |
+| `auto_size` | object | no |  |
 | `legs` | array | no |  |
 | `link_mode` | string | no | `""` |
 | `held_position` | string | no |  |
@@ -77,6 +78,7 @@ Takes nothing.
 | `bracket_take_profit_levels` | array | no |  |
 | `bracket_take_profit_loop` | boolean | no |  |
 | `bracket_trade_budget` | number | no |  |
+| `bracket_auto_size` | string | no |  |
 | `bracket_exit_split` | string | no |  |
 | `label` | string | no |  |
 | `cancels_labels` | array | no |  |
@@ -107,6 +109,7 @@ Takes nothing.
 | `account_id` | string | no |  |
 | `preview_id` | string | no |  |
 | `trade_budget` | number | no |  |
+| `auto_size` | object | no |  |
 | `legs` | array | no |  |
 | `link_mode` | string | no | `""` |
 | `held_position` | string | no |  |
@@ -142,6 +145,7 @@ Takes nothing.
 | `bracket_take_profit_levels` | array | no |  |
 | `bracket_take_profit_loop` | boolean | no |  |
 | `bracket_trade_budget` | number | no |  |
+| `bracket_auto_size` | string | no |  |
 | `bracket_exit_split` | string | no |  |
 | `label` | string | no |  |
 | `cancels_labels` | array | no |  |
@@ -168,7 +172,7 @@ Arm a trade: Atlas watches it and places it at the broker by itself. Call Previe
 
 THE CARD'S FIELDS, BY GROUP (each one is a parameter of this tool, typed and described):
   What to trade: asset_class, option_type, strike, expiry.
-  How much: contracts, quantity, bracket_trade_budget, spreads, spread_budget_basis.
+  How much: contracts, quantity, bracket_trade_budget, bracket_auto_size, spreads, spread_budget_basis.
   Entry: enter_side, enter_order_type, enter_limit_price, enter_trigger_metric, enter_trigger_operator, enter_trigger_value.
   Exits: order_strategy, bracket_stop_loss_stop_price, bracket_stop_loss_limit_price, bracket_stop_loss_stop_pct, bracket_stop_loss_trailing_pct, bracket_take_profit_limit_price, bracket_take_profit_limit_pct, bracket_price_basis, exit_order_type, bracket_stop_loss_order_type, exit_limit_price, exit_trigger_metric, exit_trigger_operator, exit_trigger_value.
   Take-profit ladder: bracket_take_profit_levels, bracket_take_profit_loop, bracket_exit_split.
@@ -266,6 +270,8 @@ The background worker monitors live prices and executes orders automatically whe
 SPREADS (vertical credit/debit, iron condor, butterfly, iron butterfly, straddle, strangle): `rule` may be a SPREAD CARD, the same flat fields a workflow trade card uses (Trigger-Workflow-Schema lists them): {"spread_strategy": "iron_condor", "expiry": "0dte" | "friday" | "YYYY-MM-DD", "spread_legs_spec": {"sell_at": {"mode": "from_price", "value": 10}, "buy_at": {"mode": "further_out", "value": 5}}, "spreads": 2, "enter_order_type": "limit", "enter_limit_price": 1.20, "spread_take_profit_pct": 50, "spread_stop": {"basis": "premium", "max_loss_pct": 50}, "spread_close_at": "15:45"}. A vertical also says spread_side (credit | debit) and spread_direction (bull | bear). Every leg goes to the broker as ONE multi-leg order at a NET price, never a leg on its own: the open, each target, the stop and a close-all. The strikes follow the stock's price until the trade is placed, then land on the nearest listed strikes (or give exact ones: spread_legs_spec mode "strike", or spread_legs). A limit is the NET credit or debit: Atlas watches the natural price (sold legs at the bid, bought legs at the ask) and sends it at that net once it is there. Size is whole spreads, or a budget (trade_budget / bracket_trade_budget), floored to whole spreads, never over: by default the budget is the MOST THE TRADE CAN LOSE (budget over the most one spread can lose); with spread_budget_basis "net" it is the CREDIT IT COLLECTS (a credit spread) or the DEBIT IT PAYS (a debit spread): budget over the net x 100 ("$2,000 of credit" is net; a plain budget is the most it can lose). Take profit in steps (bracket_take_profit_levels, whole spreads) may MOVE THE STOP at each step: a step's stop_after_pct (a % of the most it can lose; 0 = break-even) or stop_after_price (a spread net) becomes the stop once the step BEFORE it fills; left out, the stop stays where it is. A target, a stop or a close time left out does NOT exist (no silent exits): put in each one the person asked for; "none" says none in words. Spread-Quote shows each leg's bid and ask and the natural net now.
 
 A POSITION ALREADY HELD (opened in the broker's own app, or anywhere outside Atlas): a trigger can run its exits, so nothing has to watch it by hand. List-Trading-Triggers with include_held=true lists every position held, each with a held_id, the card it is (`card`: single, or spread for legs held together), its `fixed` fields and its `released` ones. Send the SAME card with held_position: <held_id> and only the released fields (the exits: take profit, stop, ladder, trailing stop, close time, how each closes; and contracts/spreads, at most what is held). Everything else is locked to the position: the order is already placed. Preview saves it unarmed (preview_id); Create arms it (held_position, or that preview_id). Its exits are then edited like any trade's. One option or legs held together; not shares, and only in an account Atlas can trade in. A workflow or a task does the same with these two tools (a script: atlas.call("List-Trading-Triggers", include_held=True), then atlas.call("Create-Trading-Trigger", held_position=..., <exits>)), so one trigger per position runs it and no agent has to watch it.
+
+AUTO SIZING (with a budget only): `auto_size` = {"start": "account", "account_pct": 40} makes the budget for the trade 40% of the account's value when it enters, never more than the budget typed (the account unreadable: the budget typed). On a trigger of its own that is all: the steps after losses / wins in a row and the day's loss / profit pauses count a WORKFLOW's trades, so they go on a workflow card's bracket_auto_size (Workflow-Create / Workflow-Update) and are refused here in words.
 ````
 
 ## `Update-Trading-Trigger`
@@ -311,6 +317,7 @@ A POSITION ALREADY HELD (opened in the broker's own app, or anywhere outside Atl
 | `bracket_take_profit_levels` | array | no |  |
 | `bracket_take_profit_loop` | boolean | no |  |
 | `bracket_trade_budget` | number | no |  |
+| `bracket_auto_size` | string | no |  |
 | `bracket_exit_split` | string | no |  |
 | `label` | string | no |  |
 | `cancels_labels` | array | no |  |
