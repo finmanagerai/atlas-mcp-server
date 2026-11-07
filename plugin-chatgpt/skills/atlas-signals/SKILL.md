@@ -26,6 +26,7 @@ and point them there.
 | Which plays are waiting on their own answer | `Signal-Pending`. They answer on the dashboard |
 | Public groups they could follow | `Signal-Discover` |
 | How a group's plays have done | `Signal-Group-Performance` |
+| Which of their filters a play breaks right now | `Signal-Filter-Check` with its `signal_id`. Say which in plain words |
 
 ## Reading one well
 
@@ -51,6 +52,8 @@ promise to change them.
 | "Put $250 into each play" / "3 contracts" | Trade settings: the **Contracts** row. A count, or **Size this trade by an amount of money** and **Most to put into this trade**: Atlas buys as many as fit under it, never more. |
 | "Put in less after losses, more after wins" | With money on, the **Auto sizing** row: start from the amount or a % of the account (never over the amount); after N losses in a row put in less by % or $, after N wins more; one step, then back after the opposite result; never under one contract. |
 | "Stop taking plays for the day if I lose $200" | **Auto sizing** page, **Circuit breaker**: pause when the day's loss (or profit) reaches a % of the account or $; then **Back tomorrow** (next trading day, 9:30 AM ET), **For a week** or **Until I turn it on**. Automatic taking of that group stops, they are told once, and it comes back by itself. Open trades keep their stops. Back on early: switch **Take every play automatically** on again. |
-| "Only SPY", "nothing over $3 a contract", "not on FOMC days" | **Advanced filters** at the bottom of Trade settings: 28 filters (kinds, bid/ask spread, rating, open interest, volume, cost per contract, expiry, entry slip, late entry, earnings, big news days, trades a day, open trades, IV, delta, strike, symbols, time window, days, stock move, gap, day direction, VIX, theta, buying power, pause after a loss, stock price). A filter only skips a play, never changes it; market filters are judged when the play would go in and skip only when the number can be read; a skipped play sends one notice naming the filter; a play taken by hand is never filtered. |
+| "Only SPY", "nothing over $3 a contract", "not on FOMC days" | **Advanced filters** at the bottom of Trade settings: 28 filters (kinds, bid/ask spread, rating, open interest, volume, cost per contract, expiry, entry slip, late entry, earnings, big news days, trades a day, open trades, IV, delta, strike, symbols, time window, days, stock move, gap, day direction, VIX, theta, buying power, pause after a loss, stock price). A filter only skips a play, never changes it; market filters are judged when the play would go in and skip only when the number can be read; a skipped play sends one notice naming the filter. Filters never stop a play taken by hand: the take shows which filters it breaks and offers **Take anyway**. When the person asks before taking one, call `Signal-Filter-Check` and say which it breaks. |
+| "Sell everything at TP2" | Trade settings for that group: the target at which everything still held is sold. Later targets do nothing for them; no target moves. |
+| A group they own: their own order on the plays they post | The **Trade settings** button on Signals: the account, the size, auto sizing, the circuit breaker (the plays still post to followers while it is tripped, and they can turn their own orders back on there), and the target at which everything still held is sold. |
 
 Every step, with pictures: https://www.mind-vest.io/atlas/setup-guide/whats-new-nov-7

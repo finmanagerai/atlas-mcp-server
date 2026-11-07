@@ -134,6 +134,30 @@ Only what the person asked for; never invent a size, a budget or a step.
 - Schedule lines must be at least 2 minutes apart; a closer one is refused at
   save.
 
+## Trade settings
+
+`Workflow-Trade-Settings` is the website's **Trade settings** (the first line
+of a workflow row's More menu: one sheet, one Save). It works for the
+workflow's author and for a follower's copy, live or paused. It reads and
+writes the workflow's own values, so it always matches the workflow editor.
+Call it with only `workflow_id` first: the answer says whether they wrote it
+or follow it, and lists the trade cards (label, kind, OCO / OEO group, size
+now). Then send only what they asked for.
+
+| When the person asks | Do with `Workflow-Trade-Settings` |
+|---|---|
+| "3 contracts on every trade" / "$500 a trade" | `size: {"scope": "all", "mode": "count", "count": 3}` or `{"scope": "all", "mode": "budget", "budget_dollars": 500}` |
+| "More on the call leg than the put leg" | `size: {"scope": "per_card", "cards": [{"label": "Call leg", "mode": "budget", "budget_dollars": 500}, {"label": "Put leg", "mode": "budget", "budget_dollars": 200}]}`, labels from the read |
+| "Sell everything at TP2" | `take_all_at_tp: 2`. Later targets then do nothing for them; no target moves. `0` turns it off |
+| "Message me its trades" | `notify: {"dm": true}` |
+| "Use my other account" | `broker_account_id` |
+| "Only SPY and QQQ" | `trade_filters` (the Filter trades keys in the `atlas-signals` skill); `{}` clears |
+| "Put in less after losses" / "stop for the day if I lose $300" | `auto_size` with `pause_loss` / `pause_profit`, only beside a budget; `{}` turns it off |
+| "Don't let the author close mine" (a follower) | `allow_owner_close: false` |
+
+It moves where real orders go and how big they are: change it only when the
+person asks, and read it back after.
+
 **A script workflow has no trade card.** When `Workflow-Open` says
 `decided_by: "script"`, its trades are `atlas.trade(...)` calls in its
 `main.py`, and `output_schema` is usually empty. To say what it does or what

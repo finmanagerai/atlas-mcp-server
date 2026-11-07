@@ -112,6 +112,10 @@ is a different trade.
 - `Signal-Take` takes a play into the person's own account. It can carry
   their own size (`contracts`), their own limit for the trade
   (`max_per_trade`), and the account. Taking places a real order.
+- Before you take a play by hand for them, call `Signal-Filter-Check` with its
+  `signal_id`. If it breaks any of their filters, say which in plain words
+  and take it only if they still want it ("take anyway"). Filters never stop
+  a hand take.
 - `Signal-My-Order` changes or pulls the person's own order on a play.
 - `Signal-Pending` and `Signal-Answer` are for plays waiting on the person's
   yes or no.
@@ -126,15 +130,32 @@ is a different trade.
 | "Stop taking this group's plays if I lose $200 today" | `Signal-Trade-Settings` `group_id`, `pause_loss: {"amount": 200, "unit": "usd", "resume": "tomorrow"}` (`pause_profit` the same; `{}` turns one off) |
 | "Turn it back on" | `Signal-Trade-Settings` `group_id`, `accept_mode: "auto"` |
 | "Only puts, rated 7+, tight spreads" | `Signal-Trade-Settings` `group_id` (`"community"` for the board), `trade_filters: {"kinds": ["puts"], "min_score": 7, "max_spread_pct": 10}` |
+| "Sell everything at TP2" (a group they follow or own) | `Signal-Trade-Settings` `group_id`, `take_all_at_tp: 2`. Later targets do nothing for them; no target moves. `0` turns it off |
+
+## Trade settings for a group the person owns
+
+On the website a group owner has a **Trade settings** button on Signals. It
+sets the owner's OWN order on the plays they post there, with
+`Signal-Trade-Settings` and that `group_id`:
+
+| When the person asks | Do |
+|---|---|
+| "Put my own plays in my other account" | `broker_account_id` |
+| "$400 of each of my plays" / "2 contracts" | `max_per_trade: 400` or `contracts: 2` (0 goes back to what each play says) |
+| "Size mine up and down with my record" | `auto_size`, only with `max_per_trade` |
+| "Stop my own orders if I lose $300 today" | `pause_loss: {"amount": 300, "unit": "usd"}` (`pause_profit` the same). The plays still post to followers |
+| "Turn my own orders back on" (after the breaker) | `resume_own_orders: true` |
+| "Sell everything at TP2" | `take_all_at_tp: 2` |
 
 - A breaker trip switches that group to taking by hand (`accept_mode
   manual`) until it comes back (`resume` `"tomorrow"`, `"week"` or
   `"manual"`); Atlas tells the person once, in their own zone.
 - `trade_filters` only SKIP a trade, never change it. The whole set replaces
   what was saved, `{}` clears it. Never on an author's own row; the author is
-  never filtered. A play taken by hand is never filtered (the website shows
-  what it breaks and offers "Take anyway"). A skipped play sends ONE notice
-  naming the filter.
+  never filtered. Filters never stop a hand take: the website shows which
+  filters it breaks and offers "Take anyway", and you call
+  `Signal-Filter-Check` first and say which it breaks (above). A skipped play
+  sends ONE notice naming the filter.
 - The keys: `kinds` (calls/puts/shares/spreads), `max_spread_pct`,
   `min_score` (1-10), `min_open_interest`, `min_volume`,
   `max_contract_cost` / `min_contract_cost` ($), `expiry {from_days, to_days,
