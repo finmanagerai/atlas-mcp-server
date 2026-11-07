@@ -68,9 +68,9 @@ computer. `action`: `start` {`context` (the whole brief), `computer`,
 `read` {`ref`}, `list`, `stop` {`ref`}, `allow` {`on`}.
 
 - Start only on the person's yes (`confirmed_by_person: true`), or to fix
-  something that broke ON that computer (`about`) while "Let my agents work
-  on my computers" is on (the default). `allow` `on: false` only when the
-  person asks.
+  something that broke ON that computer (`about`) unless the person said
+  agents may not (allowed by default). There is no switch on any screen:
+  when they say so in their own words, `allow` `on: false` (`on: true` undoes it).
 - At most 2 open per agent per computer; no trades, money settings, deleting
   or signing in. It shows in Studio as "<agent>: <title>". Tell the person
   the answer's `say` line.
