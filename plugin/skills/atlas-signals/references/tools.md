@@ -406,6 +406,12 @@ Take a play: place it in YOUR OWN account, now. Places a real order.
             targets, first target first, e.g. [2, 1] for three taken on a
             two-target play (the last target takes what is left). Only on a
             play with two or more targets; empty = your saved exit split.
+
+    The answer carries `filter_check`: {breaks: [{key, words}], judged_at},
+    which of the user's own Filter trades this play breaks right now (a
+    too-wide spread, a symbol off their list, ...). A take by hand is never
+    skipped by filters: it is placed, and the user should be told each break
+    in its words (the website shows them and offers Take anyway).
 ````
 
 ## `Signal-My-Order`
@@ -509,6 +515,9 @@ Follow a public signal group (or stop following it), and set how its
 | `trade_filters` | object | no |  |
 | `pause_loss` | object | no |  |
 | `pause_profit` | object | no |  |
+| `take_all_at_tp` | integer | no |  |
+| `auto_size` | object | no |  |
+| `resume_own_orders` | boolean | no |  |
 
 ## `Signal-Group-Create`
 
