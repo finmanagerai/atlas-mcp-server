@@ -3,16 +3,16 @@
 GENERATED from the live server. Do not edit by hand: it is rewritten from
 the same list the server hands to every client, so it cannot fall behind.
 
-206 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
+209 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
 ones your client shows (some add a prefix of their own, such as `mcp__atlas__`).
 
 Each tool says what it can do at its worst, and your client uses that to
 decide when to ask you first:
 
 - 🟢 **reads** (107): looks something up and changes nothing.
-- 🟡 **adds** (27): makes something new of yours (a preview, a
+- 🟡 **adds** (28): makes something new of yours (a preview, a
   folder, a copy) and touches nothing else.
-- 🟠 **changes** (36): changes or removes something of yours.
+- 🟠 **changes** (38): changes or removes something of yours.
 - 🔴 **acts** (36): can send or change a real order, start a run,
   or change what other people see. Only on your say-so.
 
@@ -252,6 +252,7 @@ decide when to ask you first:
 | `Computer-Session` | 🟠 changes | Open a working session on one of the person's own computers (Atlas Studio) and hand it a job, the way a lead hands a colleague a brief: a NEW conversation there whose… |
 | `Memory-Check-Already-Remembered` | 🟢 reads | Check whether something is already remembered, before you write it. |
 | `Memory-Forget` | 🟠 changes | Forget one memory because it is wrong or out of date. |
+| `Memory-Housekeeping` | 🟡 adds | The Account Manager's nightly tidy-up of the person's memory and temporary files (after 3 AM in their own time zone): duplicates merged, out-of-date and contradicted… |
 | `Memory-List` | 🟢 reads | Everything Atlas remembers about the signed-in person, by tier (short term: hours; long term: weeks; permanent: kept), with how full each tier is, who stored each… |
 | `Memory-Recall` | 🟢 reads | What Atlas remembers about the signed-in person that bears on a question. |
 | `Memory-Restore` | 🟡 adds | Bring back a memory that was forgotten. |
@@ -302,6 +303,7 @@ decide when to ask you first:
 | `Agent-Task-Check-In` | 🟠 changes | The morning and evening check-ins Atlas sends this person: on, quiet or off, each. |
 | `Agent-Task-Create` | 🔴 acts | Make a task: a background worker with a job title that does its job by itself and tells the person in its own name ("Risk Manager", "SPY 770C call watcher"). |
 | `Agent-Task-Delete` | 🟠 changes | Delete one of the person's trackers: it stops running and its file is removed. |
+| `Agent-Task-Files` | 🟠 changes | Read, edit, test and fix the person's own Atlas agents: the files each agent keeps in its folder (Files > Tasks/<agent>/): check.py (the script Atlas runs for it every… |
 | `Agent-Task-Hold-Entries` | 🟠 changes | Hold or let through the person's NEW entries for the rest of today (New York): the step a tracker's "No new entries" / "Pause it" button asks for, and what a tracker… |
 | `Agent-Task-Learn` | 🟠 changes | A task changes ITSELF from its own person's feedback (its Learning specialist): its job text or its check script, kept so it can be undone. |
 | `Agent-Task-Level` | 🟠 changes | How much Atlas speaks up about watched positions: the level (protect, balanced or quiet), how often prices are checked (5 to 10 seconds), and tickers to stay quiet about. |
@@ -310,6 +312,7 @@ decide when to ask you first:
 | `Agent-Task-Manage` | 🟠 changes | Everything Atlas does by itself for this person, as one list of tasks: the morning brief, the evening check-in, and each tracker. |
 | `Agent-Task-Save-Code` | 🟠 changes | Keep a tracker in the person's files so Buddy runs it by itself; when its check fires, the person is told in their chat and on their phone in the tracker's own title and… |
 | `Agent-Task-Shelf` | 🟡 adds | Ready-made tasks a person can add: Risk Manager, Market Analyst, and Account Manager: the only three offered. list shows them and which the person has; add makes one for… |
+| `Agent-Task-Specialists` | 🟠 changes | An agent's specialists: list them, spin one up for a job, write what it did, and clean it up when the job is done. |
 | `Agent-Task-Templates` | 🟢 reads | Starting files for trackers (the small checks Buddy runs for the person): give back, near the stop, near a target, a fast drop, expiry, no plan, a daily loss, a… |
 | `Agent-Task-Test` | 🟢 reads | Test a tracker (a small Python check the chat writes for the person) on today's bars, and show what it would have caught: each bar of today's session is handed to its… |
 | `Agent-Task-Update` | 🔴 acts | Change a task: its title, its job (prompt), what wakes it, what it may use, its own limits, what trades it leaves alone, or its state (on / stopped / building). |

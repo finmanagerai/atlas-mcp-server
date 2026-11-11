@@ -86,7 +86,7 @@ Args — pass each as a flag; this is the FULL field set (nothing lives only in 
   trigger_source: 'cron' (schedule) | 'alert' (an alert fires it) | 'both' | 'manual' (nothing fires it; the user presses Run now) | 'workflow' (other workflows start it: see source_workflow_ids).
   source_workflow_ids: with trigger_source 'workflow', the person's OWN workflows this one runs after, by id or exact name (at most 10; never itself; a copy they follow or a template cannot start anything). Each time one of them finishes a run, this one runs and is told what that run decided ("<name> ran: it decided ..."). A save that would make a loop (A starts B starts A) is refused. Several are fine, like several alerts.
   decided_by: who decides each run. 'atlas' (default) = Atlas's own model reads the tools and decides. 'agent' = YOUR agent decides (the same as ui_schema.run_by "agent", still accepted; see below). 'script' = a Python script in the workflow's files decides, with no model at all: input data in, a decision out.
-  script_code: with decided_by 'script', the script itself (Python 3.12, at most 1 MB). It is saved as the workflow's main.py; with none, the workflow starts with a short starter script. Each run it runs on Atlas's own runner (numpy, pandas, scipy and more; NO internet; 5 minutes; 1 GB) and does what it says through the `atlas` module, which is built in:
+  script_code: with decided_by 'script', the script itself (Python 3.12, up to 5 MB). It is saved as the workflow's main.py; with none, the workflow starts with a short starter script. Each run it runs on Atlas's own runner (numpy, pandas, scipy and more; NO internet; 5 minutes; 1 GB) and does what it says through the `atlas` module, which is built in:
     import atlas
     atlas.settings["broker"]   # its Settings, by name (also env ATLAS_BROKER)
     atlas.input                  # the alert, the run, the trade card
@@ -200,6 +200,8 @@ Args:
 | `folder` | string | no | `"yours"` |
 | `to` | string | no | `""` |
 | `allow_empty` | boolean | no | `false` |
+| `offset` | integer | no |  |
+| `limit` | integer | no |  |
 
 The tool's own description, in full:
 
@@ -218,8 +220,8 @@ The files one of the person's workflows keeps: what its calculations
 
     Only the person's own workflows. A workflow that follows an author also
     has the author's files, which can be listed and read but never changed.
-    Text files only, at most 1 MB from here; 5 MB a file, 20 MB and 50 files a
-    workflow. Running code is not done here: the workflow runs it (Workflow-Run).
+    Text files only; 5 MB a file, 20 MB and 50 files a workflow. A read is
+    the whole file. Running code is not done here: the workflow runs it (Workflow-Run).
 
     Args:
         action: list, read, write, move or delete.
@@ -234,6 +236,8 @@ The files one of the person's workflows keeps: what its calculations
             or "archive/2026-10". Nothing is written over: a taken path is refused.
         folder: "yours" (default) or "author" (list and read only, on a
             workflow that follows an author).
+        offset: for read, start at this character (only to page a huge file; a read is whole otherwise).
+        limit: for read, at most this many characters (only to page).
 ````
 
 ## `Workflow-Checks`

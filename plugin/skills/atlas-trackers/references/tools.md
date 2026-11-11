@@ -91,7 +91,7 @@ either let the alert tell the person itself (on_fire.buddy) or, when the
 check needs more than the price, keep this tracker with on_alert: true and
 put on_fire.tracker {"name": "<this name>"} on the alert: it runs ONCE, at
 the fire, with inputs["alert"] = {symbol, price, title, text, numbers, at}.
-A timer (every_s, 10 s at the fastest, market hours) is only for a check
+A timer (every_s, 1 s at the fastest, market hours) is only for a check
 with no price to wait on (a balance, a web page, a workflow's drawdown).
 
 Args:
@@ -101,7 +101,7 @@ Args:
         SYMBOLS, or no bars (a tracker on positions, a page or a tool).
     timeframe: bar size: 1m, 2m, 5m, 15m, 30m, 1h or 1d.
     lookback: how far back the bars go: 1d, 5d, 1mo or 3mo.
-    every_s: how often it runs, in seconds (10 at the fastest, 3600 at most; default the
+    every_s: how often it runs, in seconds (1 at the fastest, 3600 at most; default the
         code's EVERY_S, else 60). Faster for a stop, slower for a page.
     every_min: older way, in minutes.
     scope: only these trades: {"type": "workflow" | "group" | "trigger", "ids": [...]}
