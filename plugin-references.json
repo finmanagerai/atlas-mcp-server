@@ -260,6 +260,20 @@
         "Agent-Task-Test",
         "Agent-Task-Save-Code"
       ]
+    },
+    "atlas-agent-learning": {
+      "tools": [
+        "Agent-Task-Files",
+        "Agent-Task-Specialists",
+        "Agent-Task-Test",
+        "Agent-Task-Templates",
+        "Agent-Task-Activity",
+        "Agent-Task-Update"
+      ],
+      "full": [
+        "Agent-Task-Files",
+        "Agent-Task-Specialists"
+      ]
     }
   },
   "editions": {
