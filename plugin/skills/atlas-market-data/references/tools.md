@@ -349,6 +349,10 @@ histogram has material to aggregate without a second call.
 | `adx` | string | no |  |
 | `cvd` | string | no |  |
 | `platform` | string | no | `"other"` |
+| `exposure` | string | no |  |
+| `exposure_expiration` | string | no |  |
+| `exposure_range` | string | no |  |
+| `volume` | boolean | no | `true` |
 
 ## `Multi-Chart-View`
 

@@ -371,6 +371,7 @@ Only the workflow's author has a journal: copies read the author's rather than k
 |---|---|---|---|
 | `query` | string | no | `""` |
 | `limit` | integer | no | `25` |
+| `platform` | string | no | `"other"` |
 
 ## `Workflow-Import`
 

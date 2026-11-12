@@ -3,13 +3,13 @@
 GENERATED from the live server. Do not edit by hand: it is rewritten from
 the same list the server hands to every client, so it cannot fall behind.
 
-209 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
+211 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
 ones your client shows (some add a prefix of their own, such as `mcp__atlas__`).
 
 Each tool says what it can do at its worst, and your client uses that to
 decide when to ask you first:
 
-- 🟢 **reads** (107): looks something up and changes nothing.
+- 🟢 **reads** (109): looks something up and changes nothing.
 - 🟡 **adds** (28): makes something new of yours (a preview, a
   folder, a copy) and touches nothing else.
 - 🟠 **changes** (38): changes or removes something of yours.
@@ -320,6 +320,7 @@ decide when to ask you first:
 | `Agent-Task-Watch-List` | 🟢 reads | What Atlas is watching for the person, each with its plan, plus their level, check interval, muted tickers and anything paused today. |
 | `Agent-Task-Watch-Set` | 🔴 acts | Watch a position on a plan the person AGREED to, and write back to them in this chat when it matters (gave back, near the stop or a target, a fast drop, expiry). |
 | `Agent-Task-Watch-Stop` | 🟠 changes | Stop watching a position: Atlas stops writing about it. |
+| `Agents-Open` | 🟢 reads | Show the person's agents: each one's name, when it runs, what it has said lately and its specialists, READ ONLY. |
 | `Browser-Act` | 🟡 adds | Do one thing on the page a browser session is on, then read it again, as a person with a mouse and keys would: click, right_click, double_click, hover, drag (one thing… |
 | `Browser-Close` | 🟡 adds | Close a browser session (or all of the person's), which also lifts the pause on trading tools once none is open. |
 | `Browser-Open` | 🟡 adds | Open a browser session on a web page and read it. |
@@ -332,6 +333,7 @@ decide when to ask you first:
 | `Notify-Delivery` | 🟢 reads | Was a Discord DM delivered? |
 | `Phone-Button` | 🟢 reads | Was the button pressed on a notification you sent with Phone-Notify? |
 | `Phone-Notify` | 🟡 adds | Send a notification to the signed-in person's own phone (the MindVest Atlas app), from a script, a local project, the CLI or a chat. |
+| `Price-Exposure-Chart` | 🟢 reads | A price chart with the net Greek EXPOSURE stamped on it: candles at any timeframe (5m, 10m, 15m, 1h, ...) and, on the same price axis, each strike's net exposure as a… |
 | `Virtual-Accounts` | 🟠 changes | The person's virtual accounts: simulated money to try Atlas with before a real broker. |
 
 ## The owner's phone
