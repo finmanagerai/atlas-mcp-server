@@ -154,3 +154,4 @@ An agent's specialists: list them, spin one up for a job, write what it
 | `built` | string | no |  |
 | `description` | string | no |  |
 | `exclude` | string | no |  |
+| `needs` | string | no |  |

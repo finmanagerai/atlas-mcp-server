@@ -103,6 +103,11 @@ Example (nothing to do):
 | `platform` | string | no | `"other"` |
 | `workflow_id` | string | no |  |
 | `include_held` | boolean | no | `false` |
+| `name` | string | no | `""` |
+| `since` | string | no | `""` |
+| `until` | string | no | `""` |
+| `newest` | integer | no | `0` |
+| `offset` | integer | no | `0` |
 
 ## `Workflow-Review`
 

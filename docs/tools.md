@@ -3,14 +3,14 @@
 GENERATED from the live server. Do not edit by hand: it is rewritten from
 the same list the server hands to every client, so it cannot fall behind.
 
-211 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
+215 tools at `https://atlasmcp.finmanagerai.com/mcp`. The names are the
 ones your client shows (some add a prefix of their own, such as `mcp__atlas__`).
 
 Each tool says what it can do at its worst, and your client uses that to
 decide when to ask you first:
 
-- 🟢 **reads** (109): looks something up and changes nothing.
-- 🟡 **adds** (28): makes something new of yours (a preview, a
+- 🟢 **reads** (110): looks something up and changes nothing.
+- 🟡 **adds** (31): makes something new of yours (a preview, a
   folder, a copy) and touches nothing else.
 - 🟠 **changes** (38): changes or removes something of yours.
 - 🔴 **acts** (36): can send or change a real order, start a run,
@@ -249,7 +249,7 @@ decide when to ask you first:
 |---|---|---|
 | `Chat-Continue` | 🟠 changes | Send words into ONE of the person's existing chats, as if they had typed them there, so it carries on with its work: a chat on the Atlas website, or a project chat on… |
 | `Chat-Recent` | 🟢 reads | The person's chats that were active in the last few hours, everywhere: on the Atlas website and, while they have Memory sharing switched on (Profile, Memory), the… |
-| `Computer-Session` | 🟠 changes | Open a working session on one of the person's own computers (Atlas Studio) and hand it a job, the way a lead hands a colleague a brief: a NEW conversation there whose… |
+| `Computer-Session` | 🟠 changes | Open a working session, on the Atlas website or on one of the person's own computers (Atlas Studio), and hand it a job, the way a lead hands a colleague a brief: a NEW… |
 | `Memory-Check-Already-Remembered` | 🟢 reads | Check whether something is already remembered, before you write it. |
 | `Memory-Forget` | 🟠 changes | Forget one memory because it is wrong or out of date. |
 | `Memory-Housekeeping` | 🟡 adds | The Account Manager's nightly tidy-up of the person's memory and temporary files (after 3 AM in their own time zone): duplicates merged, out-of-date and contradicted… |
@@ -292,7 +292,7 @@ decide when to ask you first:
 | `Atlas-Agent-Guide` | 🟢 reads | READ THIS FIRST, BEFORE YOU USE ANY OTHER ATLAS TOOL. |
 | `Atlas-Guide-Index` | 🟢 reads | The Atlas guide's table of contents — every topic, grouped, with the id and link for each. |
 | `Atlas-Guide-Read` | 🟢 reads | Read one topic of the Atlas guide in full, by its id (from Atlas-Guide-Index or Atlas-Guide-Search). |
-| `Atlas-Guide-Search` | 🟢 reads | Search the Atlas guide for a word or phrase and get back the topics that mention it, each with a snippet and a link. |
+| `Atlas-Guide-Search` | 🟢 reads | Search the Atlas guide for a word or phrase and get back the topics that mention it, each with the whole paragraphs that hold the words (never a cut excerpt) and a link. |
 
 ## Other
 
@@ -303,13 +303,17 @@ decide when to ask you first:
 | `Agent-Task-Check-In` | 🟠 changes | The morning and evening check-ins Atlas sends this person: on, quiet or off, each. |
 | `Agent-Task-Create` | 🔴 acts | Make a task: a background worker with a job title that does its job by itself and tells the person in its own name ("Risk Manager", "SPY 770C call watcher"). |
 | `Agent-Task-Delete` | 🟠 changes | Delete one of the person's trackers: it stops running and its file is removed. |
+| `Agent-Task-Discover` | 🟢 reads | Agents other people shared in the agent marketplace: title, what each does, who shared it (their public name), its files and how many took it. |
+| `Agent-Task-Duplicate` | 🟡 adds | Make a copy of one of the person's agents: the same job, wakes, limits, script and every file in its folder, under a new name, with its own chat and Activity. |
 | `Agent-Task-Files` | 🟠 changes | Read, edit, test and fix the person's own Atlas agents: the files each agent keeps in its folder (Files > Tasks/<agent>/): check.py (the script Atlas runs for it every… |
 | `Agent-Task-Hold-Entries` | 🟠 changes | Hold or let through the person's NEW entries for the rest of today (New York): the step a tracker's "No new entries" / "Pause it" button asks for, and what a tracker… |
+| `Agent-Task-Import` | 🟡 adds | Take an agent from the agent marketplace: it becomes one of the person's own agents with its job, script and files. |
 | `Agent-Task-Learn` | 🟠 changes | A task changes ITSELF from its own person's feedback (its Learning specialist): its job text or its check script, kept so it can be undone. |
 | `Agent-Task-Level` | 🟠 changes | How much Atlas speaks up about watched positions: the level (protect, balanced or quiet), how often prices are checked (5 to 10 seconds), and tickers to stay quiet about. |
 | `Agent-Task-List` | 🟢 reads | The trackers the person keeps (the small checks Buddy runs for them): each one's name, what it watches, its tickers and bar size, how often it runs and whether it is… |
 | `Agent-Task-Loss-Limits` | 🟠 changes | Set, clear or read the signed-in person's own money guards, and resume what they paused: a daily loss limit ("stop me at $500 a day") and a drawdown cap per workflow (%… |
 | `Agent-Task-Manage` | 🟠 changes | Everything Atlas does by itself for this person, as one list of tasks: the morning brief, the evening check-in, and each tracker. |
+| `Agent-Task-Publish` | 🟡 adds | Put a PUBLIC copy of one of the person's agents in the agent marketplace, so others can take it, WITHOUT the person's details. |
 | `Agent-Task-Save-Code` | 🟠 changes | Keep a tracker in the person's files so Buddy runs it by itself; when its check fires, the person is told in their chat and on their phone in the tracker's own title and… |
 | `Agent-Task-Shelf` | 🟡 adds | Ready-made tasks a person can add: Risk Manager, Market Analyst, and Account Manager: the only three offered. list shows them and which the person has; add makes one for… |
 | `Agent-Task-Specialists` | 🟠 changes | An agent's specialists: list them, spin one up for a job, write what it did, and clean it up when the job is done. |

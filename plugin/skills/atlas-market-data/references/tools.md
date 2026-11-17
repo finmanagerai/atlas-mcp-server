@@ -353,6 +353,7 @@ histogram has material to aggregate without a second call.
 | `exposure_expiration` | string | no |  |
 | `exposure_range` | string | no |  |
 | `volume` | boolean | no | `true` |
+| `strikes` | string | no |  |
 
 ## `Multi-Chart-View`
 

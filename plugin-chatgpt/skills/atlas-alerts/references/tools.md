@@ -257,6 +257,11 @@ Patch an existing alert's fields without recreating.
 |---|---|---|---|
 | `active_only` | boolean | no | `true` |
 | `platform` | string | no | `"other"` |
+| `name` | string | no | `""` |
+| `since` | string | no | `""` |
+| `until` | string | no | `""` |
+| `newest` | integer | no | `0` |
+| `offset` | integer | no | `0` |
 
 ## `Alert-Fires`
 
@@ -266,3 +271,8 @@ Patch an existing alert's fields without recreating.
 |---|---|---|---|
 | `alert_id` | string | no | `""` |
 | `limit` | integer | no | `20` |
+| `name` | string | no | `""` |
+| `since` | string | no | `""` |
+| `until` | string | no | `""` |
+| `newest` | integer | no | `0` |
+| `offset` | integer | no | `0` |
